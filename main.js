@@ -46,7 +46,7 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // White color
 directionalLight.position.set(5, 10, 7.5).normalize(); // Position the light and normalize
 scene.add(directionalLight);
 
-// Optional: Add a point light for better visibility
+//
 const pointLight = new THREE.PointLight(0xffffff, 1, 100); // White point light with high intensity and distance
 pointLight.position.set(0, 5, 0); // Position the light above the model
 scene.add(pointLight);

@@ -1,15 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Galaxy Meow</title>
-		<style>
-			body { margin: 0; }
-		</style>
-	</head>
-	<body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galaxy Meow</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
 
-		
-		<script type="module" src="/main.js"></script>
-	</body>
+    /* Full-screen background layout */
+    .start-menu {
+      width: 100vw;
+      height: 100vh;
+      background-image: url('Graphics/MainMenuGalaxyMeow.png'); 
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    /* Bottom bar for buttons */
+    .menu-bar {
+      position: absolute; 
+      bottom: 0; 
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.5); 
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* Buttons styling */
+    .menu-button {
+      background-color: rgb(233, 107, 255);
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .menu-button:hover {
+      background-color: lightgray;
+    }
+
+    /* Popup modal styling */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .modal-close {
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
+      float: right;
+      font-size: 20px;
+    }
+  </style>
+
+
+</head>
+<body>
+
+  <!-- Start Menu -->
+  <div class="start-menu">
+    <div class="menu-bar">
+      <button class="menu-button" id="startGame">Start</button>
+      <button class="menu-button" id="openSettings">Settings</button>
+      <button class="menu-button" id="openCredits">Credits</button>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
+    <p>Settings not implemented yet.</p>
+  </div>
+
+  <!-- Credits Modal -->
+  <div class="modal" id="creditsModal">
+    <div class="modal-header">Credits <span class="modal-close" id="closeCredits">×</span></div>
+    <p>Game developed by Galaxy Meow.</p>
+	<p>Our Team:
+	<br>Claire
+	<br>Wendy
+	<br>Mayuri
+	<br>Chloe
+	<br>Dineo
+	<br>Busisiwe
+
+
+
+	</p>
+	<p></p>
+  </div>
+
+  <script>
+    // Start button 
+    document.getElementById('startGame').addEventListener('click', function() {
+      window.location.href = 'game.html';
+    });
+
+    // Open and close Settings Modal
+    const settingsModal = document.getElementById('settingsModal');
+    const creditsModal = document.getElementById('creditsModal');
+
+    document.getElementById('openSettings').addEventListener('click', function() {
+      settingsModal.style.display = 'block';
+    });
+
+    document.getElementById('closeSettings').addEventListener('click', function() {
+      settingsModal.style.display = 'none';
+    });
+
+    // Open and close Credits Modal
+    document.getElementById('openCredits').addEventListener('click', function() {
+      creditsModal.style.display = 'block';
+    });
+
+    document.getElementById('closeCredits').addEventListener('click', function() {
+      creditsModal.style.display = 'none';
+    });
+
+  </script>
+
+</body>
 </html>
