@@ -6,8 +6,6 @@ import { CharacterControls } from './characterControls.js';  // Import character
 //check if compatible with webGL
 
 
-
-
 //set up scene, camera and renderer
 const scene = new THREE.Scene();
 //so the fields are: field of view, aspect ratio, then near and far clipping planes
@@ -52,11 +50,22 @@ pointLight.position.set(0, 5, 0); // Position the light above the model
 scene.add(pointLight);
 
 
-// Load the model and apply controls
+//Load the model and apply controls
 let characterControls;
 loadModel('models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
 });
+
+
+// Load a static model
+loadModel('models/TheCatGalaxyMeow4.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    // Since it's a static model, you may not need to do anything special here
+    // Just log the loaded object or position it if needed
+    console.log('Static model loaded:', object);
+    object.position.set(0, 0, 0); // Positioning the static model
+});
+
+
 
 const keysPressed = {};
 document.addEventListener('keydown', (event) => {
