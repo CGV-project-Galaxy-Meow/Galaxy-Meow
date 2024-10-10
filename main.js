@@ -3,8 +3,75 @@ import WebGL from 'three/addons/capabilities/WebGL.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
-//check if compatible with webGL
 
+
+// Variables for health and timer
+let health = 100;
+let healthElement = document.getElementById('healthBar');
+let exitMenu = document.getElementById('exitMenu');
+let deathMessage = document.getElementById('deathMessage');
+
+// Variables for astronaut model
+let astronaut;
+let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+
+// Function to decrease health over time
+function decreaseHealth() {
+    const healthInterval = setInterval(() => {
+      if (health > 0) {
+        health -= 1;
+        healthElement.innerHTML = `Health: ${health}/100`;
+      } else {
+        clearInterval(healthInterval);
+        showDeathMessage();
+      }
+    }, 3000); // Decrease health every 3 seconds
+  }
+  
+// Start health timer
+decreaseHealth();
+
+// Show Exit Menu on Escape Key
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      if (exitMenu.style.display === 'none') {
+        exitMenu.style.display = 'block'; // Show menu
+      } else {
+        exitMenu.style.display = 'none'; // Hide menu
+      }
+    }
+});
+
+// Show "You Died" message
+function showDeathMessage() {
+    deathMessage.style.display = 'block';
+}
+
+// Restart Level
+function restartLevel() {
+    health = 100; // Reset health
+    healthElement.innerHTML = `Oxygen: ${health}/100`;
+    deathMessage.style.display = 'none';
+    exitMenu.style.display = 'none';
+    decreaseHealth(); // Restart health decrease
+    
+    // Reset astronaut position
+    if (astronaut) {
+        astronaut.position.copy(initialAstronautPosition);
+    }
+}
+
+// Event Listeners for buttons
+document.getElementById('restartButton').addEventListener('click', restartLevel);
+document.getElementById('restartButtonDeath').addEventListener('click', restartLevel);
+
+// Event Listener for Main Menu Button (Placeholder)
+document.getElementById('mainMenuButton').addEventListener('click', () => {
+    window.location.href = 'index.html'; // Replace with the actual main menu URL
+});
+document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
+    window.location.href = 'index.html'; // Replace with the actual main menu URL
+});
 
 //set up scene, camera and renderer
 const scene = new THREE.Scene();
@@ -18,22 +85,15 @@ const renderer =  new THREE.WebGLRenderer();
 const controls = new OrbitControls(camera, renderer.domElement);
 
 //set the size in which we want to render our app
-//to render at lower resolution -> setSize(window.innerWidth/2, window.innerHeight/2, false)
-renderer.setSize(window.innerWidth,window.innerHeight);
-
+renderer.setSize(window.innerWidth, window.innerHeight);
 
 //add renderer element to document 
 document.body.appendChild(renderer.domElement);
 
-
 if(WebGL.isWebGL2Available()){
     //do animations
-}
-else{
-
+} else {
     const warning_message = WebGL.getWebGl2ErrorMessage();
-    //print to screen if we want
-    //document.getElementById( 'container' ).appendChild( warning );
 }
 
 // Lighting
@@ -44,28 +104,32 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // White color
 directionalLight.position.set(5, 10, 7.5).normalize(); // Position the light and normalize
 scene.add(directionalLight);
 
-//
 const pointLight = new THREE.PointLight(0xffffff, 1, 100); // White point light with high intensity and distance
 pointLight.position.set(0, 5, 0); // Position the light above the model
 scene.add(pointLight);
 
-
-//Load the model and apply controls
+// Load the model and apply controls
 let characterControls;
+// Load the astronaut model and apply controls
 loadModel('models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    astronaut = object;  // Assign astronaut model to variable
+    
+    // Adjust astronaut size 
+    astronaut.scale.set(1.7, 1.7, 1.7);  
+    
+    initialAstronautPosition.copy(astronaut.position);  // Store initial position
     characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
 });
 
-
-// Load a static model
+// Load the static model (adjust scale as needed)
 loadModel('models/TheCatGalaxyMeow4.glb', scene, controls, camera, (object, mixer, animationsMap) => {
-    // Since it's a static model, you may not need to do anything special here
-    // Just log the loaded object or position it if needed
     console.log('Static model loaded:', object);
-    object.position.set(0, 0, 0); // Positioning the static model
+    
+    // Adjust static model cat size 
+    object.scale.set(0.5, 0.5, 0.5); 
+    
+    object.position.set(4, 0, 0); // Positioning 
 });
-
-
 
 const keysPressed = {};
 document.addEventListener('keydown', (event) => {
