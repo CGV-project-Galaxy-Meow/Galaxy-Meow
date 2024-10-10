@@ -20,7 +20,7 @@ function decreaseHealth() {
     const healthInterval = setInterval(() => {
       if (health > 0) {
         health -= 1;
-        healthElement.innerHTML = `Health: ${health}/100`;
+        healthElement.innerHTML = `Oxygen: ${health}/100`;
       } else {
         clearInterval(healthInterval);
         showDeathMessage();
