@@ -3,11 +3,80 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Galaxy Meow</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<style>
-			body { margin: 0; }
-		</style>
+    body { margin: 0; overflow: hidden; }
+    
+    /* Health Bar */
+    #healthBar {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 20px;
+      color: rgb(165, 244, 255);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    /* Exit Menu */
+    #exitMenu {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      color: rgb(233, 107, 255);
+      z-index: 100;
+    }
+
+    /* Buttons in Exit Menu */
+    #exitMenu button {
+      margin: 10px;
+      padding: 10px 20px;
+	  background: rgba(233, 107, 255,0.75);
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* "You Died" Message */
+    #deathMessage {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      color: rgb(255, 0, 0);
+      z-index: 101;
+    }
+  </style>
+		
 	</head>
 	<body>
+			<!-- Health Bar -->
+  <div id="healthBar">Oxygen: 100/100</div>
+
+  <!-- Exit Menu -->
+  <div id="exitMenu">
+    <h2>Are you sure?</h2>
+    <button id="mainMenuButton">Main Menu</button>
+    <button id="restartButton">Restart Level</button>
+  </div>
+
+  <!-- You Died Message -->
+  <div id="deathMessage">
+    <h2>You Suffocated!</h2>
+    <button id="mainMenuButtonDeath">Main Menu</button>
+    <button id="restartButtonDeath">Restart Level</button>
+  </div>
 
 		
 		 <script type="module" src="/main.js"></script> 
