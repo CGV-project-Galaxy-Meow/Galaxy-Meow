@@ -32,38 +32,48 @@ export class CharacterControls {
 
     update(delta, keysPressed) {
         this.mixer.update(delta);
-
+    
         let previousAction = this.currentAction;
         this.currentAction = 'idle';
-
+    
+        // Rotation variable to store direction
+        let moveDirection = null;
+    
         // moving forward
         if (keysPressed['arrowup'] || keysPressed['w']) {
             this.currentAction = 'floating';
             this.model.position.z -= this.speed;
+            moveDirection = Math.PI;;
         }
-
+    
         // moving backward
         if (keysPressed['arrowdown'] || keysPressed['s']) {
             this.currentAction = 'floating';
             this.model.position.z += this.speed;
+            moveDirection = 0;
         }
-
+    
         // moving left
         if (keysPressed['arrowleft'] || keysPressed['a']) {
             this.currentAction = 'floating';
             this.model.position.x -= this.speed;
+            moveDirection = -Math.PI / 2; 
         }
-
+    
         // moving right
         if (keysPressed['arrowright'] || keysPressed['d']) {
             this.currentAction = 'floating';
             this.model.position.x += this.speed;
+            moveDirection = Math.PI / 2; 
         }
-
+    
+        // Rotate the model to face the movement direction
+        if (moveDirection !== null) {
+            this.model.rotation.y = moveDirection;
+        }
+    
         if (this.currentAction !== previousAction) {
             this.playCurrentAction();
         }
-
-        console.log('Current Action:', this.currentAction);
     }
 }
