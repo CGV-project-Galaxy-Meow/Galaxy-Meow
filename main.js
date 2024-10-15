@@ -13,14 +13,15 @@ let healthInterval; // To control the health timer
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
 let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+let playerName = '';
 
 document.addEventListener('DOMContentLoaded', () => {
+
     const introScreen = document.getElementById('introScreen');
     const dialogueText = document.getElementById('dialogueText');
     const nameInput = document.getElementById('nameInput');
     const nextButton = document.getElementById('nextButton');
     let step = 0;
-    let playerName = '';
 
     // Show the intro screen when the game starts
     introScreen.style.display = 'flex';
@@ -120,18 +121,66 @@ function startGame() {
 
     // Load the astronaut model and apply controls
     let characterControls;
-    loadModel('public/models/Walking astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('/models/Walking astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;  // Assign astronaut model to globally scoped variable
         astronaut.scale.set(1.7, 1.7, 1.7);  
         initialAstronautPosition.copy(astronaut.position);  // Store initial position
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 
-    // Load the static model
-    loadModel('models/TheCatGalaxyMeow4.glb', scene, controls, camera, (object, mixer, animationsMap) => {
-        console.log('Static model loaded:', object);
-        object.scale.set(0.5, 0.5, 0.5);
-        object.position.set(4, 0, 0);
+    
+// Assuming you have Three.js and your scene set up
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const modal = document.getElementById('myModal');
+const closeModalBtn = document.getElementById('closeModal');
+const catConversation = document.getElementById('catConversation')
+const cat_model = 'models/TheCatGalaxyMeow4.glb';
+let catObject; 
+
+// Load the static model
+loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
+    console.log('Static model loaded:', object);
+    object.scale.set(0.5, 0.5, 0.5);
+    object.position.set(4, 0, 0);
+
+    // Store the loaded model globally
+    catObject = object;
+    
+    // Add the model to the scene
+    scene.add(object);
+});
+
+    window.addEventListener('click', (event) => {
+        // Convert mouse coordinates to normalized device coordinates (-1 to +1)
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // Update the raycaster with the camera and mouse position
+        raycaster.setFromCamera(mouse, camera);
+
+        // Check if the object is intersected by the ray
+        if (catObject) { // Ensure the object has been loaded
+            const intersects = raycaster.intersectObject(catObject, true); // Use true for recursive intersection
+
+            if (intersects.length > 0) {
+                console.log('Model clicked:', catObject);
+                // Show the modal popup
+                modal.style.display = 'flex'; // Change to 'flex' to center the content
+                catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`
+            }
+        }
+    });
+
+    // Close modal on button click
+    closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none'; // Hide the modal
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none'; // Hide the modal when clicking outside
+        }
     });
 
     const keysPressed = {};
