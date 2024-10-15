@@ -72,41 +72,20 @@ function decreaseHealth() {
     }, 3000); // Decrease health every 3 seconds
 }
 
-// Function to transition to the game
 function startGame() {
-    // Start health timer
     decreaseHealth();
-
-    // Show Exit Menu on Escape Key
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            if (exitMenu.style.display === 'none') {
-                exitMenu.style.display = 'block'; // Show menu
-            } else {
-                exitMenu.style.display = 'none'; // Hide menu
-            }
-        }
-    });
-
-    // Set up scene, camera, and renderer
+    
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0, 10);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(0, 0, 50);
 
     const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('gameCanvas').appendChild(renderer.domElement);
+
     const controls = new OrbitControls(camera, renderer.domElement);
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    if (WebGL.isWebGL2Available()) {
-        // Do animations
-    } else {
-        const warning_message = WebGL.getWebGl2ErrorMessage();
-    }
-
-    // Lighting
+    // Add lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
@@ -114,22 +93,129 @@ function startGame() {
     directionalLight.position.set(5, 10, 7.5).normalize();
     scene.add(directionalLight);
 
-    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-    pointLight.position.set(0, 5, 0);
-    scene.add(pointLight);
+    // Background Setup (from background.js)
+    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64); // Large enough to cover the background
+    const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
+    const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
+    scene.add(space);
+
+    const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
+    const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
+    const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    earth.position.set(0, 0, -20);
+    scene.add(earth);
+
+    const celestialBodies = [];
+    function createCelestialBody(textureUrl, size, position) {
+        const texture = new THREE.TextureLoader().load(textureUrl);
+        const geometry = new THREE.SphereGeometry(size, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const body = new THREE.Mesh(geometry, material);
+        body.position.set(position.x, position.y, position.z);
+        scene.add(body);
+        celestialBodies.push(body);
+    }
+    createCelestialBody('textures/jupiter.jpg', 0.5, { x: -50, y: 2, z: -15 });
+    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -2, z: -40 });
+    createCelestialBody('textures/planet.jpg', 1.5, { x: 0, y: 30, z: -200 });
+    createCelestialBody('textures/saturn.jpg', 0.2, { x: -5, y: -3, z: -8 });
+
+    const shootingStars = [];
+
+function createShootingStar() {
+    const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+    const starMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0xffffff, 
+        transparent: true, 
+        opacity: Math.random() 
+    });
+    const shootingStar = new THREE.Mesh(starGeometry, starMaterial);
+
+   
+    const startX = Math.random() * 20 - 10;  
+    const startY = Math.random() * 10 - 5;  
+    const startZ = Math.random() * 5 - 50
+    shootingStar.position.set(startX, startY, startZ);
+
+    scene.add(shootingStar);
+    
+    
+    const velocityX = Math.random() * 0.1 - 0.05;  // X velocity range
+    const velocityY = Math.random() * 0.1 - 0.05;  // Y velocity range
+    const velocityZ = Math.random() * 0.2 - 0.1;   // Z velocity towards the camera
+
+    // Create an array for the tail positions
+    const tailPositions = [];
+    const tailLength = 5;
+    const tailColor = 0x00ff00;
+
+    for (let i = 0; i < tailLength; i++) {
+        const tailStar = new THREE.Mesh(
+            new THREE.SphereGeometry(0.1, 8, 8), // Smaller tail stars
+            new THREE.MeshBasicMaterial({ color: tailColor, transparent: true, opacity: 0.5 })
+        );
+        tailStar.position.copy(shootingStar.position); // Initialize tail star position
+        scene.add(tailStar);
+        tailPositions.push(tailStar);
+    }
+
+    shootingStars.push({
+        mesh: shootingStar,
+        velocity: new THREE.Vector3(velocityX, velocityY, -velocityZ),
+        fadeDirection: Math.random() < 0.5 ? 1 : -1,
+        tail: tailPositions 
+    });
+}
+
+
+function updateShootingStars() {
+    shootingStars.forEach((star, index) => {
+        star.mesh.position.add(star.velocity);
+        
+        // Update opacity for strobing effect
+        star.mesh.material.opacity += 0.05 * star.fadeDirection;
+
+        // Reverse fade direction when reaching limits
+        if (star.mesh.material.opacity >= 1 || star.mesh.material.opacity <= 0) {
+            star.fadeDirection *= -1; // Reverse the fade direction
+        }
+
+       
+        star.tail.forEach((tailStar, tailIndex) => {
+            // Shift tail stars back
+            if (tailIndex === 0) {
+                tailStar.position.copy(star.mesh.position); 
+            } else {
+                tailStar.position.copy(star.tail[tailIndex - 1].position);
+            }
+        });
+
+       
+        if (star.mesh.position.z > 5) {
+          
+            star.tail.forEach(tailStar => scene.remove(tailStar));
+            scene.remove(star.mesh);
+            shootingStars.splice(index, 1);
+        }
+    });
+}
+
+
+setInterval(createShootingStar, 300);
+    
 
     // Load the astronaut model and apply controls
     let characterControls;
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
-        astronaut = object;  // Assign astronaut model to globally scoped variable
-        astronaut.scale.set(1.7, 1.7, 1.7);  
-        initialAstronautPosition.copy(astronaut.position);  // Store initial position
+        astronaut = object;
+        astronaut.scale.set(1.7, 1.7, 1.7);
+        initialAstronautPosition.copy(astronaut.position);
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 
-    // Load the static model
-    loadModel('models/TheCatGalaxyMeow4.glb', scene, controls, camera, (object, mixer, animationsMap) => {
-        console.log('Static model loaded:', object);
+    loadModel('models/TheCatGalaxyMeow4.glb', scene, controls, camera, (object) => {
         object.scale.set(0.5, 0.5, 0.5);
         object.position.set(4, 0, 0);
     });
@@ -150,6 +236,17 @@ function startGame() {
             characterControls.update(delta, keysPressed);
         }
 
+        // Background animations
+        earth.rotation.y += 0.001;
+        celestialBodies.forEach(body => {
+            body.rotation.y += 0.001;
+        });
+
+        if (Math.random() < 0.01) {
+            createShootingStar();
+        }
+        updateShootingStars();
+
         requestAnimationFrame(animate);
         controls.update();
         renderer.render(scene, camera);
@@ -157,7 +254,6 @@ function startGame() {
 
     animate();
 
-    // Handle window resize
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -168,6 +264,14 @@ function startGame() {
 // Show "You Died" message
 function showDeathMessage() {
     deathMessage.style.display = 'block';
+}
+
+function updateHealthUI() {
+    if (healthElement) {
+        healthElement.innerHTML = `Oxygen: ${health}/100`;
+    } else {
+        console.error('Health element not found!');
+    }
 }
 
 // Restart Level
@@ -186,9 +290,6 @@ function restartLevel() {
         astronaut.rotation.set(0, 0, 0); 
     }
 
- 
-
-    // Restart health decrease
     decreaseHealth();
 }
 
