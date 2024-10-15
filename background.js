@@ -5,11 +5,17 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
 
+const backgroundContainer = document.getElementById('background');
+if (backgroundContainer) {
+    backgroundContainer.appendChild(renderer.domElement);
+    console.log('Renderer successfully attached to the #background container.');
+} else {
+    console.error('Background container not found!');
+}
 camera.position.z = 5;
 
-const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
+const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(100, 64, 64);
 const spaceMaterial = new THREE.MeshBasicMaterial({
   map: spaceTexture,
@@ -36,9 +42,9 @@ function createCelestialBody(textureUrl, size, position) {
   scene.add(body);
   celestialBodies.push(body);
 }
-createCelestialBody('public/textures/jupiter.jpg', 0.5, {x: -3, y: 2, z: -15});
-createCelestialBody('public/textures/planet.jpg', 1.5, {x: 4, y: -2, z: -20});
-createCelestialBody('public/textures/saturn.jpg', 0.2, {x: -5, y: -3, z: -8});
+createCelestialBody('textures/jupiter.jpg', 0.5, {x: -3, y: 2, z: -15});
+createCelestialBody('textures/planet.jpg', 1.5, {x: 4, y: -2, z: -20});
+createCelestialBody('textures/saturn.jpg', 0.2, {x: -5, y: -3, z: -8});
 
 const shootingStars = [];
 
