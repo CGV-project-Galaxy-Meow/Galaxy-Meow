@@ -64,6 +64,6 @@ export class CharacterControls {
             this.playCurrentAction();
         }
 
-        console.log('Current Action:', this.currentAction);
+        //console.log('Current Action:', this.currentAction);
     }
 }
