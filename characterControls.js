@@ -37,25 +37,25 @@ export class CharacterControls {
         this.currentAction = 'idle';
 
         // moving forward
-        if (keysPressed['arrowup'] || keysPressed['w']) {
+        if (keysPressed['arrowdown'] || keysPressed['s']) {
             this.currentAction = 'floating';
             this.model.position.z -= this.speed;
         }
 
         // moving backward
-        if (keysPressed['arrowdown'] || keysPressed['s']) {
+        if (keysPressed['arrowup'] || keysPressed['w']) {
             this.currentAction = 'floating';
             this.model.position.z += this.speed;
         }
 
         // moving left
-        if (keysPressed['arrowleft'] || keysPressed['a']) {
+        if (keysPressed['arrowright'] || keysPressed['d']) {
             this.currentAction = 'floating';
             this.model.position.x -= this.speed;
         }
 
         // moving right
-        if (keysPressed['arrowright'] || keysPressed['d']) {
+        if (keysPressed['arrowleft'] || keysPressed['a']) {
             this.currentAction = 'floating';
             this.model.position.x += this.speed;
         }

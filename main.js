@@ -92,17 +92,13 @@ function startGame() {
     // Set up scene, camera, and renderer
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0, 10);
-    camera.lookAt(0, 0, 0);
+
 
     const renderer = new THREE.WebGLRenderer();
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    controls.dampingFactor = 0.25; // controls the damping when moving
-    controls.screenSpacePanning = false; // Prevents panning on screen
-    controls.maxPolarAngle = Math.PI / 2; // Limits vertical rotation (up and down)
-    controls.minDistance = 5; // Minimum distance from the target (astronaut)
-    controls.maxDistance = 20; // Maximum distance from the target (astronaut)
+
+    camera.position.set(0, 0, 10);
+    camera.lookAt(0, 0, 0);
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
@@ -137,7 +133,7 @@ function startGame() {
     // Load the static model
     loadModel('models/TheCatGalaxyMeow4.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
-        object.scale.set(0.5, 0.5, 0.5);
+        object.scale.set(0.5, 0.5, -0.5);
         object.position.set(4, 0, 0);
     });
 
@@ -151,6 +147,8 @@ function startGame() {
     }, false);
 
     const clock = new THREE.Clock();
+
+
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -160,22 +158,15 @@ function startGame() {
         // requestAnimationFrame(animate);
         // controls.update();
         
-        // Create two vectors
+
         if(astronaut){
-        // cameraAngle= THREE.MathUtils.lerp(cameraAngle,90,0.01);
-        // camera.position.setFrom(15,1,cameraAngle);
-        const cameraOffset = new THREE.Vector3(0, 0, 10);
+
+        const cameraOffset = new THREE.Vector3(0, 10, -5);
         const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
         camera.position.lerp(desiredCameraPosition, 0.1);
         camera.lookAt(astronaut.position);
-        // let vector1 = astronaut.position;
-        // const vector2 = new THREE.Vector3(0, 0, 1.5);
-
-        // // Add vector2 to vector1
-        // let newPos=vector1.add(vector2);
-        // camera.lookAt(astronaut.position);
-
-        // camera.position.set(newPos);
+        // const angleAdjustment = -0.2; // Adjust this value to change the downward angle
+        // camera.rotation.x = Math.max(camera.rotation.x + angleAdjustment, Math.PI / 6); // Limit rotation to prevent flipping
         }
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
