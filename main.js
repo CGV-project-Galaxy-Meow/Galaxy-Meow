@@ -13,7 +13,7 @@ let cameraAngle;
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
-let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+let initialAstronautPosition = new THREE.Vector3(15, 0, -38);  // Default initial position
 let playerName = '';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -241,10 +241,11 @@ setInterval(createShootingStar, 300);
 
     // Load the astronaut model and apply controls
     let characterControls;
-    loadModel('/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
-        initialAstronautPosition.copy(astronaut.position);
+        //initialAstronautPosition.copy(astronaut.position);
+        astronaut.position.set(15,0,-38)
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 
@@ -366,7 +367,7 @@ helpButton.addEventListener('click', () => {
 
         if(astronaut){
 
-        const cameraOffset = new THREE.Vector3(0, 10, -5);
+        const cameraOffset = new THREE.Vector3(0, 3, -5);
         const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
         camera.position.lerp(desiredCameraPosition, 0.1);
         camera.lookAt(astronaut.position);
@@ -376,7 +377,8 @@ helpButton.addEventListener('click', () => {
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
         controls.update();
-        
+        // console.log('astro pos:');
+        // console.log(astronaut.position);
     }
 
     animate();
