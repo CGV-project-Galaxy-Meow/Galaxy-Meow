@@ -4,76 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galaxy Meow</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    /* Full-screen background layout */
-    .start-menu {
-      width: 100vw;
-      height: 100vh;
-      background-image: url('/Graphics/MainMenuGalaxyMeow.png'); 
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-
-    /* Bottom bar for buttons */
-    .menu-bar {
-      position: absolute; 
-      bottom: 0; 
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.5); 
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    /* Buttons styling */
-    .menu-button {
-      background-color: rgb(233, 107, 255);
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .menu-button:hover {
-      background-color: lightgray;
-    }
-
-    /* Popup modal styling */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 300px;
-      padding: 20px;
-      background-color: white;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-header {
-      font-size: 20px;
-      margin-bottom: 15px;
-    }
-
-    .modal-close {
-      cursor: pointer;
-      color: red;
-      font-weight: bold;
-      float: right;
-      font-size: 20px;
-    }
-  </style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script>
+  <link rel="stylesheet" href="index.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script>
 
 </head>
 <body>
@@ -83,6 +16,7 @@
     <div class="menu-bar">
       <button class="menu-button" id="startGame">Start</button>
       <button class="menu-button" id="openSettings">Settings</button>
+      <button class="menu-button" id="openControls">Controls</button> <!-- New Controls Button -->
       <button class="menu-button" id="openCredits">Credits</button>
     </div>
   </div>
@@ -93,22 +27,34 @@
     <p>Settings not implemented yet.</p>
   </div>
 
+  <!-- Controls Modal -->
+  <div class="modal" id="controlsModal">
+    <div class="modal-header">Controls <span class="modal-close" id="closeControls">×</span></div>
+    <p>You can use the following controls:</p>
+    <ul>
+      <li>W - Move forward</li>
+      <li>S - Move backward</li>
+      <li>A - Move left</li>
+      <li>D - Move right</li>
+      <li>Oxygen Meter - You get 100 units of oxygen</li>
+      <li>If you need help - Click The Cat</li>
+      <li>Esc - Restart/Leave game</li>
+      <li>Mouse - Look around and click</li>
+    </ul>
+  </div>
+
   <!-- Credits Modal -->
   <div class="modal" id="creditsModal">
     <div class="modal-header">Credits <span class="modal-close" id="closeCredits">×</span></div>
     <p>Game developed by Galaxy Meow.</p>
-	<p>Our Team:
-	<br>Claire
-	<br>Wendy
-	<br>Mayuri
-	<br>Chloe
-	<br>Dineo
-	<br>Busisiwe
-
-
-
-	</p>
-	<p></p>
+    <p>Our Team:
+      <br>Claire
+      <br>Wendy
+      <br>Mayuri
+      <br>Chloe
+      <br>Dineo
+      <br>Busisiwe
+    </p>
   </div>
 
   <script>
@@ -120,6 +66,7 @@
     // Open and close Settings Modal
     const settingsModal = document.getElementById('settingsModal');
     const creditsModal = document.getElementById('creditsModal');
+    const controlsModal = document.getElementById('controlsModal'); // Controls Modal
 
     document.getElementById('openSettings').addEventListener('click', function() {
       settingsModal.style.display = 'block';
@@ -127,6 +74,15 @@
 
     document.getElementById('closeSettings').addEventListener('click', function() {
       settingsModal.style.display = 'none';
+    });
+
+    // Open and close Controls Modal
+    document.getElementById('openControls').addEventListener('click', function() {
+      controlsModal.style.display = 'block';
+    });
+
+    document.getElementById('closeControls').addEventListener('click', function() {
+      controlsModal.style.display = 'none';
     });
 
     // Open and close Credits Modal

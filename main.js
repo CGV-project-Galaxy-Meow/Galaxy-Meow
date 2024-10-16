@@ -15,13 +15,111 @@ let astronaut;
 let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
 let playerName = '';
 
+// document.addEventListener('DOMContentLoaded', () => {
+//     const introScreen = document.getElementById('introScreen');
+//     const dialogueText = document.getElementById('dialogueText');
+//     const nameInput = document.getElementById('nameInput');
+//     const nextButton = document.getElementById('nextButton');
+//     let step = 0;
+//     //let playerName = '';
+
+//     // Show the intro screen when the game starts
+//     introScreen.style.display = 'flex';
+
+//     // Handle dialogue progression
+//     nextButton.addEventListener('click', () => {
+//         if (step === 0) {
+//             // Ask for the player's name
+//             nameInput.style.display = 'block';
+//             nameInput.focus();
+//             nextButton.textContent = 'Submit';
+//             step++;
+//         } else if (step === 1) {
+//             // Store the player's name and proceed with dialogue
+//             playerName = nameInput.value.trim();
+//             if (playerName === '') {
+//                 alert('Please enter your name.');
+//             } else {
+//                 nameInput.style.display = 'none';
+//                 dialogueText.textContent = `I see, ${playerName}, you are a long way from home.`;
+//                 nextButton.textContent = 'Next';
+//                 step++;
+//             }
+//         } else if (step === 2) {
+//             dialogueText.textContent = 'Let us help you get back.';
+//             nextButton.textContent = 'Start Game';
+//             step++;
+//         } else if (step === 3) {
+//             // Hide intro and start the game
+//             introScreen.style.display = 'none';
+//             startGame(); // Function to start the game
+//         }
+//     });
+// });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     const introScreen = document.getElementById('introScreen');
+//     const explanationScreen = document.getElementById('explanationScreen'); // Explanation screen
+//     const dialogueText = document.getElementById('dialogueText');
+//     const nameInput = document.getElementById('nameInput');
+//     const nextButton = document.getElementById('nextButton');
+//     const startGameButton = document.getElementById('startGameButton'); // Start game button
+//     let step = 0;
+//     let playerName = '';
+
+//     // Show the intro screen when the game starts
+//     introScreen.style.display = 'flex';
+
+//     // Handle dialogue progression
+//     nextButton.addEventListener('click', () => {
+//         if (step === 0) {
+//             // Ask for the player's name
+//             nameInput.style.display = 'block';
+//             nameInput.focus();
+//             nextButton.textContent = 'Submit';
+//             step++;
+//         } else if (step === 1) {
+//             // Store the player's name and proceed with dialogue
+//             playerName = nameInput.value.trim();
+//             if (playerName === '') {
+//                 alert('Please enter your name.');
+//             } else {
+//                 nameInput.style.display = 'none';
+//                 dialogueText.textContent = `I see, ${playerName}, you are a long way from home.`;
+//                 nextButton.textContent = 'Next';
+//                 step++;
+//             }
+//         } else if (step === 2) {
+//             dialogueText.textContent = 'Let us help you get back.';
+//             nextButton.textContent = 'Continue';
+//             step++;
+//         } else if (step === 3) {
+//             // Hide intro screen and show the explanation screen
+//             introScreen.style.display = 'none';
+//             explanationScreen.style.display = 'flex'; // Show the explanation screen
+//             startGameButton.addEventListener('click', () => {
+//                 explanationScreen.style.display = 'none'; // Hide the explanation screen
+//                 startGame(); // Start the game
+//             });
+//             step++;
+//         }
+//         else if (step === 4) {
+//         // Hide intro and start the game
+//         explanationScreen.style.display = 'none';
+//         startGame(); // Function to start the game
+//         }
+//     });
+
+   
+// });
+
 document.addEventListener('DOMContentLoaded', () => {
     const introScreen = document.getElementById('introScreen');
     const dialogueText = document.getElementById('dialogueText');
     const nameInput = document.getElementById('nameInput');
     const nextButton = document.getElementById('nextButton');
     let step = 0;
-    //let playerName = '';
+    let playerName = '';
 
     // Show the intro screen when the game starts
     introScreen.style.display = 'flex';
@@ -46,7 +144,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 step++;
             }
         } else if (step === 2) {
-            dialogueText.textContent = 'Let us help you get back.';
+            // Explanation of the game mechanics
+dialogueText.innerHTML = `
+        <p>You have been trapped on the moon and need to build a teleporter!</p>
+        <p>The path ahead is perilous.</p>
+        <p>You need to collect all the teleporter components around the map.</p>
+            <div style="display: flex; justify-content: flex-start; align-items: center; height: 100%; padding-left: 160px; margin-top: 2%; ">
+                <ul style="text-align: left; list-style-position: inside; margin: 0; padding-left: 20px;">
+                    <li>W - Move forward</li>
+                    <li>S - Move backward</li>
+                    <li>A - Move left</li>
+                    <li>D - Move right</li>
+                    <li>Oxygen Meter - You get 100 units of oxygen</li>
+                    <li>If you need help - Click The Cat</li>
+                    <li>Esc - Restart/Leave game</li>
+                    <li>Mouse - Look around and click</li>
+                </ul>
+            </div>
+        <p>Good luck, ${playerName}!</p>
+`;
+
             nextButton.textContent = 'Start Game';
             step++;
         } else if (step === 3) {
@@ -76,6 +193,18 @@ function decreaseHealth() {
 function startGame() {
     decreaseHealth();
     
+
+     // Show Exit Menu on Escape Key
+     document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (exitMenu.style.display === 'none') {
+                exitMenu.style.display = 'block'; // Show menu
+            } else {
+                exitMenu.style.display = 'none'; // Hide menu
+            }
+        }
+    });
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 50);
@@ -225,7 +354,7 @@ setInterval(createShootingStar, 300);
 
     // Load the astronaut model and apply controls
     let characterControls;
-    loadModel('/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
@@ -394,8 +523,8 @@ document.getElementById('restartButtonDeath').addEventListener('click', restartL
 
 // Event Listener for Main Menu Button 
 document.getElementById('mainMenuButton').addEventListener('click', () => {
-    window.location.href = 'index.html'; // Replace with the actual main menu URL
+    window.location.href = 'index.html'; 
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
-    window.location.href = 'index.html'; // Replace with the actual main menu URL
+    window.location.href = 'index.html'; 
 });
