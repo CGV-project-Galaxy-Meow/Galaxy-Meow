@@ -85,6 +85,22 @@ function startGame() {
     document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
+//create background audio
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Create a global audio source
+const sound = new THREE.Audio(listener);
+
+// Load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('./public/sound/welcome-music.mp3', function (buffer) {
+  sound.setBuffer(buffer);
+  sound.setLoop(true);
+  sound.setVolume(0.5);
+  sound.play();
+});
+
 
     // Add lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
