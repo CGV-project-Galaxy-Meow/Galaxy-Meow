@@ -94,7 +94,7 @@ const sound = new THREE.Audio(listener);
 
 // Load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('./public/sound/welcome-music.mp3', function (buffer) {
+audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.5);
@@ -225,7 +225,7 @@ setInterval(createShootingStar, 300);
 
     // Load the astronaut model and apply controls
     let characterControls;
-    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
