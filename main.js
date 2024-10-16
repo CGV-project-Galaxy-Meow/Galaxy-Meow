@@ -13,6 +13,7 @@ let healthInterval; // To control the health timer
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
 let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+let playerName = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     const introScreen = document.getElementById('introScreen');
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('nameInput');
     const nextButton = document.getElementById('nextButton');
     let step = 0;
-    let playerName = '';
+    //let playerName = '';
 
     // Show the intro screen when the game starts
     introScreen.style.display = 'flex';
@@ -84,6 +85,22 @@ function startGame() {
     document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
+//create background audio
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Create a global audio source
+const sound = new THREE.Audio(listener);
+
+// Load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+  sound.setBuffer(buffer);
+  sound.setLoop(true);
+  sound.setVolume(0.5);
+  sound.play();
+});
+
 
     // Add lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -208,17 +225,95 @@ setInterval(createShootingStar, 300);
 
     // Load the astronaut model and apply controls
     let characterControls;
-    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 
-    loadModel('models/TheCatGalaxyMeow4.glb', scene, controls, camera, (object) => {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    const modal = document.getElementById('myModal');
+    const responses = document.getElementById('responses');
+    const closeModalBtn = document.getElementById('closeModal');
+    const helpButton = document.getElementById('helpButton');
+    const dontHelpButton = document.getElementById('dontHelpButton');
+    const catConversation = document.getElementById('catConversation')
+    const cat_model = 'models/TheCatGalaxyMeow4.glb';
+    let catObject; 
+    
+    // Load the static model
+    loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
+        console.log('Static model loaded:', object);
         object.scale.set(0.5, 0.5, 0.5);
         object.position.set(4, 0, 0);
+    
+        catObject = object;
+        scene.add(object);
     });
+    
+        window.addEventListener('click', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    
+            raycaster.setFromCamera(mouse, camera);
+    
+            // Check if the object is intersected by the ray
+            if (catObject) { 
+                const intersects = raycaster.intersectObject(catObject, true); 
+    
+                if (intersects.length > 0) {
+                    console.log('Model clicked:', catObject);
+
+                    modal.style.display = 'flex';
+                    responses.style.display = 'none'; 
+                    catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
+                
+                    catConversation.style.animation = 'none'; 
+                    void catConversation.offsetWidth; 
+                    catConversation.style.animation = 'typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite';
+                
+                    catConversation.addEventListener('animationend', function onAnimationEnd() {
+                        responses.style.display = 'flex'; 
+                        catConversation.removeEventListener('animationend', onAnimationEnd); 
+                    });
+                }
+            }
+        });
+
+// Event listener for 'Don't Help' button
+dontHelpButton.addEventListener('click', () => {
+    modal.style.display = 'none'; 
+    responses.style.display = 'none'; 
+    catConversation.textContent = ''; 
+});
+
+// Event listener for 'Help' button
+helpButton.addEventListener('click', () => {
+    catConversation.style.animation = 'none';
+    catConversation.textContent = `Very well. You'll find the (part) here...`;
+
+    health -= 5 //remove some health;
+
+    void catConversation.offsetWidth; 
+    catConversation.style.animation = 'typing 3.5s steps(40, end)';
+
+    // Keep the buttons hidden
+    responses.style.display = 'none'; 
+});
+
+
+        // Close modal on button click
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = 'none'; // Hide the modal
+        });
+    
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none'; // Hide the modal when clicking outside
+            }
+        });
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
