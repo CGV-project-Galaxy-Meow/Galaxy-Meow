@@ -5,8 +5,14 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
 
+const backgroundContainer = document.getElementById('background');
+if (backgroundContainer) {
+    backgroundContainer.appendChild(renderer.domElement);
+    console.log('Renderer successfully attached to the #background container.');
+} else {
+    console.error('Background container not found!');
+}
 camera.position.z = 5;
 
 const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
