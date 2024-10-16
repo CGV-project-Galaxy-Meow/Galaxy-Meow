@@ -9,6 +9,7 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
+let cameraAngle;
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
@@ -96,6 +97,12 @@ function startGame() {
 
     const renderer = new THREE.WebGLRenderer();
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+    controls.dampingFactor = 0.25; // controls the damping when moving
+    controls.screenSpacePanning = false; // Prevents panning on screen
+    controls.maxPolarAngle = Math.PI / 2; // Limits vertical rotation (up and down)
+    controls.minDistance = 5; // Minimum distance from the target (astronaut)
+    controls.maxDistance = 20; // Maximum distance from the target (astronaut)
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
@@ -150,9 +157,30 @@ function startGame() {
             characterControls.update(delta, keysPressed);
         }
 
+        // requestAnimationFrame(animate);
+        // controls.update();
+        
+        // Create two vectors
+        if(astronaut){
+        // cameraAngle= THREE.MathUtils.lerp(cameraAngle,90,0.01);
+        // camera.position.setFrom(15,1,cameraAngle);
+        const cameraOffset = new THREE.Vector3(0, 0, 10);
+        const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
+        camera.position.lerp(desiredCameraPosition, 0.1);
+        camera.lookAt(astronaut.position);
+        // let vector1 = astronaut.position;
+        // const vector2 = new THREE.Vector3(0, 0, 1.5);
+
+        // // Add vector2 to vector1
+        // let newPos=vector1.add(vector2);
+        // camera.lookAt(astronaut.position);
+
+        // camera.position.set(newPos);
+        }
+        renderer.render(scene, camera);
         requestAnimationFrame(animate);
         controls.update();
-        renderer.render(scene, camera);
+        
     }
 
     animate();
