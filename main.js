@@ -219,7 +219,10 @@ setInterval(createShootingStar, 300);
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const modal = document.getElementById('myModal');
+    const responses = document.getElementById('responses');
     const closeModalBtn = document.getElementById('closeModal');
+    const helpButton = document.getElementById('helpButton');
+    const dontHelpButton = document.getElementById('dontHelpButton');
     const catConversation = document.getElementById('catConversation')
     const cat_model = 'models/TheCatGalaxyMeow4.glb';
     let catObject; 
@@ -230,34 +233,61 @@ setInterval(createShootingStar, 300);
         object.scale.set(0.5, 0.5, 0.5);
         object.position.set(4, 0, 0);
     
-        // Store the loaded model globally
         catObject = object;
-        
-        // Add the model to the scene
         scene.add(object);
     });
     
         window.addEventListener('click', (event) => {
-            // Convert mouse coordinates to normalized device coordinates (-1 to +1)
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     
-            // Update the raycaster with the camera and mouse position
             raycaster.setFromCamera(mouse, camera);
     
             // Check if the object is intersected by the ray
-            if (catObject) { // Ensure the object has been loaded
-                const intersects = raycaster.intersectObject(catObject, true); // Use true for recursive intersection
+            if (catObject) { 
+                const intersects = raycaster.intersectObject(catObject, true); 
     
                 if (intersects.length > 0) {
                     console.log('Model clicked:', catObject);
-                    // Show the modal popup
-                    modal.style.display = 'flex'; // Change to 'flex' to center the content
-                    catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`
+
+                    modal.style.display = 'flex';
+                    responses.style.display = 'none'; 
+                    catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
+                
+                    catConversation.style.animation = 'none'; 
+                    void catConversation.offsetWidth; 
+                    catConversation.style.animation = 'typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite';
+                
+                    catConversation.addEventListener('animationend', function onAnimationEnd() {
+                        responses.style.display = 'flex'; 
+                        catConversation.removeEventListener('animationend', onAnimationEnd); 
+                    });
                 }
             }
         });
-    
+
+// Event listener for 'Don't Help' button
+dontHelpButton.addEventListener('click', () => {
+    modal.style.display = 'none'; 
+    responses.style.display = 'none'; 
+    catConversation.textContent = ''; 
+});
+
+// Event listener for 'Help' button
+helpButton.addEventListener('click', () => {
+    catConversation.style.animation = 'none';
+    catConversation.textContent = `Very well. You'll find the (part) here...`;
+
+    health -= 5 //remove some health;
+
+    void catConversation.offsetWidth; 
+    catConversation.style.animation = 'typing 3.5s steps(40, end)';
+
+    // Keep the buttons hidden
+    responses.style.display = 'none'; 
+});
+
+
         // Close modal on button click
         closeModalBtn.addEventListener('click', () => {
             modal.style.display = 'none'; // Hide the modal
