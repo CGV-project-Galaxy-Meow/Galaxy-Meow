@@ -225,7 +225,7 @@ setInterval(createShootingStar, 300);
 
     // Load the astronaut model and apply controls
     let characterControls;
-    loadModel('/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
