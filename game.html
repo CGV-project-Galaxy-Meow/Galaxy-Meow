@@ -21,14 +21,17 @@
         }
 
         #modal-content {
+            display: flex;
+            align-items: center; /* Center items vertically */
+            justify-content: space-between; /* Space items evenly */
             background-color: rgba(0, 0, 0, 0.5);
             margin-bottom: 20px;
             padding: 5px;
             border-radius: 8px;
             border-top: 2px solid rgb(74, 22, 123);
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
-            max-width: 70%;
+            max-width: 80%;
             z-index: 5;
         }
 
@@ -36,23 +39,27 @@
             cursor: pointer;
             color: red;
             font-size: 20px;
-            margin-left: auto;
+            margin: 10px;
         }
 
-        #catConversation{
-            overflow: hidden;
-            white-space: nowrap;
-            animation: typing 3.5s steps(60, end), blink-caret 0.75s step-end infinite;
-        }
+        #catConversation {
+    overflow: hidden;
+    text-align: center;
+    white-space: nowrap; /* Prevent text wrapping */
+    max-width: 60%; /* Limit the maximum width */
+    animation: typing 3.5s steps(60, end) forwards; /* Keep 'forwards' to retain final state */
+}
 
-        @keyframes typing {
-            from {
-                width: 0;
-            }
-            to {
-                width: 100%;
-            }
-        }
+/* Keyframes for typing animation */
+@keyframes typing {
+    from {
+        width: 0; /* Start width */
+    }
+    to {
+        width: 100%; /* End width */
+    }
+}
+
 
         #catImage {
           max-width: 10%;
@@ -114,20 +121,20 @@
 
 
 
-        <!--Popup when clicking on cat-->
-        <div id="myModal">
-            <div id="modal-content" style="display: flex;">
-                <img id="catImage" src="/Graphics/SpaceCat.png" alt="cat_sprite">
-                <p id="catConversation" style="color: aliceblue; font-size: large;"></p>
-      
-                <div id="responses" style="display: none; flex-direction: column; margin-left: 30px;">
-                  <button id="helpButton">Please help me!</button>
-                  <button id="dontHelpButton">I do not need help.</button>
-      
-                </div>
-                <span id="closeModal">&times;</span>
+    <!--Popup when clicking on cat-->
+    <div id="myModal">
+        <div id="modal-content">
+            <img id="catImage" src="/Graphics/SpaceCat.png" alt="cat_sprite">
+            <p id="catConversation" style="color: aliceblue; font-size: large;"></p>
+
+            <div id="responses" style="display: none; flex-direction: column; margin-left: 30px;">
+                <button id="helpButton">Please help me!</button>
+                <button id="dontHelpButton">I do not need help.</button>
             </div>
+            <span id="closeModal">&times;</span>
         </div>
+    </div>
+
 
       <!-- Settings Modal -->
   <!-- <div class="modal" id="settingsModal">

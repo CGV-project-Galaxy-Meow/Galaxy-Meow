@@ -256,9 +256,14 @@ setInterval(createShootingStar, 300);
 
 // Event listener for 'Don't Help' button
 dontHelpButton.addEventListener('click', () => {
-    modal.style.display = 'none'; 
+    catConversation.style.animation = 'none';
+    catConversation.textContent = `As you wish.`;
+
+    void catConversation.offsetWidth; 
+    catConversation.style.animation = 'typing 3.5s steps(40, end)';
+
+    // Keep the buttons hidden
     responses.style.display = 'none'; 
-    catConversation.textContent = ''; 
 });
 
 // Event listener for 'Help' button
