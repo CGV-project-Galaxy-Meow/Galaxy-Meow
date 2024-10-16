@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Galaxy Meow</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="game.css">
     <style>
         body { margin: 0; overflow: hidden; }
         #background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; }
@@ -188,6 +189,12 @@
             </div>
         </div>
 
+      <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
+    <p>Settings not implemented yet.</p>
+  </div>
+
         <!--<script>
             // Get the text element and the response buttons
             const catConversation = document.getElementById('catConversation');
@@ -199,6 +206,7 @@
                 responses.style.display = 'flex';
             });
         </script>-->
+
 
     <script type="module" src="/main.js"></script>
     
