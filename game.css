@@ -115,3 +115,22 @@ body { margin: 0; overflow: hidden; }
   font-size: 13px;
   border-radius: 5px;
 }
+
+
+
+#catConversation{
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 3.5s steps(60, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+
