@@ -42,9 +42,9 @@ function createCelestialBody(textureUrl, size, position) {
   scene.add(body);
   celestialBodies.push(body);
 }
-createCelestialBody('textures/jupiter.jpg', 0.5, {x: -3, y: 2, z: -15});
-createCelestialBody('textures/planet.jpg', 1.5, {x: 4, y: -2, z: -20});
-createCelestialBody('textures/saturn.jpg', 0.2, {x: -5, y: -3, z: -8});
+createCelestialBody('public/textures/jupiter.jpg', 0.5, {x: -3, y: 2, z: -15});
+createCelestialBody('public/textures/planet.jpg', 1.5, {x: 4, y: -2, z: -20});
+createCelestialBody('public/textures/saturn.jpg', 0.2, {x: -5, y: -3, z: -8});
 
 const shootingStars = [];
 
