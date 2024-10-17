@@ -5,6 +5,7 @@ import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
 import './intro.js';
 import { playerName } from './intro.js';
+import { createSun } from './background.js';
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
@@ -74,42 +75,48 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 });
 
 
-    // Add lighting
+
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 10, 7.5).normalize();
+    const directionalLight = new THREE.DirectionalLight(0xffcc99, 50);
+    directionalLight.position.set(0, 50, -50).normalize();
+    //directionalLight.castShadow = true;  // Enable shadows if needed
     scene.add(directionalLight);
+    
 
-    // Background Setup (from background.js)
+    createSun(scene);
+
     const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
-    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64); // Large enough to cover the background
+    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64);
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
     scene.add(space);
 
     const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
     const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
-    const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
+    const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     earth.position.set(0, 0, -20);
+    earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
+    // For celestial bodies
     const celestialBodies = [];
     function createCelestialBody(textureUrl, size, position) {
         const texture = new THREE.TextureLoader().load(textureUrl);
         const geometry = new THREE.SphereGeometry(size, 32, 32);
-        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const material = new THREE.MeshStandardMaterial({ map: texture }); 
         const body = new THREE.Mesh(geometry, material);
         body.position.set(position.x, position.y, position.z);
+        body.castShadow = true;  // Enable shadow casting
         scene.add(body);
         celestialBodies.push(body);
     }
-    createCelestialBody('textures/jupiter.jpg', 0.5, { x: -50, y: 2, z: -15 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -2, z: -40 });
+    createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
+    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -15, z: -40 });
     createCelestialBody('textures/planet.jpg', 1.5, { x: 0, y: 30, z: -200 });
-    createCelestialBody('textures/saturn.jpg', 0.2, { x: -5, y: -3, z: -8 });
+    createCelestialBody('textures/neptune.jpg', 7, { x: -100, y: -3, z: -100 });
 
     const shootingStars = [];
 
@@ -321,6 +328,9 @@ helpButton.addEventListener('click', () => {
 
         requestAnimationFrame(animate);
         controls.update();
+        renderer.shadowMap.enabled = true;  // Enable shadow maps
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+
         renderer.render(scene, camera);
     }
 
