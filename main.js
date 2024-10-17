@@ -11,7 +11,6 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
-let cameraAngle;
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
@@ -53,7 +52,6 @@ export function startGame() {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 50);
 
-
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('gameCanvas').appendChild(renderer.domElement);
@@ -77,20 +75,6 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 
 
     // Add lighting
-
-    camera.position.set(0, 0, 10);
-    camera.lookAt(0, 0, 0);
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    if (WebGL.isWebGL2Available()) {
-        // Do animations
-    } else {
-        const warning_message = WebGL.getWebGl2ErrorMessage();
-    }
-
-    // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
@@ -216,8 +200,8 @@ setInterval(createShootingStar, 300);
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
-        //initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(15,0,-38)
+        initialAstronautPosition.copy(astronaut.position);
+        astronaut.position.set(0,0,5);
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 
@@ -235,7 +219,7 @@ setInterval(createShootingStar, 300);
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
-        object.scale.set(0.5, 0.5, -0.5);
+        object.scale.set(0.5, 0.5, 0.5);
         object.position.set(4, 0, 0);
     
         catObject = object;
@@ -319,8 +303,6 @@ helpButton.addEventListener('click', () => {
     }, false);
 
     const clock = new THREE.Clock();
-
-
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -338,24 +320,19 @@ helpButton.addEventListener('click', () => {
         }
         updateShootingStars();
 
-        // requestAnimationFrame(animate);
-        // controls.update();
-        
-
         if(astronaut){
 
-        const cameraOffset = new THREE.Vector3(0, 3, -5);
-        const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
-        camera.position.lerp(desiredCameraPosition, 0.1);
-        camera.lookAt(astronaut.position);
-        // const angleAdjustment = -0.2; // Adjust this value to change the downward angle
-        // camera.rotation.x = Math.max(camera.rotation.x + angleAdjustment, Math.PI / 6); // Limit rotation to prevent flipping
-        }
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-        controls.update();
-        // console.log('astro pos:');
-        // console.log(astronaut.position);
+            const cameraOffset = new THREE.Vector3(0, 0, 7);
+            const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
+            camera.position.lerp(desiredCameraPosition, 0.1);
+            camera.lookAt(astronaut.position);
+            // const angleAdjustment = -0.2; // Adjust this value to change the downward angle
+            // camera.rotation.x = Math.max(camera.rotation.x + angleAdjustment, Math.PI / 6); // Limit rotation to prevent flipping
+            }
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+            controls.update();
+            console.log(astronaut.position);
     }
 
     animate();
@@ -391,10 +368,10 @@ function restartLevel() {
     exitMenu.style.display = 'none';
 
     // Reset astronaut position and controls
-    if (astronaut) {
-        astronaut.position.copy(initialAstronautPosition);
-        astronaut.rotation.set(0, 0, 0); 
-    }
+    // if (astronaut) {
+    //     astronaut.position.copy(initialAstronautPosition);
+    //     astronaut.rotation.set(0, 0, 0); 
+    // }
 
     decreaseHealth();
 }
