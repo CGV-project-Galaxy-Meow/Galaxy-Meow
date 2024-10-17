@@ -201,6 +201,7 @@ setInterval(createShootingStar, 300);
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
+        astronaut.position.set(0,0,5);
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 
@@ -319,9 +320,19 @@ helpButton.addEventListener('click', () => {
         }
         updateShootingStars();
 
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
+        if(astronaut){
+
+            const cameraOffset = new THREE.Vector3(0, 0, 7);
+            const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
+            camera.position.lerp(desiredCameraPosition, 0.1);
+            camera.lookAt(astronaut.position);
+            // const angleAdjustment = -0.2; // Adjust this value to change the downward angle
+            // camera.rotation.x = Math.max(camera.rotation.x + angleAdjustment, Math.PI / 6); // Limit rotation to prevent flipping
+            }
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+            controls.update();
+            console.log(astronaut.position);
     }
 
     animate();
@@ -357,10 +368,10 @@ function restartLevel() {
     exitMenu.style.display = 'none';
 
     // Reset astronaut position and controls
-    if (astronaut) {
-        astronaut.position.copy(initialAstronautPosition);
-        astronaut.rotation.set(0, 0, 0); 
-    }
+    // if (astronaut) {
+    //     astronaut.position.copy(initialAstronautPosition);
+    //     astronaut.rotation.set(0, 0, 0); 
+    // }
 
     decreaseHealth();
 }
