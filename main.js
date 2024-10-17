@@ -64,38 +64,7 @@ export function startGame() {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.maxPolarAngle = Math.PI / 2;  // Limit vertical rotation to prevent looking under the plane
 
-    // Load the Moon Plane Model
-    loadModel('models/moonplane.glb', scene, controls, camera, (moonObject) => {
-        moonObject.scale.set(1000, 1000, 500);  // Scale it large enough to simulate an infinite ground
-        moonObject.position.set(0, -5, 0);  // Place the plane below the astronaut
-        moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
-        scene.add(moonObject);
-    });
-
-    // Create the sky sphere as the background
-    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
-    const spaceGeometry = new THREE.SphereGeometry(1000, 64, 64);  // Large enough to cover everything
-    const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
-    const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
-    scene.add(space);
-
-    // Create the sun and celestial bodies
-    createSun(scene);
-    createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -15, z: -40 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 0, y: 30, z: -200 });
-    createCelestialBody('textures/neptune.jpg', 7, { x: -100, y: -3, z: -100 });
-
-    // Create Earth sphere
-    const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
-    const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
-    const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
-    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    earth.position.set(0, 0, -20);
-    earth.castShadow = true;
-    scene.add(earth);
-
-    // Add background audio
+    // Background audio (from 'main')
     const listener = new THREE.AudioListener();
     camera.add(listener);
 
@@ -108,7 +77,7 @@ export function startGame() {
         sound.play();
     });
 
-    // Add lighting with custom color and intensity
+    // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
@@ -116,19 +85,38 @@ export function startGame() {
     directionalLight.position.set(0, 50, -50).normalize();
     scene.add(directionalLight);
 
-    // Load astronaut model and place it on the moon surface
-    let characterControls;
-    loadModel('/models/Walking astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
-        astronaut = object;
-        astronaut.scale.set(8, 8, 8);  // Adjust scale
-        astronaut.position.set(0, 100, 0);  // Place the astronaut on the moon surface
-        astronaut.rotation.x = 3 * Math.PI / 2;  // Rotate to face downward
-        initialAstronautPosition.copy(astronaut.position);
-        characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
-        scene.add(astronaut);
+    // Load the Moon Plane Model (from 'Dineo')
+    loadModel('models/moonplane.glb', scene, controls, camera, (moonObject) => {
+        moonObject.scale.set(1000, 1000, 500);  // Scale it large enough to simulate an infinite ground
+        moonObject.position.set(0, -5, 0);  // Place the plane below the astronaut
+        moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
+        scene.add(moonObject);
     });
 
-    // Add the cat dialogue interaction
+    // Create the sky sphere as the background (from 'Dineo')
+    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+    const spaceGeometry = new THREE.SphereGeometry(1000, 64, 64);  // Large enough to cover everything
+    const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
+    const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
+    scene.add(space);
+
+    // Create the sun and celestial bodies (merged from both branches)
+    createSun(scene);
+    createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
+    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -15, z: -40 });
+    createCelestialBody('textures/planet.jpg', 1.5, { x: 0, y: 30, z: -200 });
+    createCelestialBody('textures/neptune.jpg', 7, { x: -100, y: -3, z: -100 });
+
+    // Create Earth sphere (merged from both branches)
+    const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
+    const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
+    const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    earth.position.set(0, 0, -20);
+    earth.castShadow = true;  // Enable shadow casting
+    scene.add(earth);
+
+    // Add the cat dialogue interaction (from 'Dineo')
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     const modal = document.getElementById('myModal');
@@ -150,7 +138,7 @@ export function startGame() {
         scene.add(object);
     });
 
-    // Detect click on the cat and display dialogue
+    // Detect click on the cat and display dialogue (from 'Dineo')
     window.addEventListener('click', (event) => {
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -166,18 +154,18 @@ export function startGame() {
                 catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
 
                 catConversation.style.animation = 'none';
-                void catConversation.offsetWidth; 
+                void catConversation.offsetWidth;
                 catConversation.style.animation = 'typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite';
 
                 catConversation.addEventListener('animationend', function onAnimationEnd() {
-                    responses.style.display = 'flex'; 
-                    catConversation.removeEventListener('animationend', onAnimationEnd); 
+                    responses.style.display = 'flex';
+                    catConversation.removeEventListener('animationend', onAnimationEnd);
                 });
             }
         }
     });
 
-    // Event listener for 'Don't Help' button
+    // Event listener for 'Don't Help' button (from 'Dineo')
     dontHelpButton.addEventListener('click', () => {
         catConversation.style.animation = 'none';
         catConversation.textContent = `As you wish.`;
@@ -186,7 +174,7 @@ export function startGame() {
         responses.style.display = 'none';  // Hide the buttons
     });
 
-    // Event listener for 'Help' button
+    // Event listener for 'Help' button (from 'Dineo')
     helpButton.addEventListener('click', () => {
         catConversation.style.animation = 'none';
         catConversation.textContent = `Very well. You'll find the (part) here...`;
@@ -196,7 +184,7 @@ export function startGame() {
         responses.style.display = 'none';  // Hide the buttons
     });
 
-    // Close modal on button click
+    // Close modal on button click (from 'Dineo')
     closeModalBtn.addEventListener('click', () => {
         modal.style.display = 'none';  // Hide the modal
     });
@@ -207,7 +195,7 @@ export function startGame() {
         }
     });
 
-    // Create Shooting Stars
+    // Create Shooting Stars (from both)
     function createShootingStar() {
         const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
         const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: Math.random() });
