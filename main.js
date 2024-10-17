@@ -3,6 +3,8 @@ import WebGL from 'three/addons/capabilities/WebGL.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
+import './intro.js';
+import { playerName } from './intro.js';
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
@@ -13,52 +15,10 @@ let cameraAngle;
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
-let initialAstronautPosition = new THREE.Vector3(15, 0, -38);  // Default initial position
-let playerName = '';
+let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
 
-document.addEventListener('DOMContentLoaded', () => {
-    const introScreen = document.getElementById('introScreen');
-    const dialogueText = document.getElementById('dialogueText');
-    const nameInput = document.getElementById('nameInput');
-    const nextButton = document.getElementById('nextButton');
-    let step = 0;
-    //let playerName = '';
 
-    // Show the intro screen when the game starts
-    introScreen.style.display = 'flex';
-
-    // Handle dialogue progression
-    nextButton.addEventListener('click', () => {
-        if (step === 0) {
-            // Ask for the player's name
-            nameInput.style.display = 'block';
-            nameInput.focus();
-            nextButton.textContent = 'Submit';
-            step++;
-        } else if (step === 1) {
-            // Store the player's name and proceed with dialogue
-            playerName = nameInput.value.trim();
-            if (playerName === '') {
-                alert('Please enter your name.');
-            } else {
-                nameInput.style.display = 'none';
-                dialogueText.textContent = `I see, ${playerName}, you are a long way from home.`;
-                nextButton.textContent = 'Next';
-                step++;
-            }
-        } else if (step === 2) {
-            dialogueText.textContent = 'Let us help you get back.';
-            nextButton.textContent = 'Start Game';
-            step++;
-        } else if (step === 3) {
-            // Hide intro and start the game
-            introScreen.style.display = 'none';
-            startGame(); // Function to start the game
-        }
-    });
-});
-
-// Function to decrease health over time
+//Function to decrease health over time
 function decreaseHealth() {
     if (healthInterval) {
         clearInterval(healthInterval); // Clear any previous interval
@@ -74,9 +34,21 @@ function decreaseHealth() {
     }, 3000); // Decrease health every 3 seconds
 }
 
-function startGame() {
+export function startGame() {
     decreaseHealth();
     
+
+     // Show Exit Menu on Escape Key
+     document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (exitMenu.style.display === 'none') {
+                exitMenu.style.display = 'block'; // Show menu
+            } else {
+                exitMenu.style.display = 'none'; // Hide menu
+            }
+        }
+    });
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 50);
@@ -301,9 +273,14 @@ setInterval(createShootingStar, 300);
 
 // Event listener for 'Don't Help' button
 dontHelpButton.addEventListener('click', () => {
-    modal.style.display = 'none'; 
+    catConversation.style.animation = 'none';
+    catConversation.textContent = `As you wish.`;
+
+    void catConversation.offsetWidth; 
+    catConversation.style.animation = 'typing 3.5s steps(40, end)';
+
+    // Keep the buttons hidden
     responses.style.display = 'none'; 
-    catConversation.textContent = ''; 
 });
 
 // Event listener for 'Help' button
@@ -428,8 +405,8 @@ document.getElementById('restartButtonDeath').addEventListener('click', restartL
 
 // Event Listener for Main Menu Button 
 document.getElementById('mainMenuButton').addEventListener('click', () => {
-    window.location.href = 'index.html'; // Replace with the actual main menu URL
+    window.location.href = 'index.html'; 
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
-    window.location.href = 'index.html'; // Replace with the actual main menu URL
+    window.location.href = 'index.html'; 
 });
