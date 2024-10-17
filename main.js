@@ -18,7 +18,7 @@ let healthInterval; // To control the health timer
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
-let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+let initialAstronautPosition = new THREE.Vector3(0, 0, 5);  // Default initial position
 
 
 //Function to decrease health over time
@@ -216,7 +216,7 @@ setInterval(createShootingStar, 300);
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(0,0,5);
+        //astronaut.position.set(0,0,5);
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 
@@ -338,7 +338,7 @@ helpButton.addEventListener('click', () => {
 
         if(astronaut){
 
-            const cameraOffset = new THREE.Vector3(0, 0, 7);
+            const cameraOffset = new THREE.Vector3(0, 6, -7);
             const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
             camera.position.lerp(desiredCameraPosition, 0.1);
             camera.lookAt(astronaut.position);
@@ -351,7 +351,7 @@ helpButton.addEventListener('click', () => {
             renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 
             controls.update();
-            console.log(astronaut.position);
+            //console.log(astronaut.position);
     }
 
     animate();
@@ -386,11 +386,11 @@ function restartLevel() {
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
 
-    // Reset astronaut position and controls
-    // if (astronaut) {
-    //     astronaut.position.copy(initialAstronautPosition);
-    //     astronaut.rotation.set(0, 0, 0); 
-    // }
+    //Reset astronaut position and controls
+    if (astronaut) {
+        astronaut.position.copy(initialAstronautPosition);
+        astronaut.rotation.set(0, 3, 0); 
+    }
 
     decreaseHealth();
 }
