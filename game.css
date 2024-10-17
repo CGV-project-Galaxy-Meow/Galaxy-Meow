@@ -1,0 +1,136 @@
+body { margin: 0; overflow: hidden; }
+#background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; }
+#gameCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; }
+
+/* Health Bar */
+#healthBar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    color: rgb(165, 244, 255);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 5;
+}
+
+/* Exit Menu */
+#exitMenu {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: rgb(233, 107, 255);
+    z-index: 100;
+}
+
+/* Buttons in Exit Menu */
+#exitMenu button {
+    margin: 10px;
+    padding: 10px 20px;
+    background: rgba(233, 107, 255, 0.75);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* "You Died" Message */
+#deathMessage {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: rgb(255, 0, 0);
+    z-index: 101;
+}
+
+#nameInput {
+    border-radius: 5px;
+    border: 2px solid white;
+    background-color: black;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+#nextButton {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Modal popup style */
+#myModal {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /*background-color: rgba(0, 0, 0, 0.5);*/
+    justify-content: center;
+    align-items: end;
+    z-index: 5;
+}
+
+#modal-content {
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    padding: 5px;
+    border-radius: 8px;
+    border-top: 2px solid rgb(74, 22, 123);
+    text-align: center;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 70%;
+    z-index: 5;
+}
+
+#closeModal {
+    cursor: pointer;
+    color: red;
+    font-size: 20px;
+    margin-left: auto;
+}
+
+#catImage {
+  max-width: 10%;
+  max-height: 10%;
+}
+
+#helpButton, #dontHelpButton{
+  margin: 10px;
+  padding: 5px 5px;
+  font-size: 13px;
+  border-radius: 5px;
+}
+
+
+
+#catConversation{
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 3.5s steps(60, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+

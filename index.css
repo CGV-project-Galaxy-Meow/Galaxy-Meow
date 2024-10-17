@@ -1,0 +1,66 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* Full-screen background layout */
+  .start-menu {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('/Graphics/MainMenuGalaxyMeow.png'); 
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+
+  /* Bottom bar for buttons */
+  .menu-bar {
+    position: absolute; 
+    bottom: 0; 
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  /* Buttons styling */
+  .menu-button {
+    background-color: rgb(233, 107, 255);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .menu-button:hover {
+    background-color: lightgray;
+  }
+
+  /* Popup modal styling */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-header {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .modal-close {
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+    float: right;
+    font-size: 20px;
+  }
