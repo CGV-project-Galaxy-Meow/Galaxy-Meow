@@ -69,7 +69,7 @@ import * as THREE from 'https://lamp.ms.wits.ac.za/~sgalaxy/node_modules/three/b
 // }
 
 export function createSun(scene) {
-  const sunGeometry = new THREE.SphereGeometry(150, 64, 64);
+  const sunGeometry = new THREE.SphereGeometry(200, 64, 64);
 
   const sunTexture = new THREE.TextureLoader().load('public/textures/sun.jpg');
 
@@ -78,7 +78,7 @@ export function createSun(scene) {
   });
 
   const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-  sun.position.set(0, 0, -500);  // Position the sun in the scene
+  sun.position.set(0, 0, -600);  // Position the sun in the scene
   scene.add(sun);
 }
 
