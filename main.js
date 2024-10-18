@@ -210,6 +210,14 @@ setInterval(createShootingStar, 300);
         initialAstronautPosition.copy(astronaut.position);
         astronaut.position.set(50,6,5);
         astronaut.rotation.x= 0;
+
+    // Enable shadows on the astronaut
+    astronaut.traverse((child) => {
+        if (child.isMesh) {
+            child.castShadow = true;   // Enable shadow casting
+            child.receiveShadow = true;  // Enable receiving shadows
+        }
+    });
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 

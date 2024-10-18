@@ -8,7 +8,7 @@ export class CharacterControls {
 
         this.toggleRun = true;
         this.currentAction = currentAction;
-        this.speed = 0.05;
+        this.speed = 1;
 
         this.playCurrentAction();
     }
