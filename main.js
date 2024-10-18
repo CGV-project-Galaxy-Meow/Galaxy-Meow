@@ -130,9 +130,9 @@ function createShootingStar() {
     const shootingStar = new THREE.Mesh(starGeometry, starMaterial);
 
    
-    const startX = Math.random() * 20 - 10;  
-    const startY = Math.random() * 10 - 5;  
-    const startZ = Math.random() * 5 - 50
+    const startX = 50;  
+    const startY = 0;  
+    const startZ = -50
     shootingStar.position.set(startX, startY, startZ);
 
     scene.add(shootingStar);
