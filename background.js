@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 
 export function createSun(scene) {
-  const sunGeometry = new THREE.SphereGeometry(150, 64, 64);
+  const sunGeometry = new THREE.SphereGeometry(200, 64, 64);
 
   const sunTexture = new THREE.TextureLoader().load('textures/sun.jpg');
 
@@ -11,7 +11,7 @@ export function createSun(scene) {
   });
 
   const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-  sun.position.set(0, 0, -500);  // Position the sun in the scene
+  sun.position.set(0, 0, -600);  // Position the sun in the scene
   scene.add(sun);
 }
 

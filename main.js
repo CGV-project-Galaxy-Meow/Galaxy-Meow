@@ -94,10 +94,10 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     scene.add(space);
 
     const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
-    const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
+    const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    earth.position.set(0, 0, -20);
+    earth.position.set(0, 0, -400);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
@@ -113,10 +113,10 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
         scene.add(body);
         celestialBodies.push(body);
     }
-    createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -15, z: -40 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 0, y: 30, z: -200 });
-    createCelestialBody('textures/neptune.jpg', 7, { x: -100, y: -3, z: -100 });
+   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
+   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
+   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
+    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
 
     const shootingStars = [];
 
@@ -130,9 +130,9 @@ function createShootingStar() {
     const shootingStar = new THREE.Mesh(starGeometry, starMaterial);
 
    
-    const startX = Math.random() * 20 - 10;  
-    const startY = Math.random() * 10 - 5;  
-    const startZ = Math.random() * 5 - 50
+    const startX = 50;  
+    const startY = 0;  
+    const startZ = -50
     shootingStar.position.set(startX, startY, startZ);
 
     scene.add(shootingStar);
@@ -208,9 +208,27 @@ setInterval(createShootingStar, 300);
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(0,0,5);
+        astronaut.position.set(50,10,5);
+        astronaut.rotation.x= 0;
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
+
+
+    // Load the Moon Plane Model
+    loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
+        moonObject.scale.set(1000, 1000, 500);  // Scale it large enough to simulate an infinite ground
+        moonObject.position.set(100, -10, 0);  // Place the plane below the astronaut
+       // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
+        scene.add(moonObject);
+    });
+
+    /* Create the sky sphere as the background
+    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+    const spaceGeometry = new THREE.SphereGeometry(1000, 64, 64);  // Large enough to cover everything
+    const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
+    const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
+    scene.add(space);
+    */
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -226,8 +244,8 @@ setInterval(createShootingStar, 300);
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
-        object.scale.set(0.5, 0.5, 0.5);
-        object.position.set(4, 0, 0);
+        object.scale.set(7, 7, 7);
+        object.position.set(-10, 0, -10);
     
         catObject = object;
         scene.add(object);
