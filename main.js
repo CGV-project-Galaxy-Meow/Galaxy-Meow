@@ -37,7 +37,7 @@ function decreaseHealth() {
 export function startGame() {
     decreaseHealth();
     
-
+    document.getElementById('inventory').style.display = 'grid';
      // Show Exit Menu on Escape Key
      document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
