@@ -97,7 +97,7 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    earth.position.set(0, 0, -20);
+    earth.position.set(0, 0, -200);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
@@ -113,10 +113,10 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
         scene.add(body);
         celestialBodies.push(body);
     }
-    createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -200 });
-    createCelestialBody('textures/neptune.jpg', 7, { x: -100, y: -3, z: -100 });
+    createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -300 });
+    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: 30, z: -300 });
+    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: 30, z: -300 });
+    createCelestialBody('textures/neptune.jpg', 7, { x: -100, y: -3, z: -300 });
 
     const shootingStars = [];
 
@@ -208,7 +208,7 @@ setInterval(createShootingStar, 300);
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(50,10,5);
+        astronaut.position.set(50,6,5);
         astronaut.rotation.x= 0;
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
@@ -217,7 +217,8 @@ setInterval(createShootingStar, 300);
     // Load the Moon Plane Model
     loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
         moonObject.scale.set(1000, 1000, 500);  // Scale it large enough to simulate an infinite ground
-        moonObject.position.set(100, -10, 0);  // Place the plane below the astronaut
+        moonObject.position.set(100, -80, 0);  // Lower the plane further down
+        // Place the plane below the astronaut
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
         scene.add(moonObject);
     });
