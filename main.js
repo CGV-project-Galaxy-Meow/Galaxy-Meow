@@ -94,10 +94,10 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     scene.add(space);
 
     const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
-    const earthGeometry = new THREE.SphereGeometry(5, 32, 32);
+    const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    earth.position.set(0, 0, -20);
+    earth.position.set(0, 0, -400);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
@@ -113,10 +113,10 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
         scene.add(body);
         celestialBodies.push(body);
     }
-    createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-    createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -200 });
-    createCelestialBody('textures/neptune.jpg', 7, { x: -100, y: -3, z: -100 });
+   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
+   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
+   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
+    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
 
     const shootingStars = [];
 
