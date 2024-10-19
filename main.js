@@ -257,6 +257,8 @@ const objectsToRaycast = [];
     
         catObject = object;
         scene.add(object);
+        objectsToRaycast.push(catObject)
+        setupRaycasting(camera, objectsToRaycast);
     });
     
         window.addEventListener('click', (event) => {
@@ -328,6 +330,9 @@ helpButton.addEventListener('click', () => {
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
+        if (event.key === ' ' || event.code === 'Space') {
+            event.preventDefault();
+        }
         keysPressed[event.key.toLowerCase()] = true;
     }, false);
 
