@@ -31,14 +31,14 @@ function decreaseHealth() {
             clearInterval(healthInterval); // Stop the timer when health reaches 0
             showDeathMessage();
         }
-    }, 3000); // Decrease health every 3 seconds
+    }, 5000); // Decrease health every 3 seconds
 }
-
+document.getElementById('bagIcon').style.display = 'none';
 export function startGame() {
     decreaseHealth();
     
-    document.getElementById('inventory').style.display = 'grid';
-     // Show Exit Menu on Escape Key
+    document.getElementById('bagIcon').style.display = 'grid';
+
      document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             if (exitMenu.style.display === 'none') {
