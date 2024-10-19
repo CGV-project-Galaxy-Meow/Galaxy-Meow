@@ -1,6 +1,7 @@
-import * as THREE from 'three';
-import WebGL from 'three/addons/capabilities/WebGL.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// okay so probably refrence write links and specific file for three
+// node_modules/three/build/three.module.min.js
+import * as THREE from './node_modules/three/build/three.module.min.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
 import './intro.js';
@@ -23,7 +24,7 @@ const closeModalBtn = document.getElementById('closeModal');
 const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
-const cat_model = 'models/TheCatGalaxyMeow4.glb';
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let catObject; 
 let moonObject;
 // Move astronaut and initial position declarations here, outside of startGame()
@@ -67,6 +68,7 @@ function checkGroundCollision() {
         }
     }
 }
+
 
 
 //Function to decrease health over time
@@ -134,7 +136,7 @@ const sound = new THREE.Audio(listener);
 
 // Load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.5);
@@ -154,14 +156,18 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 
     createSun(scene);
 
-    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
-    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64);
+    // Background Setup (from background.js)
+    const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
+    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64); // Large enough to cover the background
+
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
     scene.add(space);
 
-    const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
+
+    const earthTexture = new THREE.TextureLoader().load('public/textures/earth.jpg');
     const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
+
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     earth.position.set(0, 0, -400);
@@ -180,10 +186,7 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
         scene.add(body);
         celestialBodies.push(body);
     }
-   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
-    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
+
 
     const shootingStars = [];
 
@@ -272,24 +275,28 @@ const objectsToRaycast = [];
 
     // Load the astronaut model and apply controls
     let characterControls;
-    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
-        astronaut.scale.set(1.7, 1.7, 1.7);
+        astronaut.scale.set(10.7, 10.7, 10.7);
         initialAstronautPosition.copy(astronaut.position);
         astronaut.position.set(50,0,5);
+
         astronaut.rotation.x= 0;
+
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
 
 
     // Load the Moon Plane Model
-    loadModel('models/moonground.glb', scene, controls, camera, (loadedMoonObject) => {
+    loadModel('public/models/moonground.glb', scene, controls, camera, (loadedMoonObject) => {
         moonObject = loadedMoonObject; // Assign to the outer scope variable
         moonObject.scale.set(1000, 1000, 500);
         moonObject.position.set(100, 10, 0);
+
         scene.add(moonObject);
 
-        loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
+
+        loadModel('public/models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(1.7, 1.7, 1.7);
             barrelObject.position.set(40, 0, 4);
             barrelObject.name = 'barrel'
@@ -301,6 +308,7 @@ const objectsToRaycast = [];
         });
     });
    
+
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
@@ -441,10 +449,12 @@ if (astronaut && moonObject) {
         earth.rotation.y += 0.001;
         celestialBodies.forEach(body => body.rotation.y += 0.001);
         updateShootingStars();
+
     
         // Astronaut camera following logic
         if (astronaut) {
             const cameraOffset = new THREE.Vector3(0, 0, 7);
+
             const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
             camera.position.lerp(desiredCameraPosition, 0.1);
             camera.lookAt(astronaut.position);
@@ -483,11 +493,11 @@ function restartLevel() {
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
 
-    // Reset astronaut position and controls
-    // if (astronaut) {
-    //     astronaut.position.copy(initialAstronautPosition);
-    //     astronaut.rotation.set(0, 0, 0); 
-    // }
+    //Reset astronaut position and controls
+    if (astronaut) {
+        astronaut.position.copy(initialAstronautPosition);
+        astronaut.rotation.set(0, 3, 0); 
+    }
 
     decreaseHealth();
 }
