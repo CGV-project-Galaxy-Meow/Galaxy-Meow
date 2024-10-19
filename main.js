@@ -25,6 +25,12 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
+
+
+const scene = new THREE.Scene();
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+export const objectsToRaycast = [];
+
 let catObject; 
 let moonObject;
 // Move astronaut and initial position declarations here, outside of startGame()
@@ -118,8 +124,6 @@ export function startGame() {
         }
     });
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 50);
 
     const renderer = new THREE.WebGLRenderer();

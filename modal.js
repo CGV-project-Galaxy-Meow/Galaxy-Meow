@@ -1,5 +1,5 @@
 import { addItem , items} from "./inventory.js";
-
+import {camera, objectsToRaycast} from "./main.js";
 const mouse = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
 
