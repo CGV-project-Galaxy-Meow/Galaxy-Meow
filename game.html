@@ -107,6 +107,13 @@
           font-size: 13px;
           border-radius: 5px;
         }
+
+        #helpButton2 {
+          margin: 5px;
+          padding: 5px 5px;
+          font-size: 13px;
+          border-radius: 5px;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script>
 
@@ -174,10 +181,13 @@
         <div id="modal-content2">
             <img id="catImage" src="/Graphics/SpaceCat.png" alt="cat_sprite">
             <p id="catConversation2" style="color: aliceblue; font-size: large;"></p>
+            <div id="responses2" style="display: none; flex-direction: column; margin-left: 30px;">
+                <button id="helpButton2">Add to inventory!</button>
+            </div>
             <span id="closeModal2">&times;</span>
         </div>
     </div>
-
+    
     <div class="inventory-icon" id="bagIcon">
         <img src="images/bag.png" alt="Bag Icon">
     </div>

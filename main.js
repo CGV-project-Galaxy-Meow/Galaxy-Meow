@@ -210,7 +210,7 @@ const objectsToRaycast = [];
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(50,10,5);
+        astronaut.position.set(50,0,5);
         astronaut.rotation.x= 0;
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
@@ -225,9 +225,8 @@ const objectsToRaycast = [];
 
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(1.7, 1.7, 1.7);
-            barrelObject.position.set(50, 10, 7);
+            barrelObject.position.set(40, 0, 4);
             barrelObject.name = 'barrel'
-            console.log(barrelObject);
             scene.add(barrelObject);
             objectsToRaycast.push(barrelObject);
 
