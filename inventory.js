@@ -1,9 +1,5 @@
-// inventory.js
-
-// Select all inventory slots
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 
-// Define the available items and their images
 export const items = {
     gems: { img: 'images/gems.png', count: 0 },
     sword: { img: 'images/sword.png', count: 0 },
@@ -14,27 +10,27 @@ export const items = {
 function getNextAvailableSlot() {
     for (let slot of inventorySlots) {
         if (slot.children.length === 0) {
-            return slot; // Return the first empty slot
+            return slot; 
         }
     }
-    return null; // No available slot
+    return null; 
 }
 
-// Function to add an item to a specific slot
-function addItemToSlot(slot, itemName) {
-    if (items[itemName]) { // Check if the item exists in the items object
-        const itemImage = document.createElement('img');
-        itemImage.src = items[itemName].img; // Set the image for the item
-        itemImage.alt = itemName; // Set alt text for the image
 
-        // If the item already exists, increase the count
+function addItemToSlot(slot, itemName) {
+    if (items[itemName]) {
+        const itemImage = document.createElement('img');
+        itemImage.src = items[itemName].img; 
+        itemImage.alt = itemName; 
+
+        
         items[itemName].count += 1;
         const countDisplay = document.createElement('span');
         countDisplay.textContent = items[itemName].count;
         countDisplay.classList.add('item-count');
 
-        slot.appendChild(itemImage); // Add the image to the slot
-        slot.appendChild(countDisplay); // Add the count to the slot
+        slot.appendChild(itemImage); 
+        slot.appendChild(countDisplay); 
     } else {
         console.warn(`Item "${itemName}" not found in items.`);
     }
@@ -57,7 +53,7 @@ export function addItem(itemName) {
     }
 }
 
-// Function to show a message when inventory is full
+
 function showInventoryFullMessage() {
     const message = document.createElement('div');
     message.textContent = 'Inventory is full!';
@@ -65,7 +61,7 @@ function showInventoryFullMessage() {
     document.body.appendChild(message);
     setTimeout(() => {
         document.body.removeChild(message);
-    }, 2000); // Remove the message after 2 seconds
+    }, 2000);
 }
 
 
