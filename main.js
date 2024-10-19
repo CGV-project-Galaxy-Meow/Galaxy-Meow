@@ -223,7 +223,7 @@ setInterval(createShootingStar, 300);
     let characterControls;
     loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
-        astronaut.scale.set(1.7, 1.7, 1.7);
+        astronaut.scale.set(10.7, 10.7, 10.7);
         initialAstronautPosition.copy(astronaut.position);
 
         astronaut.position.set(50,10,5);
@@ -234,7 +234,7 @@ setInterval(createShootingStar, 300);
 
 
     // Load the Moon Plane Model
-    loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
+    loadModel('public/models/moonground.glb', scene, controls, camera, (moonObject) => {
         moonObject.scale.set(1000, 1000, 500);  // Scale it large enough to simulate an infinite ground
         moonObject.position.set(100, -10, 0);  // Place the plane below the astronaut
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
@@ -366,8 +366,8 @@ helpButton.addEventListener('click', () => {
 
 
         if(astronaut){
-
-            const cameraOffset = new THREE.Vector3(0, 6, -7);
+            //10.7, 10.7, 10.7
+            const cameraOffset = new THREE.Vector3(0, 36, -17);
             const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
             camera.position.lerp(desiredCameraPosition, 0.1);
             camera.lookAt(astronaut.position);
