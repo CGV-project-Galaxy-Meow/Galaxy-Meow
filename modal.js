@@ -1,4 +1,4 @@
-import { addItem , items} from "./inventory";
+import { addItem , items} from "./inventory.js";
 export function showCrudeOilModal() {
     const modal = document.getElementById('myModal2');
     const catConversation = document.getElementById('catConversation2');
@@ -48,7 +48,7 @@ export function showObjectModal() {
     const catConversation = "You've found a precious gem!";
 
     document.getElementById('catConversation2').innerText = catConversation;
-    document.getElementById('catImage').src = 'images/gems.png'; // Set the correct image
+    document.getElementById('catImage').src = 'public/images/gems.png'; // Set the correct image
 
     document.getElementById('helpButton').onclick = function() {
         addItem(itemName); // Call the function to add the item to the inventory

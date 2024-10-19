@@ -1,8 +1,6 @@
 // okay so probably refrence write links and specific file for three
 // node_modules/three/build/three.module.min.js
 import * as THREE from './node_modules/three/build/three.module.min.js';
-// import WebGL from './three/addons/capabilities/WebGL.js';
-//./three/examples    
 import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
@@ -25,7 +23,7 @@ const closeModalBtn = document.getElementById('closeModal');
 const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
-const cat_model = 'models/TheCatGalaxyMeow4.glb';
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let catObject; 
 
 // Move astronaut and initial position declarations here, outside of startGame()
@@ -149,19 +147,6 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
         celestialBodies.push(body);
     }
 
-   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
-    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
-
-
-//     createCelestialBody('public/textures/jupiter.jpg', 0.5, { x: -50, y: 2, z: -15 });
-//     createCelestialBody('public/textures/planet.jpg', 1.5, { x: 100, y: -2, z: -40 });
-//     createCelestialBody('public/textures/planet.jpg', 1.5, { x: 0, y: 30, z: -200 });
-//     createCelestialBody('public/textures/saturn.jpg', 0.2, { x: -5, y: -3, z: -8 });
-//     createCelestialBody('public/textures/neptune.jpg', 7, { x: -100, y: -3, z: -100 });
-
-
 
     const shootingStars = [];
 
@@ -270,7 +255,7 @@ const objectsToRaycast = [];
         scene.add(moonObject);
 
 
-        loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
+        loadModel('public/models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(1.7, 1.7, 1.7);
             barrelObject.position.set(40, 0, 4);
             barrelObject.name = 'barrel'
