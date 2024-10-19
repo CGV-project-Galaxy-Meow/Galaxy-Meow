@@ -8,7 +8,7 @@ export class CharacterControls {
 
         this.toggleRun = true;
         this.currentAction = currentAction;
-        this.speed = 0.05;
+        this.speed = 1;
 
         this.playCurrentAction();
     }
@@ -47,21 +47,21 @@ export class CharacterControls {
         if (keysPressed['arrowdown'] || keysPressed['s']) {
             this.currentAction = 'floating';
             this.model.position.z += this.speed;
-            this.model.rotation.y = 0; // Rotate to face forward
+            this.model.rotation.y = 0; // Rotate to face backward
         }
 
         // moving left
         if (keysPressed['arrowleft'] || keysPressed['a']) {
             this.currentAction = 'floating';
             this.model.position.x -= this.speed;
-            this.model.rotation.y = -Math.PI/2; // Rotate to face forward
+            this.model.rotation.y = -Math.PI/2; // Rotate to face left
         }
 
         // moving right
         if (keysPressed['arrowright'] || keysPressed['d']) {
             this.currentAction = 'floating';
             this.model.position.x += this.speed;
-            this.model.rotation.y = Math.PI/2; // Rotate to face forward
+            this.model.rotation.y = Math.PI/2; // Rotate to face right
         }
 
         if (this.currentAction !== previousAction) {
