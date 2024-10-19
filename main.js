@@ -7,6 +7,7 @@ import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
+import { clearInventory } from './inventory.js';
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
@@ -476,6 +477,7 @@ function restartLevel() {
     // Reset health
     health = 100;
     healthElement.innerHTML = `Oxygen: ${health}/100`;
+    clearInventory()
 
     // Hide death and exit menus
     deathMessage.style.display = 'none';
