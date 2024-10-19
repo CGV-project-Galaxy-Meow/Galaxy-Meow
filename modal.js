@@ -14,7 +14,7 @@ export function showCrudeOilModal() {
         <p>In space exploration, crude oil could be useful as an energy resource.</p>
     `;
 
-    document.getElementById('catImage').src = items[itemName].img;
+    document.getElementById('catImage2').src = items[itemName].img;
 
     
     const responsesDiv = document.getElementById('responses2');
