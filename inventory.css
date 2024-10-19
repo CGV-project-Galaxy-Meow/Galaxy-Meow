@@ -25,6 +25,10 @@ body {
     z-index: 1000
 }
 
+#bagIcon {
+    display: none;
+}
+
 .inventory-icon img {
     width: 90%;
     height: 90%;
