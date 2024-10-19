@@ -5,6 +5,7 @@
     <title>Galaxy Meow</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="game.css">
+   <link rel="stylesheet" href="inventory.css">
     <style>
         /* Modal popup style */
         #myModal {
@@ -137,6 +138,22 @@
             </div>
         </div>
 
+    </div>
+
+    <div class="inventory-icon" id="bagIcon">
+        <img src="images/bag.png" alt="Bag Icon">
+    </div>
+
+    <div class="inventory-grid" id="inventory" >
+        <div class="inventory-slot" id="slot1"></div>
+        <div class="inventory-slot" id="slot2"></div>
+        <div class="inventory-slot" id="slot3"></div>
+        <div class="inventory-slot" id="slot4"></div>
+        <div class="inventory-slot" id="slot5"></div>
+    </div>
+
+
+
       <!-- Settings Modal -->
   <!-- <div class="modal" id="settingsModal">
     <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
@@ -156,9 +173,12 @@
         </script>-->
 
 
+
+    <script type = "module" src = "/inventory.js"> </script>
     <!-- <script type="module" src="/main.js"></script> -->
     <script type="module" src="https://lamp.ms.wits.ac.za/~sgalaxy/main.js"></script>
     <script type="module" src="https://lamp.ms.wits.ac.za/~sgalaxy/intro.js"></script>
     <!-- <script type="module" src="/intro.js"></script> -->
+
 </body>
 </html>
