@@ -14,6 +14,17 @@ let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const modal = document.getElementById('myModal');
+const responses = document.getElementById('responses');
+const closeModalBtn = document.getElementById('closeModal');
+const helpButton = document.getElementById('helpButton');
+const dontHelpButton = document.getElementById('dontHelpButton');
+const catConversation = document.getElementById('catConversation')
+const cat_model = 'models/TheCatGalaxyMeow4.glb';
+let catObject; 
+
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
 let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
@@ -28,12 +39,28 @@ function decreaseHealth() {
         if (health > 0) {
             health -= 1;
             healthElement.innerHTML = `Oxygen: ${health}/100`;
+            checkOxygen();
         } else {
             clearInterval(healthInterval); // Stop the timer when health reaches 0
             showDeathMessage();
         }
     }, 5000); // Decrease health every 3 seconds
 }
+
+function checkOxygen(){
+    if(health == 30){
+        modal.style.display = 'flex';
+        catConversation.style.animation = 'none';
+        catConversation.textContent = `Be careful, ${playerName}! Your oxygen is running low.`;
+    
+        void catConversation.offsetWidth; 
+        catConversation.style.animation = 'typing 3.5s steps(40, end)';
+    
+        // Keep the buttons hidden
+        responses.style.display = 'none'; 
+    }
+}
+
 document.getElementById('bagIcon').style.display = 'none';
 export function startGame() {
     decreaseHealth();
@@ -234,19 +261,6 @@ const objectsToRaycast = [];
             setupRaycasting(camera, objectsToRaycast);
         });
     });
-
-
-
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    const modal = document.getElementById('myModal');
-    const responses = document.getElementById('responses');
-    const closeModalBtn = document.getElementById('closeModal');
-    const helpButton = document.getElementById('helpButton');
-    const dontHelpButton = document.getElementById('dontHelpButton');
-    const catConversation = document.getElementById('catConversation')
-    const cat_model = 'models/TheCatGalaxyMeow4.glb';
-    let catObject; 
    
     
     // Load the static model
@@ -257,6 +271,8 @@ const objectsToRaycast = [];
     
         catObject = object;
         scene.add(object);
+        objectsToRaycast.push(catObject)
+        setupRaycasting(camera, objectsToRaycast);
     });
     
         window.addEventListener('click', (event) => {
@@ -314,7 +330,6 @@ helpButton.addEventListener('click', () => {
     responses.style.display = 'none'; 
 });
 
-
         // Close modal on button click
         closeModalBtn.addEventListener('click', () => {
             modal.style.display = 'none'; // Hide the modal
@@ -328,6 +343,9 @@ helpButton.addEventListener('click', () => {
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
+        if (event.key === ' ' || event.code === 'Space') {
+            event.preventDefault();
+        }
         keysPressed[event.key.toLowerCase()] = true;
     }, false);
 
