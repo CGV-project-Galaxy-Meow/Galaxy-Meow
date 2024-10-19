@@ -74,7 +74,8 @@
           border-radius: 5px;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
 
 </head>
 <body>
@@ -122,18 +123,21 @@
 
 
 
-    <!--Popup when clicking on cat-->
-    <div id="myModal">
-        <div id="modal-content">
-            <img id="catImage" src="/Graphics/SpaceCat.png" alt="cat_sprite">
-            <p id="catConversation" style="color: aliceblue; font-size: large;"></p>
-
-            <div id="responses" style="display: none; flex-direction: column; margin-left: 30px;">
-                <button id="helpButton">Please help me!</button>
-                <button id="dontHelpButton">I do not need help.</button>
+        <!--Popup when clicking on cat-->
+        <div id="myModal">
+            <div id="modal-content" style="display: flex;">
+                <img id="catImage" src="https://lamp.ms.wits.ac.za/~sgalaxy/public/Graphics/SpaceCat.png" alt="cat_sprite">
+                <p id="catConversation" style="color: aliceblue; font-size: large;"></p>
+      
+                <div id="responses" style="display: none; flex-direction: column; margin-left: 30px;">
+                  <button id="helpButton">Please help me!</button>
+                  <button id="dontHelpButton">I do not need help.</button>
+      
+                </div>
+                <span id="closeModal">&times;</span>
             </div>
-            <span id="closeModal">&times;</span>
         </div>
+
     </div>
 
     <div class="inventory-icon" id="bagIcon">
@@ -147,6 +151,7 @@
         <div class="inventory-slot" id="slot4"></div>
         <div class="inventory-slot" id="slot5"></div>
     </div>
+
 
 
       <!-- Settings Modal -->
@@ -168,9 +173,12 @@
         </script>-->
 
 
-    <script type="module" src="/main.js"></script>
-   
-    <script type="module" src="/intro.js"></script>
+
     <script type = "module" src = "/inventory.js"> </script>
+    <!-- <script type="module" src="/main.js"></script> -->
+    <script type="module" src="https://lamp.ms.wits.ac.za/~sgalaxy/main.js"></script>
+    <script type="module" src="https://lamp.ms.wits.ac.za/~sgalaxy/intro.js"></script>
+    <!-- <script type="module" src="/intro.js"></script> -->
+
 </body>
 </html>
