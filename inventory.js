@@ -1,15 +1,16 @@
+// inventory.js
 
 // Select all inventory slots
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 
 // Define the available items and their images
-const items = {
-    gems: 'images/gems.png',
-    sword: 'images/sword.png',
-    potion: 'images/potion.png'
+export const items = {
+    gems: { img: 'images/gems.png', count: 0 },
+    sword: { img: 'images/sword.png', count: 0 },
+    potion: { img: 'images/potion.png', count: 0 },
+    crudeOil: { img: 'images/crude_oil.png', count: 0 } // Add your items here
 };
 
-// Function to find the next available slot
 function getNextAvailableSlot() {
     for (let slot of inventorySlots) {
         if (slot.children.length === 0) {
@@ -23,45 +24,50 @@ function getNextAvailableSlot() {
 function addItemToSlot(slot, itemName) {
     if (items[itemName]) { // Check if the item exists in the items object
         const itemImage = document.createElement('img');
-        itemImage.src = items[itemName];
-        slot.appendChild(itemImage);
+        itemImage.src = items[itemName].img; // Set the image for the item
+        itemImage.alt = itemName; // Set alt text for the image
+
+        // If the item already exists, increase the count
+        items[itemName].count += 1;
+        const countDisplay = document.createElement('span');
+        countDisplay.textContent = items[itemName].count;
+        countDisplay.classList.add('item-count');
+
+        slot.appendChild(itemImage); // Add the image to the slot
+        slot.appendChild(countDisplay); // Add the count to the slot
     } else {
         console.warn(`Item "${itemName}" not found in items.`);
     }
 }
 
-// Function to add an item to the next available slot
-function addItem(itemName) {
+export function addItem(itemName) {
     const availableSlot = getNextAvailableSlot();
+
+    // Check if the item is already in the inventory
+    if (items[itemName] && items[itemName].hasItem) {
+        alert(`${itemName} is already in your inventory!`);
+        return; // Exit the function if item already exists
+    }
+
     if (availableSlot) {
         addItemToSlot(availableSlot, itemName);
+        items[itemName].hasItem = true;
     } else {
-        alert('Inventory is full!');
+        showInventoryFullMessage(); 
     }
 }
 
-// Function to remove an item from a specific slot
-function removeItemFromSlot(slot) {
-    if (slot.firstChild) {
-        slot.removeChild(slot.firstChild);
-    }
+// Function to show a message when inventory is full
+function showInventoryFullMessage() {
+    const message = document.createElement('div');
+    message.textContent = 'Inventory is full!';
+    message.classList.add('inventory-full-message');
+    document.body.appendChild(message);
+    setTimeout(() => {
+        document.body.removeChild(message);
+    }, 2000); // Remove the message after 2 seconds
 }
 
-// Add event listeners for in-game items
-const gameItems = document.querySelectorAll('.game-item'); // Select all in-game clickable items
-gameItems.forEach(item => {
-    item.addEventListener('click', () => {
-        const itemName = item.getAttribute('data-item'); // Get item name from a custom attribute
-        addItem(itemName); // Add the clicked item to the inventory
-        item.style.display = 'none'; // Hide the item in the game after it's picked up
-    });
-});
-
-// Example of initializing game items
-// Add this to your HTML for interactive items:
-// <div class="game-item" data-item="gems"></div>
-// <div class="game-item" data-item="sword"></div>
-// <div class="game-item" data-item="potion"></div>
 
 
 
