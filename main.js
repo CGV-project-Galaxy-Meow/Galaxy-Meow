@@ -6,6 +6,7 @@ import { CharacterControls } from './characterControls.js';  // Import character
 import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
+import { setupRaycasting } from './raycasting.js';
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
@@ -31,14 +32,14 @@ function decreaseHealth() {
             clearInterval(healthInterval); // Stop the timer when health reaches 0
             showDeathMessage();
         }
-    }, 3000); // Decrease health every 3 seconds
+    }, 5000); // Decrease health every 3 seconds
 }
-
+document.getElementById('bagIcon').style.display = 'none';
 export function startGame() {
     decreaseHealth();
     
+    document.getElementById('bagIcon').style.display = 'grid';
 
-     // Show Exit Menu on Escape Key
      document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             if (exitMenu.style.display === 'none') {
@@ -201,6 +202,7 @@ function updateShootingStars() {
 
 setInterval(createShootingStar, 300);
     
+const objectsToRaycast = [];
 
     // Load the astronaut model and apply controls
     let characterControls;
@@ -208,7 +210,7 @@ setInterval(createShootingStar, 300);
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(50,10,5);
+        astronaut.position.set(50,0,5);
         astronaut.rotation.x= 0;
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
@@ -220,15 +222,20 @@ setInterval(createShootingStar, 300);
         moonObject.position.set(100, -10, 0);  // Place the plane below the astronaut
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
         scene.add(moonObject);
+
+        loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
+            barrelObject.scale.set(1.7, 1.7, 1.7);
+            barrelObject.position.set(40, 0, 4);
+            barrelObject.name = 'barrel'
+            scene.add(barrelObject);
+            objectsToRaycast.push(barrelObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
     });
 
-    /* Create the sky sphere as the background
-    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
-    const spaceGeometry = new THREE.SphereGeometry(1000, 64, 64);  // Large enough to cover everything
-    const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
-    const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
-    scene.add(space);
-    */
+
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -240,6 +247,7 @@ setInterval(createShootingStar, 300);
     const catConversation = document.getElementById('catConversation')
     const cat_model = 'models/TheCatGalaxyMeow4.glb';
     let catObject; 
+   
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
@@ -361,7 +369,6 @@ helpButton.addEventListener('click', () => {
             renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 
             controls.update();
-            console.log(astronaut.position);
     }
 
     animate();
@@ -378,13 +385,6 @@ function showDeathMessage() {
     deathMessage.style.display = 'block';
 }
 
-function updateHealthUI() {
-    if (healthElement) {
-        healthElement.innerHTML = `Oxygen: ${health}/100`;
-    } else {
-        console.error('Health element not found!');
-    }
-}
 
 // Restart Level
 function restartLevel() {
