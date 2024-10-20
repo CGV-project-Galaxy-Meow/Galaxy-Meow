@@ -7,11 +7,13 @@ import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
+import {showDeathMessage} from './levelMenus.js'
+
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
-let deathMessage = document.getElementById('deathMessage');
+//let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
 
 const raycaster = new THREE.Raycaster();
@@ -23,6 +25,12 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'models/TheCatGalaxyMeow4.glb';
+
+const scene = new THREE.Scene();
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+export const objectsToRaycast = [];
+
+
 let catObject; 
 
 // Move astronaut and initial position declarations here, outside of startGame()
@@ -77,10 +85,7 @@ export function startGame() {
         }
     });
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(50, 10, 2); 
-
 
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -244,7 +249,7 @@ function updateShootingStars() {
 
 setInterval(createShootingStar, 300);
     
-const objectsToRaycast = [];
+
 
     // Load the astronaut model and apply controls
     let characterControls;
@@ -473,9 +478,9 @@ helpButton.addEventListener('click', () => {
 }
 
 // Show "You Died" message
-function showDeathMessage() {
-    deathMessage.style.display = 'block';
-}
+// function showDeathMessage() {
+//     deathMessage.style.display = 'block';
+// }
 
 
 // Restart Level
@@ -488,11 +493,11 @@ function restartLevel() {
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
 
-    // Reset astronaut position and controls
-    // if (astronaut) {
-    //     astronaut.position.copy(initialAstronautPosition);
-    //     astronaut.rotation.set(0, 0, 0); 
-    // }
+    //Reset astronaut position and controls
+    if (astronaut) {
+        astronaut.position.copy(initialAstronautPosition);
+        astronaut.rotation.set(0, 0, 0); 
+    }
 
     decreaseHealth();
 }
