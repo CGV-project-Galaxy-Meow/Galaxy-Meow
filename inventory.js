@@ -1,6 +1,3 @@
-// inventory.js
-
-// Select all inventory slots
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 
 // Define the available items and their images
@@ -68,6 +65,22 @@ function showInventoryFullMessage() {
     }, 2000); // Remove the message after 2 seconds
 }
 
+
+export function clearInventory() {
+   
+    inventorySlots.forEach(slot => {
+        while (slot.firstChild) {
+            slot.removeChild(slot.firstChild);
+        }
+    });
+
+    for (let itemName in items) {
+        items[itemName].count = 0;
+        items[itemName].hasItem = false;
+    }
+
+    console.log('Inventory cleared.');
+}
 
 
 
