@@ -13,11 +13,13 @@ import {showDeathMessage} from './levelMenus.js'
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
-//let deathMessage = document.getElementById('deathMessage');
+let deathMessage = document.getElementById('deathMessage');
+let characterControls;
 let healthInterval; // To control the health timer
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+const clock = new THREE.Clock();
 const modal = document.getElementById('myModal');
 const responses = document.getElementById('responses');
 const closeModalBtn = document.getElementById('closeModal');
@@ -278,7 +280,7 @@ setInterval(createShootingStar, 300);
 
 
     // Load the astronaut model and apply controls
-    let characterControls;
+    //let characterControls;
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
@@ -475,7 +477,7 @@ helpButton.addEventListener('click', () => {
         keysPressed[event.key.toLowerCase()] = false;
     }, false);
 
-    const clock = new THREE.Clock();
+    //const clock = new THREE.Clock();
     function animate() {
         let delta = clock.getDelta();
     if (characterControls) {
@@ -516,11 +518,6 @@ if (astronaut && moonObject) {
     });
     
 }
-
-// Show "You Died" message
-// function showDeathMessage() {
-//     deathMessage.style.display = 'block';
-// }
 
 
 // Restart Level
