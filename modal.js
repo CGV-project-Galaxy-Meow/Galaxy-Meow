@@ -1,4 +1,12 @@
+import * as THREE from 'three';
 import { addItem , items} from "./inventory";
+import {camera, objectsToRaycast} from "./main.js";
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+
+
+
+
 export function showCrudeOilModal() {
     const modal = document.getElementById('myModal2');
     const catConversation = document.getElementById('catConversation2');
@@ -15,6 +23,86 @@ export function showCrudeOilModal() {
     `;
 
     document.getElementById('catImage2').src = items[itemName].img;
+
+    
+    const responsesDiv = document.getElementById('responses2');
+    responsesDiv.style.display = 'flex'; // Show the responses div
+
+    // Set up the button's onclick event
+    helpButton.onclick = function() {
+        addItem(itemName); // Add the item to the inventory
+        modal.style.display = 'none'; // Hide the modal after adding
+    };
+
+    // Close modal functionality
+    document.getElementById('closeModal2').onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none'; // Hide the modal
+        }
+    };
+}
+
+export function showSkeletonModal() {
+    const modal = document.getElementById('myModal2');
+    const catConversation = document.getElementById('catConversation2');
+    const helpButton = document.getElementById('helpButton2');
+    const itemName = 'skeleton';
+
+    modal.style.display = 'block'; 
+
+    // Set the modal content
+    catConversation.innerHTML = `
+        <h2>M.S Fitzgerald</h2>
+        <p>Margie Sandy Fitzgerald was SPO's first assigned agent.</p>
+        <p>What is her story ?</p>
+    `;
+
+    document.getElementById('catImage2').src = 'images/skeleton.jpg';
+
+    
+    const responsesDiv = document.getElementById('responses2');
+    responsesDiv.style.display = 'flex'; // Show the responses div
+
+    // Set up the button's onclick event
+    helpButton.onclick = function() {
+        addItem(itemName); // Add the item to the inventory
+        modal.style.display = 'none'; // Hide the modal after adding
+    };
+
+    // Close modal functionality
+    document.getElementById('closeModal2').onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none'; // Hide the modal
+        }
+    };
+}
+
+export function showBatteryModal() {
+    const modal = document.getElementById('myModal2');
+    const catConversation = document.getElementById('catConversation2');
+    const helpButton = document.getElementById('helpButton2');
+    const itemName = 'battery';
+
+    modal.style.display = 'block'; 
+
+    // Set the modal content
+    catConversation.innerHTML = `
+        <h2>Batteries</h2>
+        <p>Batteries provide immediate electrical energy.</p>
+        <p>Take as many as you need.</p>
+    `;
+
+    document.getElementById('catImage2').src = 'images/skeleton.jpg';
 
     
     const responsesDiv = document.getElementById('responses2');
