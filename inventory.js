@@ -2,13 +2,15 @@ const inventorySlots = document.querySelectorAll('.inventory-slot');
 
 // Define the available items and their images
 export const items = {
-    gems: { img: 'images/gems.png', count: 0 },
-    sword: { img: 'images/sword.png', count: 0 },
-    potion: { img: 'images/potion.png', count: 0 },
-    crudeOil: { img: 'images/crude_oil.png', count: 0 } ,
-    battery: {img: 'images/ '},
-    skull: {img: 'images/skull.png', count: 0},
-    flag: {img: 'images/flag.png', count: 0}
+
+    gems: { img: 'public/images/gems.png', count: 0 },
+    sword: { img: 'public/images/sword.png', count: 0 },
+    potion: { img: 'public/images/potion.png', count: 0 },
+    crudeOil: { img: 'public/images/crude_oil.png', count: 0 } ,
+    battery: {img: 'public/images/ '},
+    skull: {img: 'public/images/skull.png', count: 0},
+    flag: {img: 'public/images/flag.png', count: 0}
+
 
 };
 

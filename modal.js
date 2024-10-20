@@ -1,10 +1,8 @@
-import * as THREE from 'three';
-import { addItem , items} from "./inventory";
+
+import { addItem , items} from "./inventory.js";
 import {camera, objectsToRaycast} from "./main.js";
 const mouse = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
-
-
 
 
 export function showCrudeOilModal() {
@@ -216,7 +214,7 @@ export function showObjectModal() {
     const catConversation = "You've found a precious gem!";
 
     document.getElementById('catConversation2').innerText = catConversation;
-    document.getElementById('catImage').src = 'images/gems.png'; // Set the correct image
+    document.getElementById('catImage').src = 'public/images/gems.png'; // Set the correct image
 
     document.getElementById('helpButton').onclick = function() {
         addItem(itemName); // Call the function to add the item to the inventory

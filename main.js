@@ -1,6 +1,7 @@
-import * as THREE from 'three';
-import WebGL from 'three/addons/capabilities/WebGL.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// okay so probably refrence write links and specific file for three
+// node_modules/three/build/three.module.min.js
+import * as THREE from './node_modules/three/build/three.module.min.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
 import './intro.js';
@@ -28,7 +29,10 @@ const closeModalBtn = document.getElementById('closeModal');
 const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
-const cat_model = 'models/TheCatGalaxyMeow4.glb';
+
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
+
+
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -43,7 +47,9 @@ let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial p
 
 
 
+
 // Audio listener
+
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
@@ -72,7 +78,9 @@ audioLoader.load('/sound/game-over.mp3', function(buffer) {
 
 
 
+
 //----functions----
+
 
 function decreaseHealth() {
     if (healthInterval) {
@@ -125,6 +133,7 @@ export function startGame() {
     overlay.style.display = 'block';
 
     decreaseHealth();
+
     
     document.getElementById('bagIcon').style.display = 'grid';
 
@@ -140,10 +149,12 @@ export function startGame() {
 
 
 
+
     camera.position.set(50, 10, 2); 
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('gameCanvas').appendChild(renderer.domElement);
     const controls = new OrbitControls(camera, renderer.domElement);
+
     controls.enableDamping = true;        // Enable damping (inertia)
     controls.dampingFactor = 0.05;        // Damping inertia
     controls.enableZoom = false;          // Disable zoom if desired
@@ -173,7 +184,7 @@ const sound = new THREE.Audio(listener);
 
 // Load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.5);
@@ -182,31 +193,38 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+
+
     scene.add(ambientLight);
 
+    //directional light
     const directionalLight = new THREE.DirectionalLight(0xffcc99, 50);
     directionalLight.position.set(0, 50, -50).normalize();
-    //directionalLight.castShadow = true;  // Enable shadows if needed
     scene.add(directionalLight);
     
-
+    //create sun
     createSun(scene);
 
-    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
-    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64);
+    // Background Setup - space scene - (from background.js)
+    const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
+    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64); // Large enough to cover the background
+
+
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
     scene.add(space);
 
-    const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
+    //there is a floating earth
+    const earthTexture = new THREE.TextureLoader().load('public/textures/earth.jpg');
     const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
+
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     earth.position.set(0, 0, -400);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
-    // For celestial bodies
+    // For other celestial bodies
     const celestialBodies = [];
     function createCelestialBody(textureUrl, size, position) {
         const texture = new THREE.TextureLoader().load(textureUrl);
@@ -218,23 +236,19 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
         scene.add(body);
         celestialBodies.push(body);
     }
-   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
-    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
 
+    //create shooting starts
     const shootingStars = [];
 
-function createShootingStar() {
-    const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-    const starMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0xffffff, 
-        transparent: true, 
-        opacity: Math.random() 
+    function createShootingStar() {
+        const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+        const starMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0xffffff, 
+            transparent: true, 
+            opacity: Math.random() 
     });
     const shootingStar = new THREE.Mesh(starGeometry, starMaterial);
-
-   
+    //control the shooting star
     const startX = 50;  
     const startY = 0;  
     const startZ = -50
@@ -247,10 +261,11 @@ function createShootingStar() {
     const velocityY = Math.random() * 0.1 - 0.05;  // Y velocity range
     const velocityZ = Math.random() * 0.2 - 0.1;   // Z velocity towards the camera
 
-    // Create an array for the tail positions
+    // Create an array for the tail positions for the shooting stars
     const tailPositions = [];
     const tailLength = 5;
     const tailColor = 0x00ff00;
+
 
     for (let i = 0; i < tailLength; i++) {
         const tailStar = new THREE.Mesh(
@@ -271,12 +286,12 @@ function createShootingStar() {
 }
 
 
-function updateShootingStars() {
-    shootingStars.forEach((star, index) => {
-        star.mesh.position.add(star.velocity);
+    function updateShootingStars() {
+        shootingStars.forEach((star, index) => {
+            star.mesh.position.add(star.velocity);
         
-        // Update opacity for strobing effect
-        star.mesh.material.opacity += 0.05 * star.fadeDirection;
+            // Update opacity for strobing effect
+            star.mesh.material.opacity += 0.05 * star.fadeDirection;
 
         // Reverse fade direction when reaching limits
         if (star.mesh.material.opacity >= 1 || star.mesh.material.opacity <= 0) {
@@ -304,9 +319,8 @@ function updateShootingStars() {
 }
 
 
-setInterval(createShootingStar, 300);
+    setInterval(createShootingStar, 300);
     
-
 
     // Load the astronaut model and apply controls
     //let characterControls;
@@ -347,6 +361,7 @@ setInterval(createShootingStar, 300);
 
 
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
+
             barrelObject.scale.set(1.7, 1.7, 1.7);
             barrelObject.position.set(40, 0, 4);
             barrelObject.name = 'barrel'
@@ -412,9 +427,22 @@ setInterval(createShootingStar, 300);
         });
 
     });
-   
-    
-    // Load the static model
+
+    // Load the astronaut model and apply controls
+    let characterControls;
+    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+        astronaut = object;
+        astronaut.scale.set(10.7, 10.7, 10.7);
+        initialAstronautPosition.copy(astronaut.position);
+        astronaut.position.set(50,0,5);
+
+        astronaut.rotation.x= 0;
+
+        characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
+    });
+
+
+    // Load the cat model model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
         object.scale.set(7, 7, 7);
@@ -454,6 +482,41 @@ setInterval(createShootingStar, 300);
                 }
             }
         });
+
+
+
+
+//     // Remove these lines
+//     const astronautBox = new THREE.Box3(); // Astronaut bounding box
+//     const moonBox = new THREE.Box3();      // Moon bounding box
+
+//     function updateBoundingBoxes() {
+//         if (astronaut && moonObject) {
+//             astronautBox.setFromObject(astronaut);
+//             moonBox.setFromObject(moonObject);
+//             return true; // Bounding boxes updated successfully
+//         } else {
+//             return false; // Cannot update bounding boxes
+//         }
+//     }
+
+
+//     // Check collision during animation
+//     // Remove or comment out this function
+//     function checkCollision() {
+//         if (astronaut && moonObject) {
+//         // Adjust 'offset' based on the astronaut's model height if necessary
+//             const offset = 1; // Adjust this value as needed
+//             const moonY = moonObject.position.y;
+//             const astronautY = astronaut.position.y;
+
+//             if (astronautY < moonY + offset) {
+//             astronaut.position.y = moonY + offset;
+//             }
+//         }
+//     }
+
+
 
 // Event listener for 'Don't Help' button
 dontHelpButton.addEventListener('click', () => {
@@ -518,6 +581,7 @@ helpButton.addEventListener('click', () => {
         });
     
         updateShootingStars();
+
     
         if (astronaut) {
             // Compute the offset between camera and controls.target
@@ -528,6 +592,7 @@ helpButton.addEventListener('click', () => {
     
             // Update camera's position to maintain the offset
             camera.position.copy(astronaut.position).add(cameraOffset);
+
         }
     
         controls.update();
@@ -543,6 +608,7 @@ helpButton.addEventListener('click', () => {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
 }
 
 
@@ -559,7 +625,9 @@ function restartLevel() {
     // Reset astronaut position and controls
     if (astronaut) {
         astronaut.position.copy(initialAstronautPosition);
+
         astronaut.rotation.set(0, 0, 0); 
+
     }
 
     // Stop the game over sound if it's playing
@@ -587,3 +655,4 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
 });
+
