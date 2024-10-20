@@ -119,7 +119,7 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 
 
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffcc99, 50);
@@ -283,20 +283,20 @@ const objectsToRaycast = [];
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/skull.glb', scene, controls, camera, (barrelObject) => {
-            barrelObject.scale.set(1, 1, 1);
-            barrelObject.position.set(50, 0, 6);
-            barrelObject.name = 'skeleton'
-            scene.add(barrelObject);
-            objectsToRaycast.push(barrelObject);
+        loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
+            skullObject.scale.set(0.2, 0.2, 0.2);
+            skullObject.position.set(45, 0.3, 4);
+            skullObject.name = 'skeleton'
+            scene.add(skullObject);
+            objectsToRaycast.push(skullObject);
 
             console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
-            CrystalObject.scale.set(0.5, 0.5, 0.5);
-            CrystalObject.position.set(50, 0, 4);
+            CrystalObject.scale.set(0.1, 0.1, 0.1);
+            CrystalObject.position.set(50, 0.1, 4);
             CrystalObject.name = 'Crystal'
             scene.add(CrystalObject);
             objectsToRaycast.push(CrystalObject);
@@ -306,7 +306,7 @@ const objectsToRaycast = [];
         });
 
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
-            BatteryObject.scale.set(1.7, 1.7, 1.7);
+            BatteryObject.scale.set(0.4, 0.4, 0.4);
             BatteryObject.position.set(60, 0, 4);
             BatteryObject.name = 'Crystal'
             scene.add(BatteryObject);
@@ -316,8 +316,8 @@ const objectsToRaycast = [];
             setupRaycasting(camera, objectsToRaycast);
         });
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
-            CirctuitIObject.scale.set(1.7, 1.7, 1.7);
-            CirctuitIObject.position.set(60, 0, 4);
+            CirctuitIObject.scale.set(0.4, 0.4, 0.4);
+            CirctuitIObject.position.set(70, 0, 4);
             CirctuitIObject.name = 'Crystal'
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
@@ -327,8 +327,8 @@ const objectsToRaycast = [];
         });
 
         loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
-            ButtonObject.scale.set(1.7, 1.7, 1.7);
-            ButtonObject.position.set(60, 0, 4);
+            ButtonObject.scale.set(0.8, 0.8, 0.8);
+            ButtonObject.position.set(60, 0, 6);
             ButtonObject.name = 'Crystal'
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);

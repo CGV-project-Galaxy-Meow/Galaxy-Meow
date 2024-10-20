@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { showCrudeOilModal, showSkeletonModal , showBatteryModal} from './modal.js';
+import { showCrudeOilModal, showSkeletonModal , showBatteryModal, showGemsModal} from './modal.js';
 
 export function setupRaycasting(camera, objectsToRaycast) {
     const raycaster = new THREE.Raycaster();
@@ -31,9 +31,8 @@ export function setupRaycasting(camera, objectsToRaycast) {
             else if (clickedObject.name === 'Object_2') {
                 showSkeletonModal();
                 
-            }else if (clickedObject.name === 'Cylinder004') {
-                
-                
+            }else if (clickedObject.name === 'Cylinder') {
+                   showGemsModal();
             }
         }
     });
