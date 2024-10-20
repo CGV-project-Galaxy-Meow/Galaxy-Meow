@@ -300,8 +300,19 @@ const objectsToRaycast = [];
             setupRaycasting(camera, objectsToRaycast);
         });
 
+        loadModel('models/skull.glb', scene, controls, camera, (barrelObject) => {
+            barrelObject.scale.set(1, 1, 1);
+            barrelObject.position.set(50, 0, 6);
+            barrelObject.name = 'skeleton'
+            scene.add(barrelObject);
+            objectsToRaycast.push(barrelObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
-            CrystalObject.scale.set(1.7, 1.7, 1.7);
+            CrystalObject.scale.set(0.5, 0.5, 0.5);
             CrystalObject.position.set(50, 0, 4);
             CrystalObject.name = 'Crystal'
             scene.add(CrystalObject);
