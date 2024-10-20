@@ -51,18 +51,18 @@ export function showSkeletonModal() {
     const modal = document.getElementById('myModal2');
     const catConversation = document.getElementById('catConversation2');
     const helpButton = document.getElementById('helpButton2');
-    const itemName = 'skeleton';
+    const itemName = 'skull';
 
     modal.style.display = 'block'; 
 
     // Set the modal content
     catConversation.innerHTML = `
         <h2>M.S Fitzgerald</h2>
-        <p>Margie Sandy Fitzgerald was SPO's first assigned agent.</p>
+        <p>12/09/67 - ??/??/2022, Margie Sandy Fitzgerald was SPO's first assigned agent.</p>
         <p>What is her story ?</p>
     `;
 
-    document.getElementById('catImage2').src = 'images/skeleton.jpg';
+    document.getElementById('catImage2').src = 'images/skull.png';
 
     
     const responsesDiv = document.getElementById('responses2');
@@ -115,6 +115,46 @@ export function showBatteryModal() {
     };
 
     // Close modal functionality
+    document.getElementById('closeModal2').onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none'; // Hide the modal
+        }
+    };
+}
+
+export function showGemsModal() {
+    const modal = document.getElementById('myModal2');
+    const catConversation = document.getElementById('catConversation2');
+    const helpButton = document.getElementById('helpButton2');
+    const itemName = 'gems';
+
+    modal.style.display = 'block'; 
+
+    // Set the modal content
+    catConversation.innerHTML = `
+        <h2>Power Crystal</h2>
+        <p>Basically a charger.</p>
+        <p>Take as many as you need.</p>
+    `;
+
+    document.getElementById('catImage2').src = items[itemName].img;
+
+    
+    const responsesDiv = document.getElementById('responses2');
+    responsesDiv.style.display = 'flex';
+
+    // Set up the button's onclick event
+    helpButton.onclick = function() {
+        addItem(itemName); 
+        modal.style.display = 'none'; 
+    };
+
+
     document.getElementById('closeModal2').onclick = function() {
         modal.style.display = 'none';
     };
