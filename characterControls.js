@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 
-
 export class CharacterControls {
     constructor(model, mixer, animationsMap, orbitControl, camera, currentAction) {
         this.model = model;
@@ -11,7 +10,7 @@ export class CharacterControls {
 
         this.toggleRun = true;
         this.currentAction = currentAction;
-        this.speed = 10; 
+        this.speed = 10; // Adjust movement speed as needed
 
         this.isJumping = false;
         this.jumpHeight = 20; // Height of the jump
@@ -39,18 +38,7 @@ export class CharacterControls {
         const centerZ = 0;
         const radius = 400;
 
-        // Update astronaut's rotation to match the camera's Y rotation
-        const cameraEuler = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
-        const astronautEuler = new THREE.Euler(0, cameraEuler.y, 0, 'YXZ');
-
-        // If you want smooth rotation, uncomment the following lines
-        // const astronautQuaternion = new THREE.Quaternion().setFromEuler(astronautEuler);
-        // this.model.quaternion.slerp(astronautQuaternion, 0.1); // Adjust the 0.1 value for rotation speed
-
-        // Otherwise, directly set the rotation
-        this.model.rotation.copy(astronautEuler);
-
-        // Compute movement direction based on camera orientation
+        // Compute movement direction based on key presses
         const moveVector = new THREE.Vector3();
 
         if (keysPressed['arrowup'] || keysPressed['w']) {
@@ -73,10 +61,15 @@ export class CharacterControls {
         let isMoving = moveVector.lengthSq() > 0;
 
         if (isMoving) {
+            // Normalize moveVector to ensure consistent movement speed
             moveVector.normalize();
 
-            // Rotate movement vector by the camera's Y rotation
-            moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraEuler.y);
+            // Get the camera's Y-axis rotation
+            const cameraEuler = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
+            const cameraYRotation = cameraEuler.y;
+
+            // Rotate moveVector by the camera's Y-axis rotation
+            moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraYRotation);
 
             // Update astronaut position
             const moveSpeed = this.speed * delta;
@@ -92,7 +85,17 @@ export class CharacterControls {
                 this.model.position.x = newPosition.x;
                 this.model.position.z = newPosition.z;
             }
+
+            // Rotate astronaut to face movement direction
+            const targetQuaternion = new THREE.Quaternion().setFromUnitVectors(
+                new THREE.Vector3(0, 0, 1), // The astronaut's forward vector
+                moveVector.clone().normalize() // The desired movement direction
+            );
+
+            // Smoothly rotate astronaut towards the movement direction
+            this.model.quaternion.slerp(targetQuaternion, 0.1); // Adjust slerp factor as needed
         } else if (!this.isJumping) {
+            // If not moving and not jumping, switch to idle animation
             this.currentAction = 'idle';
         }
 
@@ -102,7 +105,7 @@ export class CharacterControls {
             this.velocityY = this.jumpSpeed;
             this.isOnGround = false;
 
-            // Check if jumping animation exists, else fallback to floating animation
+            // Switch to jumping animation if available
             if (this.animationsMap.has('jumping')) {
                 this.currentAction = 'jumping';
             } else {
