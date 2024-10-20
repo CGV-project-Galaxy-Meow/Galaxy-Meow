@@ -38,6 +38,8 @@ let astronaut;
 let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
 const MAX_RADIUS = 900; 
 
+
+
 function restrictMovementWithinBarrier() {
     if (astronaut) {
         const distanceFromCenter = astronaut.position.length(); // Distance from (0,0,0)
@@ -75,8 +77,6 @@ function checkGroundCollision() {
     }
 }
 
-
-
 //Function to decrease health over time
 function decreaseHealth() {
     if (healthInterval) {
@@ -109,8 +109,41 @@ function checkOxygen(){
 }
 
 document.getElementById('bagIcon').style.display = 'none';
+
+
+
+// function showLoadingScreen() {
+//     const loadingScreen = document.createElement('div');
+//     loadingScreen.id = 'loading-screen';
+//     loadingScreen.style.position = 'absolute';
+//     loadingScreen.style.top = '0';
+//     loadingScreen.style.left = '0';
+//     loadingScreen.style.width = '100%';
+//     loadingScreen.style.height = '100%';
+//     loadingScreen.style.backgroundColor = 'rgba(0, 0, 0, 0.9)'; // Semi-transparent background
+//     loadingScreen.style.zIndex = '1000'; // Ensure it's on top of everything
+//     loadingScreen.style.display = 'flex';
+//     loadingScreen.style.justifyContent = 'center';
+//     loadingScreen.style.alignItems = 'center';
+//     loadingScreen.style.color = 'white';
+//     loadingScreen.style.fontSize = '24px';
+//     loadingScreen.textContent = 'Loading...'; // Display loading message
+    
+//     document.body.appendChild(loadingScreen);
+// }
+
+// // Function to hide/remove the loading screen
+// function hideLoadingScreen() {
+//     const loadingScreen = document.getElementById('loading-screen');
+//     if (loadingScreen) {
+//         loadingScreen.remove(); // Remove the loading screen from the DOM
+//     }
+// }
+
+//start game
+
 export function startGame() {
-    decreaseHealth();
+
     
     document.getElementById('bagIcon').style.display = 'grid';
 
@@ -131,44 +164,45 @@ export function startGame() {
     document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-//create background audio
-const listener = new THREE.AudioListener();
-camera.add(listener);
+    //create background audio
+    const listener = new THREE.AudioListener();
+    camera.add(listener);
 
-// Create a global audio source
-const sound = new THREE.Audio(listener);
+    // Create a global audio source
+    const sound = new THREE.Audio(listener);
 
-// Load a sound and set it as the Audio object's buffer
-const audioLoader = new THREE.AudioLoader();
-audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
-  sound.setBuffer(buffer);
-  sound.setLoop(true);
-  sound.setVolume(0.5);
-  sound.play();
-});
+    // Load a sound and set it as the Audio object's buffer
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.5);
+    sound.play();
+    });
 
-
-
+    //create the new light
+    // ambiant light
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
+    //directional light
     const directionalLight = new THREE.DirectionalLight(0xffcc99, 50);
     directionalLight.position.set(0, 50, -50).normalize();
-    //directionalLight.castShadow = true;  // Enable shadows if needed
     scene.add(directionalLight);
     
-
+    //create sun
     createSun(scene);
 
-    // Background Setup (from background.js)
+    // Background Setup - space scene - (from background.js)
     const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
     const spaceGeometry = new THREE.SphereGeometry(500, 64, 64); // Large enough to cover the background
+
 
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
     scene.add(space);
 
-
+    //there is a floating earth
     const earthTexture = new THREE.TextureLoader().load('public/textures/earth.jpg');
     const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
 
@@ -178,7 +212,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
-    // For celestial bodies
+    // For other celestial bodies
     const celestialBodies = [];
     function createCelestialBody(textureUrl, size, position) {
         const texture = new THREE.TextureLoader().load(textureUrl);
@@ -191,19 +225,18 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
         celestialBodies.push(body);
     }
 
-
+    //create shooting starts
     const shootingStars = [];
 
-function createShootingStar() {
-    const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-    const starMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0xffffff, 
-        transparent: true, 
-        opacity: Math.random() 
+    function createShootingStar() {
+        const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+        const starMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0xffffff, 
+            transparent: true, 
+            opacity: Math.random() 
     });
     const shootingStar = new THREE.Mesh(starGeometry, starMaterial);
-
-   
+    //control the shooting star
     const startX = 50;  
     const startY = 0;  
     const startZ = -50
@@ -216,10 +249,11 @@ function createShootingStar() {
     const velocityY = Math.random() * 0.1 - 0.05;  // Y velocity range
     const velocityZ = Math.random() * 0.2 - 0.1;   // Z velocity towards the camera
 
-    // Create an array for the tail positions
+    // Create an array for the tail positions for the shooting stars
     const tailPositions = [];
     const tailLength = 5;
     const tailColor = 0x00ff00;
+
 
     for (let i = 0; i < tailLength; i++) {
         const tailStar = new THREE.Mesh(
@@ -240,12 +274,12 @@ function createShootingStar() {
 }
 
 
-function updateShootingStars() {
-    shootingStars.forEach((star, index) => {
-        star.mesh.position.add(star.velocity);
+    function updateShootingStars() {
+        shootingStars.forEach((star, index) => {
+            star.mesh.position.add(star.velocity);
         
-        // Update opacity for strobing effect
-        star.mesh.material.opacity += 0.05 * star.fadeDirection;
+            // Update opacity for strobing effect
+            star.mesh.material.opacity += 0.05 * star.fadeDirection;
 
         // Reverse fade direction when reaching limits
         if (star.mesh.material.opacity >= 1 || star.mesh.material.opacity <= 0) {
@@ -273,26 +307,14 @@ function updateShootingStars() {
 }
 
 
-setInterval(createShootingStar, 300);
+    setInterval(createShootingStar, 300);
     
-const objectsToRaycast = [];
 
-    // Load the astronaut model and apply controls
-    let characterControls;
-    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
-        astronaut = object;
-        astronaut.scale.set(10.7, 10.7, 10.7);
-        initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(50,0,5);
+    //character model generation
+    const objectsToRaycast = [];
 
-        astronaut.rotation.x= 0;
-
-        characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
-    });
-
-
-    // Load the Moon Plane Model
-    loadModel('public/models/moonground.glb', scene, controls, camera, (loadedMoonObject) => {
+     // Load the Moon Plane Model
+     loadModel('public/models/moonground.glb', scene, controls, camera, (loadedMoonObject) => {
         moonObject = loadedMoonObject; // Assign to the outer scope variable
         moonObject.scale.set(1000, 1000, 500);
         moonObject.position.set(100, 10, 0);
@@ -311,10 +333,22 @@ const objectsToRaycast = [];
             setupRaycasting(camera, objectsToRaycast);
         });
     });
-   
 
-    
-    // Load the static model
+    // Load the astronaut model and apply controls
+    let characterControls;
+    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+        astronaut = object;
+        astronaut.scale.set(10.7, 10.7, 10.7);
+        initialAstronautPosition.copy(astronaut.position);
+        astronaut.position.set(50,0,5);
+
+        astronaut.rotation.x= 0;
+
+        characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
+    });
+
+
+    // Load the cat model model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
         object.scale.set(7, 7, 7);
@@ -356,35 +390,36 @@ const objectsToRaycast = [];
         });
 
 
-// Remove these lines
-const astronautBox = new THREE.Box3(); // Astronaut bounding box
-const moonBox = new THREE.Box3();      // Moon bounding box
 
-function updateBoundingBoxes() {
-    if (astronaut && moonObject) {
-        astronautBox.setFromObject(astronaut);
-        moonBox.setFromObject(moonObject);
-        return true; // Bounding boxes updated successfully
-    } else {
-        return false; // Cannot update bounding boxes
-    }
-}
+    // Remove these lines
+    const astronautBox = new THREE.Box3(); // Astronaut bounding box
+    const moonBox = new THREE.Box3();      // Moon bounding box
 
-
-// Check collision during animation
-// Remove or comment out this function
-function checkCollision() {
-    if (astronaut && moonObject) {
-        // Adjust 'offset' based on the astronaut's model height if necessary
-        const offset = 1; // Adjust this value as needed
-        const moonY = moonObject.position.y;
-        const astronautY = astronaut.position.y;
-
-        if (astronautY < moonY + offset) {
-            astronaut.position.y = moonY + offset;
+    function updateBoundingBoxes() {
+        if (astronaut && moonObject) {
+            astronautBox.setFromObject(astronaut);
+            moonBox.setFromObject(moonObject);
+            return true; // Bounding boxes updated successfully
+        } else {
+            return false; // Cannot update bounding boxes
         }
     }
-}
+
+
+    // Check collision during animation
+    // Remove or comment out this function
+    function checkCollision() {
+        if (astronaut && moonObject) {
+        // Adjust 'offset' based on the astronaut's model height if necessary
+            const offset = 1; // Adjust this value as needed
+            const moonY = moonObject.position.y;
+            const astronautY = astronaut.position.y;
+
+            if (astronautY < moonY + offset) {
+            astronaut.position.y = moonY + offset;
+            }
+        }
+    }
 
 
 // Event listener for 'Don't Help' button
@@ -477,6 +512,8 @@ if (astronaut && moonObject) {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
+    decreaseHealth();
     
 }
 
@@ -519,3 +556,4 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
 });
+
