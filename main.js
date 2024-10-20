@@ -14,6 +14,7 @@ let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
+document.getElementById('gameCanvas').style.display = 'block';
 let characterControls;
 let healthInterval; // To control the health timer
 
@@ -113,7 +114,16 @@ function checkOxygen(){
 }
 
 document.getElementById('bagIcon').style.display = 'none';
+
+
+
 export function startGame() {
+
+    //show objectives
+    
+    const overlay = document.querySelector('.overlay');
+    overlay.style.display = 'block';
+
     decreaseHealth();
     
     document.getElementById('bagIcon').style.display = 'grid';
