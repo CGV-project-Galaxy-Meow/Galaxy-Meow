@@ -1,4 +1,12 @@
+import * as THREE from 'three';
 import { addItem , items} from "./inventory";
+import {camera, objectsToRaycast} from "./main.js";
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+
+
+
+
 export function showCrudeOilModal() {
     const modal = document.getElementById('myModal2');
     const catConversation = document.getElementById('catConversation2');
