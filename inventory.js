@@ -5,7 +5,15 @@ export const items = {
     gems: { img: 'images/gems.png', count: 0 },
     sword: { img: 'images/sword.png', count: 0 },
     potion: { img: 'images/potion.png', count: 0 },
-    crudeOil: { img: 'images/crude_oil.png', count: 0 } // Add your items here
+
+    crudeOil: { img: 'images/crude_oil.png', count: 0 } ,
+    battery: {img: 'images/ '},
+    skull: {img: 'images/skull.png', count: 0},
+
+    crudeOil: { img: 'images/crude_oil.png', count: 0 } ,
+    battery: {img: 'images/ '},
+    skeleton: { img: 'images/skeleton.jpg', count: 0 }
+
 };
 
 function getNextAvailableSlot() {
@@ -24,7 +32,6 @@ function addItemToSlot(slot, itemName) {
         itemImage.src = items[itemName].img; // Set the image for the item
         itemImage.alt = itemName; // Set alt text for the image
 
-        // If the item already exists, increase the count
         items[itemName].count += 1;
         const countDisplay = document.createElement('span');
         countDisplay.textContent = items[itemName].count;
@@ -36,6 +43,31 @@ function addItemToSlot(slot, itemName) {
         console.warn(`Item "${itemName}" not found in items.`);
     }
 }
+
+function removeItemFromSlot(slot, itemName) {
+    if (items[itemName]) {
+        const itemImage = slot.querySelector(`img[alt="${itemName}"]`);
+        const countDisplay = slot.querySelector('.item-count');
+
+        if (itemImage && countDisplay) {
+            items[itemName].count -= 1;
+
+           
+            if (items[itemName].count === 0) {
+                slot.removeChild(itemImage); // Remove the item image
+                slot.removeChild(countDisplay); // Remove the item count display
+                items[itemName].hasItem = false; // Mark the item as no longer in the inventory
+            } else {
+                countDisplay.textContent = items[itemName].count;
+            }
+        } else {
+            console.warn(`Item "${itemName}" not found in this slot.`);
+        }
+    } else {
+        console.warn(`Item "${itemName}" not found in items.`);
+    }
+}
+
 
 export function addItem(itemName) {
     const availableSlot = getNextAvailableSlot();
@@ -81,6 +113,56 @@ export function clearInventory() {
 
     console.log('Inventory cleared.');
 }
+
+// Function to create and show the "Remove?" prompt
+function showRemovePrompt(slot, itemName) {
+    // Create a small prompt element
+    const removePrompt = document.createElement('div');
+    removePrompt.textContent = "Remove?";
+    removePrompt.classList.add('remove-prompt');
+    
+    // Style the prompt
+    removePrompt.style.position = 'absolute';
+    removePrompt.style.backgroundColor = 'red';
+    removePrompt.style.color = 'white';
+    removePrompt.style.padding = '5px';
+    removePrompt.style.cursor = 'pointer';
+    
+    // Append the prompt to the slot
+    slot.appendChild(removePrompt);
+
+    
+    function handleClickOutside(event) {
+        if (!removePrompt.contains(event.target) && !slot.contains(event.target)) {
+            
+            slot.removeChild(removePrompt);
+            document.removeEventListener('click', handleClickOutside); 
+        }
+    }
+
+   
+    removePrompt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeItemFromSlot(slot, itemName); 
+        slot.removeChild(removePrompt);
+        document.removeEventListener('click', handleClickOutside); 
+    });
+
+   
+    document.addEventListener('click', handleClickOutside);
+}
+
+
+inventorySlots.forEach(slot => {
+    slot.addEventListener('click', function() {
+        const itemImage = slot.querySelector('img'); // Check if the slot contains an item
+        if (itemImage) {
+            const itemName = itemImage.alt; // Get the item name from the image's alt attribute
+            showRemovePrompt(slot, itemName); // Show the remove prompt
+        }
+    });
+});
+
 
 
 
