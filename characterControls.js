@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+
+
 export class CharacterControls {
     constructor(model, mixer, animationsMap, orbitControl, camera, currentAction) {
         this.model = model;
@@ -8,7 +11,7 @@ export class CharacterControls {
 
         this.toggleRun = true;
         this.currentAction = currentAction;
-        this.speed = 1;
+        this.speed = 10; 
 
         this.isJumping = false;
         this.jumpHeight = 20; // Height of the jump
@@ -36,56 +39,64 @@ export class CharacterControls {
         const centerZ = 0;
         const radius = 400;
 
-        // Handle lateral movement
-        let newX = this.model.position.x;
-        let newZ = this.model.position.z;
+        // Update astronaut's rotation to match the camera's Y rotation
+        const cameraEuler = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
+        const astronautEuler = new THREE.Euler(0, cameraEuler.y, 0, 'YXZ');
 
-        const isWithinBoundary = (newX, newZ) => {
-            const distance = Math.sqrt((newX - centerX) ** 2 + (newZ - centerZ) ** 2);
-            return distance <= radius;
-        };
+        // If you want smooth rotation, uncomment the following lines
+        // const astronautQuaternion = new THREE.Quaternion().setFromEuler(astronautEuler);
+        // this.model.quaternion.slerp(astronautQuaternion, 0.1); // Adjust the 0.1 value for rotation speed
 
-    // Moving forward
-    if (keysPressed['arrowup'] || keysPressed['w']) {
-        newZ -= this.speed;
-        if (isWithinBoundary(newX, newZ)) {
+        // Otherwise, directly set the rotation
+        this.model.rotation.copy(astronautEuler);
+
+        // Compute movement direction based on camera orientation
+        const moveVector = new THREE.Vector3();
+
+        if (keysPressed['arrowup'] || keysPressed['w']) {
+            moveVector.z -= 1;
             this.currentAction = 'floating';
-            this.model.position.z = newZ;
-            this.model.rotation.y = Math.PI; // Rotate to face forward
         }
-    }
-
-    // Moving backward
-    if (keysPressed['arrowdown'] || keysPressed['s']) {
-        newZ += this.speed;
-        if (isWithinBoundary(newX, newZ)) {
+        if (keysPressed['arrowdown'] || keysPressed['s']) {
+            moveVector.z += 1;
             this.currentAction = 'floating';
-            this.model.position.z = newZ;
-            this.model.rotation.y = 0; // Rotate to face backward
         }
-    }
-
-    // Moving left
-    if (keysPressed['arrowleft'] || keysPressed['a']) {
-        newX -= this.speed;
-        if (isWithinBoundary(newX, newZ)) {
+        if (keysPressed['arrowleft'] || keysPressed['a']) {
+            moveVector.x -= 1;
             this.currentAction = 'floating';
-            this.model.position.x = newX;
-            this.model.rotation.y = -Math.PI/2; // Rotate to face left
         }
-    }
-
-    // Moving right
-    if (keysPressed['arrowright'] || keysPressed['d']) {
-        newX += this.speed;
-        if (isWithinBoundary(newX, newZ)) {
+        if (keysPressed['arrowright'] || keysPressed['d']) {
+            moveVector.x += 1;
             this.currentAction = 'floating';
-            this.model.position.x = newX;
-            this.model.rotation.y = Math.PI/2; // Rotate to face right
         }
-    }
 
-        // Start the jump when spacebar is pressed and the character is on the ground
+        let isMoving = moveVector.lengthSq() > 0;
+
+        if (isMoving) {
+            moveVector.normalize();
+
+            // Rotate movement vector by the camera's Y rotation
+            moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraEuler.y);
+
+            // Update astronaut position
+            const moveSpeed = this.speed * delta;
+            const newPosition = new THREE.Vector3().copy(this.model.position);
+            newPosition.addScaledVector(moveVector, moveSpeed);
+
+            // Check boundaries
+            const isWithinBoundary = (x, z) => {
+                const distance = Math.sqrt((x - centerX) ** 2 + (z - centerZ) ** 2);
+                return distance <= radius;
+            };
+            if (isWithinBoundary(newPosition.x, newPosition.z)) {
+                this.model.position.x = newPosition.x;
+                this.model.position.z = newPosition.z;
+            }
+        } else if (!this.isJumping) {
+            this.currentAction = 'idle';
+        }
+
+        // Handle jumping
         if (keysPressed[' '] && this.isOnGround) {
             this.isJumping = true;
             this.velocityY = this.jumpSpeed;
@@ -99,21 +110,24 @@ export class CharacterControls {
             }
         }
 
-        // Handle jumping
+        // Apply gravity and vertical movement
         if (this.isJumping) {
             this.velocityY -= this.gravity * delta; // Apply gravity
             this.model.position.y += this.velocityY * delta; // Update vertical position
 
             // Allow lateral movement during the jump
-            this.model.position.x = newX; // Maintain lateral movement
-            this.model.position.z = newZ;
+            if (isMoving) {
+                const moveSpeed = this.speed * delta;
+                this.model.position.x += moveVector.x * moveSpeed;
+                this.model.position.z += moveVector.z * moveSpeed;
+            }
 
             // Detect when the character lands on the ground
             if (this.model.position.y <= 0) {
                 this.model.position.y = 0;
                 this.isJumping = false;
                 this.isOnGround = true;
-                this.currentAction = 'idle'; // Reset to idle after the jump
+                this.currentAction = isMoving ? 'floating' : 'idle'; // Reset to appropriate action
             }
         }
 
