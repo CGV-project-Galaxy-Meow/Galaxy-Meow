@@ -117,6 +117,29 @@ body { margin: 0; overflow: hidden; }
 }
 
 
+.overlay {
+    position: absolute; 
+    left: 10px; 
+    top: 50px; 
+    width: auto;
+    background-color: rgba(0, 0, 0, 0.5); 
+    padding: 10px; 
+    border-radius: 5px; 
+    color: white; 
+    font-size: 16px; 
+    z-index: 100; 
+    display: none;
+}
+
+
+.overlay h2 {
+    margin: 0 0 10px 0; /* Margin for the heading */
+}
+
+.overlay ul {
+    list-style-type: none; /* Remove default list style */
+    padding: 0; /* Remove default padding */
+}
 
 #catConversation{
     overflow: hidden;

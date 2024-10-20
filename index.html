@@ -6,8 +6,8 @@
   <title>Galaxy Meow</title>
   <link rel="stylesheet" href="index.css">
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script>
-
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
 </head>
 <body>
 
@@ -39,7 +39,7 @@
       <li>Oxygen Meter - You get 100 units of oxygen</li>
       <li>If you need help - Click The Cat</li>
       <li>Esc - Restart/Leave game</li>
-      <li>Mouse - Look around and click</li>
+      <li>Mouse Right click and drag - Click and look around</li>
     </ul>
   </div>
 
@@ -58,6 +58,23 @@
   </div>
 
   <script>
+    //create background audio
+const listener = new THREE.AudioListener();
+
+
+// Create a global audio source
+const sound = new THREE.Audio(listener);
+
+// Load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+  sound.setBuffer(buffer);
+  sound.setLoop(false);
+  sound.setVolume(0.5);
+  sound.play();
+});
+
+
     // Start button 
     document.getElementById('startGame').addEventListener('click', function() {
       window.location.href = 'game.html';
