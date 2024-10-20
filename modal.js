@@ -87,6 +87,46 @@ export function showSkeletonModal() {
     };
 }
 
+export function showFlagModal() {
+    const modal = document.getElementById('myModal2');
+    const catConversation = document.getElementById('catConversation2');
+    const helpButton = document.getElementById('helpButton2');
+    const itemName = 'flag';
+
+    modal.style.display = 'block'; 
+
+    // Set the modal content
+    catConversation.innerHTML = `
+        <h2>U.S Flag</h2>
+        <p>USA KAWWHHH!!!</p>
+        <p>Americans never made it the moon by the way.</p>
+    `;
+
+    document.getElementById('catImage2').src = 'images/flag.png';
+
+    
+    const responsesDiv = document.getElementById('responses2');
+    responsesDiv.style.display = 'flex'; // Show the responses div
+
+    // Set up the button's onclick event
+    helpButton.onclick = function() {
+        addItem(itemName); // Add the item to the inventory
+        modal.style.display = 'none'; // Hide the modal after adding
+    };
+
+    // Close modal functionality
+    document.getElementById('closeModal2').onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none'; // Hide the modal
+        }
+    };
+}
+
 export function showBatteryModal() {
     const modal = document.getElementById('myModal2');
     const catConversation = document.getElementById('catConversation2');
