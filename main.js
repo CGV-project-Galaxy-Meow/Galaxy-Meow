@@ -14,7 +14,6 @@ let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
-document.getElementById('gameCanvas').style.display = 'block';
 let characterControls;
 let healthInterval; // To control the health timer
 
@@ -41,6 +40,23 @@ let catObject;
 let astronaut;
 let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
 
+
+//set things up
+camera.position.set(50, 10, 2); 
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById('gameCanvas').appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;        // Enable damping (inertia)
+controls.dampingFactor = 0.05;        // Damping inertia
+controls.enableZoom = false;          // Disable zoom if desired
+controls.enablePan = false;           // Disable pan if desired
+controls.mouseButtons = {
+    LEFT: null,
+    MIDDLE: null,
+    RIGHT: THREE.MOUSE.ROTATE
+};
 
 
 // Audio listener
@@ -114,16 +130,7 @@ function checkOxygen(){
 }
 
 document.getElementById('bagIcon').style.display = 'none';
-
-
-
 export function startGame() {
-
-    //show objectives
-    
-    const overlay = document.querySelector('.overlay');
-    overlay.style.display = 'block';
-
     decreaseHealth();
     
     document.getElementById('bagIcon').style.display = 'grid';
@@ -139,30 +146,10 @@ export function startGame() {
     });
 
 
-
-    camera.position.set(50, 10, 2); 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('gameCanvas').appendChild(renderer.domElement);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;        // Enable damping (inertia)
-    controls.dampingFactor = 0.05;        // Damping inertia
-    controls.enableZoom = false;          // Disable zoom if desired
-    controls.enablePan = false;           // Disable pan if desired
-    controls.mouseButtons = {
-        LEFT: null,
-        MIDDLE: null,
-        RIGHT: THREE.MOUSE.ROTATE
-    };
-
-
-
-
 // Prevent context menu from appearing on right-click
 renderer.domElement.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 }, false);
-
-
 
 //create background audio
 const listener = new THREE.AudioListener();
