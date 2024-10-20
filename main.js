@@ -144,7 +144,25 @@ renderer.domElement.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 }, false);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+//create background audio
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Create a global audio source
+const sound = new THREE.Audio(listener);
+
+// Load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+  sound.setBuffer(buffer);
+  sound.setLoop(true);
+  sound.setVolume(0.5);
+  sound.play();
+});
+
+
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffcc99, 50);
@@ -297,6 +315,18 @@ setInterval(createShootingStar, 300);
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
         scene.add(moonObject);
 
+
+  // Load the American Flag Model
+  loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
+    flagObject.scale.set(1.7, 1.7, 1.7);
+    flagObject.position.set(100, 5,100);
+    flagObject.name = 'american_flag';
+    scene.add(flagObject);
+    objectsToRaycast.push(flagObject);
+    setupRaycasting(camera, objectsToRaycast);
+});
+
+
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(1.7, 1.7, 1.7);
             barrelObject.position.set(40, 0, 4);
@@ -308,20 +338,20 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/skull.glb', scene, controls, camera, (barrelObject) => {
-            barrelObject.scale.set(1, 1, 1);
-            barrelObject.position.set(50, 0, 6);
-            barrelObject.name = 'skeleton'
-            scene.add(barrelObject);
-            objectsToRaycast.push(barrelObject);
+        loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
+            skullObject.scale.set(0.2, 0.2, 0.2);
+            skullObject.position.set(45, 0.3, 4);
+            skullObject.name = 'skeleton'
+            scene.add(skullObject);
+            objectsToRaycast.push(skullObject);
 
             console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
-            CrystalObject.scale.set(0.5, 0.5, 0.5);
-            CrystalObject.position.set(50, 0, 4);
+            CrystalObject.scale.set(0.1, 0.1, 0.1);
+            CrystalObject.position.set(50, 0.1, 4);
             CrystalObject.name = 'Crystal'
             scene.add(CrystalObject);
             objectsToRaycast.push(CrystalObject);
@@ -331,7 +361,7 @@ setInterval(createShootingStar, 300);
         });
 
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
-            BatteryObject.scale.set(1.7, 1.7, 1.7);
+            BatteryObject.scale.set(0.4, 0.4, 0.4);
             BatteryObject.position.set(60, 0, 4);
             BatteryObject.name = 'Crystal'
             scene.add(BatteryObject);
@@ -341,8 +371,8 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
-            CirctuitIObject.scale.set(1.7, 1.7, 1.7);
-            CirctuitIObject.position.set(60, 0, 4);
+            CirctuitIObject.scale.set(0.4, 0.4, 0.4);
+            CirctuitIObject.position.set(70, 0, 4);
             CirctuitIObject.name = 'Crystal'
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
@@ -352,8 +382,8 @@ setInterval(createShootingStar, 300);
         });
 
         loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
-            ButtonObject.scale.set(1.7, 1.7, 1.7);
-            ButtonObject.position.set(60, 0, 4);
+            ButtonObject.scale.set(0.8, 0.8, 0.8);
+            ButtonObject.position.set(60, 0, 6);
             ButtonObject.name = 'Crystal'
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
@@ -495,6 +525,7 @@ helpButton.addEventListener('click', () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
 }
+
 
 
 // Restart Level

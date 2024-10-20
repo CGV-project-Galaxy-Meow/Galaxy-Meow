@@ -5,8 +5,15 @@ export const items = {
     gems: { img: 'images/gems.png', count: 0 },
     sword: { img: 'images/sword.png', count: 0 },
     potion: { img: 'images/potion.png', count: 0 },
-    crudeOil: { img: 'images/crude_oil.png', count: 0 } ,// Add your items here
-    battery: {img: 'images/ '}
+
+    crudeOil: { img: 'images/crude_oil.png', count: 0 } ,
+    battery: {img: 'images/ '},
+    skull: {img: 'images/skull.png', count: 0},
+
+    crudeOil: { img: 'images/crude_oil.png', count: 0 } ,
+    battery: {img: 'images/ '},
+    skeleton: { img: 'images/skeleton.jpg', count: 0 }
+
 };
 
 function getNextAvailableSlot() {
@@ -25,7 +32,6 @@ function addItemToSlot(slot, itemName) {
         itemImage.src = items[itemName].img; // Set the image for the item
         itemImage.alt = itemName; // Set alt text for the image
 
-        // If the item already exists, increase the count
         items[itemName].count += 1;
         const countDisplay = document.createElement('span');
         countDisplay.textContent = items[itemName].count;
@@ -125,12 +131,27 @@ function showRemovePrompt(slot, itemName) {
     // Append the prompt to the slot
     slot.appendChild(removePrompt);
 
-    // Add a click event listener to remove the item when the prompt is clicked
-    removePrompt.addEventListener('click', () => {
-        removeItemFromSlot(slot, itemName); // Call the remove function
-        slot.removeChild(removePrompt); // Remove the prompt after removing the item
+    
+    function handleClickOutside(event) {
+        if (!removePrompt.contains(event.target) && !slot.contains(event.target)) {
+            
+            slot.removeChild(removePrompt);
+            document.removeEventListener('click', handleClickOutside); 
+        }
+    }
+
+   
+    removePrompt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeItemFromSlot(slot, itemName); 
+        slot.removeChild(removePrompt);
+        document.removeEventListener('click', handleClickOutside); 
     });
+
+   
+    document.addEventListener('click', handleClickOutside);
 }
+
 
 inventorySlots.forEach(slot => {
     slot.addEventListener('click', function() {
