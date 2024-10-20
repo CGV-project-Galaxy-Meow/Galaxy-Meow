@@ -6,7 +6,8 @@ export const items = {
     sword: { img: 'images/sword.png', count: 0 },
     potion: { img: 'images/potion.png', count: 0 },
     crudeOil: { img: 'images/crude_oil.png', count: 0 } ,// Add your items here
-    battery: {img: 'images/ '}
+    battery: {img: 'images/ '},
+    skeleton: { img: 'images/skeleton.jpg', count: 0 }
 };
 
 function getNextAvailableSlot() {
