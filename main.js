@@ -287,6 +287,18 @@ setInterval(createShootingStar, 300);
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
         scene.add(moonObject);
 
+
+  // Load the American Flag Model
+  loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
+    flagObject.scale.set(1.7, 1.7, 1.7);
+    flagObject.position.set(100, 5,100);
+    flagObject.name = 'american_flag';
+    scene.add(flagObject);
+    objectsToRaycast.push(flagObject);
+    setupRaycasting(camera, objectsToRaycast);
+});
+
+
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(1.7, 1.7, 1.7);
             barrelObject.position.set(40, 0, 4);
@@ -484,6 +496,11 @@ helpButton.addEventListener('click', () => {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+}
+
+// Show "You Died" message
+function showDeathMessage() {
+    deathMessage.style.display = 'block';
 }
 
 
