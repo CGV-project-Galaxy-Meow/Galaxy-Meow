@@ -135,6 +135,7 @@
 
     <!-- Exit Menu -->
     <div id="exitMenu">
+        <span id="closeExit" style="cursor: pointer; color: red; font-size: 30px; position: absolute; top: 5px; right: 10px;">&times;</span>
         <h2>Are you sure?</h2>
         <button id="mainMenuButton">Main Menu</button>
         <button id="restartButton">Restart Level</button>
@@ -231,5 +232,16 @@
    
     <script type="module" src="/intro.js"></script>
     <script type = "module" src = "/inventory.js"> </script>
+
+    <script>
+
+        closeExit = document.getElementById("closeExit");
+        exitMenu = document.getElementById("exitMenu")
+
+        // Close exitMenu modal on button click
+        closeExit.addEventListener('click', () => {
+            exitMenu.style.display = 'none'; 
+        });
+    </script>
 </body>
 </html>
