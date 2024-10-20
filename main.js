@@ -45,7 +45,7 @@ function checkGroundCollision() {
         const downVector = new THREE.Vector3(0, -1, 0);
         // Starting point of the ray (from the astronaut's position)
         const rayOrigin = astronaut.position.clone();
-        rayOrigin.y += 1; // Offset ray origin upwards if needed (adjust based on your model)
+        rayOrigin.y += 0; // Offset ray origin upwards if needed (adjust based on your model)
 
         // Create a raycaster from the astronaut's position downward
         const raycaster = new THREE.Raycaster(rayOrigin, downVector, 0, 5); // Adjust max distance as needed
@@ -275,7 +275,7 @@ const objectsToRaycast = [];
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(50,0,5);
+        astronaut.position.set(50,10,5);
         astronaut.rotation.x= 0;
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     });
@@ -285,7 +285,7 @@ const objectsToRaycast = [];
     loadModel('models/moonground.glb', scene, controls, camera, (loadedMoonObject) => {
         moonObject = loadedMoonObject; // Assign to the outer scope variable
         moonObject.scale.set(1000, 1000, 500);
-        moonObject.position.set(100, 10, 0);
+        moonObject.position.set(100, -10, 0);
         scene.add(moonObject);
 
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
