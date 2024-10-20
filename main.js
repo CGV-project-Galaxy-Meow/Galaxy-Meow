@@ -59,28 +59,37 @@ controls.mouseButtons = {
 };
 
 
-//create background audio
+// Audio listener
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
-// Create a global audio source
-const sound = new THREE.Audio(listener);
-
-// Load a sound and set it as the Audio object's buffer
+// Audio loader
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/ambiance-sound.mp3', function (buffer) {
-  sound.setBuffer(buffer);
-  sound.setLoop(true);
-  sound.setVolume(0.5);
-  sound.play();
+
+// separate audio sources for during game and game over
+const ambianceSound = new THREE.Audio(listener);
+const gameOverSound = new THREE.Audio(listener);
+
+// Load ambiance sound
+audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+    ambianceSound.setBuffer(buffer);
+    ambianceSound.setLoop(true);
+    ambianceSound.setVolume(0.5);
+    ambianceSound.play();
+});
+
+// Load game over sound
+audioLoader.load('/sound/game-over.mp3', function(buffer) {
+    gameOverSound.setBuffer(buffer);
+    gameOverSound.setLoop(false);
+    gameOverSound.setVolume(0.5);
+    //we'll play it when health reaches zero
 });
 
 
 
 //----functions----
 
-
-//Function to decrease health over time
 function decreaseHealth() {
     if (healthInterval) {
         clearInterval(healthInterval); // Clear any previous interval
@@ -93,8 +102,16 @@ function decreaseHealth() {
         } else {
             clearInterval(healthInterval); // Stop the timer when health reaches 0
             showDeathMessage();
+
+            // Stop the ambiance music
+            if (ambianceSound.isPlaying) {
+                ambianceSound.stop();
+            }
+
+            // Play the game over sound
+            gameOverSound.play();
         }
-    }, 5000); // Decrease health every 3 seconds
+    }, 5000); // Decrease health every 5 seconds
 }
 
 //cat warns you of the oxygen
@@ -134,21 +151,6 @@ renderer.domElement.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 }, false);
 
-//create background audio
-const listener = new THREE.AudioListener();
-camera.add(listener);
-
-// Create a global audio source
-const sound = new THREE.Audio(listener);
-
-// Load a sound and set it as the Audio object's buffer
-const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/ambiance-sound.mp3', function (buffer) {
-  sound.setBuffer(buffer);
-  sound.setLoop(true);
-  sound.setVolume(0.5);
-  sound.play();
-});
 
 
 
@@ -518,7 +520,6 @@ helpButton.addEventListener('click', () => {
 
 
 
-// Restart Level
 function restartLevel() {
     // Reset health
     health = 100;
@@ -528,14 +529,25 @@ function restartLevel() {
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
 
-    //Reset astronaut position and controls
+    // Reset astronaut position and controls
     if (astronaut) {
         astronaut.position.copy(initialAstronautPosition);
         astronaut.rotation.set(0, 0, 0); 
     }
 
+    // Stop the game over sound if it's playing
+    if (gameOverSound.isPlaying) {
+        gameOverSound.stop();
+    }
+
+    // Start the ambiance music if it's not playing
+    if (!ambianceSound.isPlaying) {
+        ambianceSound.play();
+    }
+
     decreaseHealth();
 }
+
 
 // Event Listeners for buttons
 document.getElementById('restartButton').addEventListener('click', restartLevel);
