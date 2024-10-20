@@ -79,25 +79,22 @@ export function startGame() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(50, 5, 12); 
+    camera.position.set(50, 10, 2); 
 
 
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('gameCanvas').appendChild(renderer.domElement);
-
     const controls = new OrbitControls(camera, renderer.domElement);
-
-// Configure controls to rotate with the right mouse button
-controls.mouseButtons = {
-    LEFT: null,
-    MIDDLE: null,
-    RIGHT: THREE.MOUSE.ROTATE
-};
-
-// Disable zoom and pan if you don't want them
-controls.enableZoom = false;
-controls.enablePan = false;
+    controls.enableDamping = true;        // Enable damping (inertia)
+    controls.dampingFactor = 0.05;        // Damping inertia
+    controls.enableZoom = false;          // Disable zoom if desired
+    controls.enablePan = false;           // Disable pan if desired
+    controls.mouseButtons = {
+        LEFT: null,
+        MIDDLE: null,
+        RIGHT: THREE.MOUSE.ROTATE
+    };
 
 // Prevent context menu from appearing on right-click
 renderer.domElement.addEventListener('contextmenu', function(event) {
@@ -255,11 +252,18 @@ const objectsToRaycast = [];
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(50,0,5);
-        astronaut.rotation.x= 0;
+        astronaut.position.set(50, 0, 5);
+        astronaut.rotation.x = 0;
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
+    
+        // Set camera initial position relative to astronaut
+        const initialOffset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        camera.position.copy(astronaut.position).add(initialOffset);
+    
+        // Set initial controls target
+        controls.target.copy(astronaut.position);
     });
-
+    
 
     // Load the Moon Plane Model
     loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
@@ -372,6 +376,7 @@ helpButton.addEventListener('click', () => {
     }, false);
 
     const clock = new THREE.Clock();
+
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -387,8 +392,14 @@ helpButton.addEventListener('click', () => {
         updateShootingStars();
     
         if (astronaut) {
+            // Compute the offset between camera and controls.target
+            const cameraOffset = camera.position.clone().sub(controls.target);
+    
             // Update controls target to astronaut's position
             controls.target.copy(astronaut.position);
+    
+            // Update camera's position to maintain the offset
+            camera.position.copy(astronaut.position).add(cameraOffset);
         }
     
         controls.update();
