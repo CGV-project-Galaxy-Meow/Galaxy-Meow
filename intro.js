@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Good luck, ${playerName}!</p>
             `;
 
+            //add loading screen so all models have time to load.
             nextButton.textContent = 'Start Game';
             step++;
         } else if (step === 3) {
