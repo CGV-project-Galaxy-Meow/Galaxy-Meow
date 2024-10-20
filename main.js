@@ -7,15 +7,20 @@ import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
+import {showDeathMessage} from './levelMenus.js'
+
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
+let characterControls;
 let healthInterval; // To control the health timer
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+const clock = new THREE.Clock();
+const renderer = new THREE.WebGLRenderer();
 const modal = document.getElementById('myModal');
 const responses = document.getElementById('responses');
 const closeModalBtn = document.getElementById('closeModal');
@@ -23,11 +28,56 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'models/TheCatGalaxyMeow4.glb';
+
+const scene = new THREE.Scene();
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+export const objectsToRaycast = [];
+
+
 let catObject; 
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
 let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+
+
+//set things up
+camera.position.set(50, 10, 2); 
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById('gameCanvas').appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;        // Enable damping (inertia)
+controls.dampingFactor = 0.05;        // Damping inertia
+controls.enableZoom = false;          // Disable zoom if desired
+controls.enablePan = false;           // Disable pan if desired
+controls.mouseButtons = {
+    LEFT: null,
+    MIDDLE: null,
+    RIGHT: THREE.MOUSE.ROTATE
+};
+
+
+//create background audio
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Create a global audio source
+const sound = new THREE.Audio(listener);
+
+// Load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+  sound.setBuffer(buffer);
+  sound.setLoop(true);
+  sound.setVolume(0.5);
+  sound.play();
+});
+
+
+
+//----functions----
 
 
 //Function to decrease health over time
@@ -47,6 +97,7 @@ function decreaseHealth() {
     }, 5000); // Decrease health every 3 seconds
 }
 
+//cat warns you of the oxygen
 function checkOxygen(){
     if(health == 30){
         modal.style.display = 'flex';
@@ -77,24 +128,6 @@ export function startGame() {
         }
     });
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(50, 10, 2); 
-
-
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('gameCanvas').appendChild(renderer.domElement);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;        // Enable damping (inertia)
-    controls.dampingFactor = 0.05;        // Damping inertia
-    controls.enableZoom = false;          // Disable zoom if desired
-    controls.enablePan = false;           // Disable pan if desired
-    controls.mouseButtons = {
-        LEFT: null,
-        MIDDLE: null,
-        RIGHT: THREE.MOUSE.ROTATE
-    };
 
 // Prevent context menu from appearing on right-click
 renderer.domElement.addEventListener('contextmenu', function(event) {
@@ -244,10 +277,10 @@ function updateShootingStars() {
 
 setInterval(createShootingStar, 300);
     
-const objectsToRaycast = [];
+
 
     // Load the astronaut model and apply controls
-    let characterControls;
+    //let characterControls;
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
@@ -271,6 +304,18 @@ const objectsToRaycast = [];
         moonObject.position.set(100, 0, 0);  // Place the plane below the astronaut
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
         scene.add(moonObject);
+
+
+  // Load the American Flag Model
+  loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
+    flagObject.scale.set(1.7, 1.7, 1.7);
+    flagObject.position.set(100, 5,100);
+    flagObject.name = 'american_flag';
+    scene.add(flagObject);
+    objectsToRaycast.push(flagObject);
+    setupRaycasting(camera, objectsToRaycast);
+});
+
 
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(1.7, 1.7, 1.7);
@@ -430,8 +475,7 @@ helpButton.addEventListener('click', () => {
         keysPressed[event.key.toLowerCase()] = false;
     }, false);
 
-    const clock = new THREE.Clock();
-
+    //const clock = new THREE.Clock();
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -472,10 +516,6 @@ helpButton.addEventListener('click', () => {
     });
 }
 
-// Show "You Died" message
-function showDeathMessage() {
-    deathMessage.style.display = 'block';
-}
 
 
 // Restart Level
@@ -488,11 +528,11 @@ function restartLevel() {
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
 
-    // Reset astronaut position and controls
-    // if (astronaut) {
-    //     astronaut.position.copy(initialAstronautPosition);
-    //     astronaut.rotation.set(0, 0, 0); 
-    // }
+    //Reset astronaut position and controls
+    if (astronaut) {
+        astronaut.position.copy(initialAstronautPosition);
+        astronaut.rotation.set(0, 0, 0); 
+    }
 
     decreaseHealth();
 }
