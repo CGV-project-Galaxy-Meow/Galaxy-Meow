@@ -7,7 +7,6 @@ import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
-import { clearInventory } from './inventory.js';
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
@@ -25,48 +24,10 @@ const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'models/TheCatGalaxyMeow4.glb';
 let catObject; 
-let moonObject;
+
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
 let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
-const MAX_RADIUS = 900; 
-
-function restrictMovementWithinBarrier() {
-    if (astronaut) {
-        const distanceFromCenter = astronaut.position.length(); // Distance from (0,0,0)
-        if (distanceFromCenter > MAX_RADIUS) {
-            astronaut.position.normalize().multiplyScalar(MAX_RADIUS);
-        }
-    }
-}
-
-function checkGroundCollision() {
-    if (astronaut && moonObject) {
-        // Direction vector pointing downward
-        const downVector = new THREE.Vector3(0, -1, 0);
-        // Starting point of the ray (from the astronaut's position)
-        const rayOrigin = astronaut.position.clone();
-        rayOrigin.y += 1; // Offset ray origin upwards if needed (adjust based on your model)
-
-        // Create a raycaster from the astronaut's position downward
-        const raycaster = new THREE.Raycaster(rayOrigin, downVector, 0, 5); // Adjust max distance as needed
-
-        // Perform raycasting to detect intersection with the moonObject
-        const intersects = raycaster.intersectObject(moonObject, true);
-
-        if (intersects.length > 0) {
-            // Ground detected beneath the astronaut
-            const groundY = intersects[0].point.y;
-            if (astronaut.position.y <= groundY + 0.1) {
-                // Adjust the astronaut's position to be just above the ground
-                astronaut.position.y = groundY + 0.1;
-            }
-        } else {
-            // No ground detected within range
-            // Optionally apply gravity or prevent further downward movement
-        }
-    }
-}
 
 
 //Function to decrease health over time
@@ -118,13 +79,31 @@ export function startGame() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0, 50);
+    camera.position.set(50, 5, 12); 
+
 
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
+
+// Configure controls to rotate with the right mouse button
+controls.mouseButtons = {
+    LEFT: null,
+    MIDDLE: null,
+    RIGHT: THREE.MOUSE.ROTATE
+};
+
+// Disable zoom and pan if you don't want them
+controls.enableZoom = false;
+controls.enablePan = false;
+
+// Prevent context menu from appearing on right-click
+renderer.domElement.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+}, false);
+
 //create background audio
 const listener = new THREE.AudioListener();
 camera.add(listener);
@@ -283,10 +262,10 @@ const objectsToRaycast = [];
 
 
     // Load the Moon Plane Model
-    loadModel('models/moonground.glb', scene, controls, camera, (loadedMoonObject) => {
-        moonObject = loadedMoonObject; // Assign to the outer scope variable
-        moonObject.scale.set(1000, 1000, 500);
-        moonObject.position.set(100, 10, 0);
+    loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
+        moonObject.scale.set(1000, 1, 500);  // Scale it large enough to simulate an infinite ground
+        moonObject.position.set(100, 0, 0);  // Place the plane below the astronaut
+       // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
         scene.add(moonObject);
 
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
@@ -343,38 +322,6 @@ const objectsToRaycast = [];
             }
         });
 
-
-// Remove these lines
-const astronautBox = new THREE.Box3(); // Astronaut bounding box
-const moonBox = new THREE.Box3();      // Moon bounding box
-
-function updateBoundingBoxes() {
-    if (astronaut && moonObject) {
-        astronautBox.setFromObject(astronaut);
-        moonBox.setFromObject(moonObject);
-        return true; // Bounding boxes updated successfully
-    } else {
-        return false; // Cannot update bounding boxes
-    }
-}
-
-
-// Check collision during animation
-// Remove or comment out this function
-function checkCollision() {
-    if (astronaut && moonObject) {
-        // Adjust 'offset' based on the astronaut's model height if necessary
-        const offset = 1; // Adjust this value as needed
-        const moonY = moonObject.position.y;
-        const astronautY = astronaut.position.y;
-
-        if (astronautY < moonY + offset) {
-            astronaut.position.y = moonY + offset;
-        }
-    }
-}
-
-
 // Event listener for 'Don't Help' button
 dontHelpButton.addEventListener('click', () => {
     catConversation.style.animation = 'none';
@@ -427,32 +374,26 @@ helpButton.addEventListener('click', () => {
     const clock = new THREE.Clock();
     function animate() {
         let delta = clock.getDelta();
-    if (characterControls) {
-        characterControls.update(delta, keysPressed);
-    }
-
-   // New code to add
-if (astronaut && moonObject) {
-    checkGroundCollision(); // Prevent astronaut from going below the moon surface
-    restrictMovementWithinBarrier();
-}
-
-        // Background animations and camera controls
-        earth.rotation.y += 0.001;
-        celestialBodies.forEach(body => body.rotation.y += 0.001);
-        updateShootingStars();
-    
-        // Astronaut camera following logic
-        if (astronaut) {
-            const cameraOffset = new THREE.Vector3(0, 0, 7);
-            const desiredCameraPosition = astronaut.position.clone().add(cameraOffset);
-            camera.position.lerp(desiredCameraPosition, 0.1);
-            camera.lookAt(astronaut.position);
+        if (characterControls) {
+            characterControls.update(delta, keysPressed);
         }
     
+        // Background animations
+        earth.rotation.y += 0.001;
+        celestialBodies.forEach(body => {
+            body.rotation.y += 0.001;
+        });
+    
+        updateShootingStars();
+    
+        if (astronaut) {
+            // Update controls target to astronaut's position
+            controls.target.copy(astronaut.position);
+        }
+    
+        controls.update();
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
-        controls.update();
     }
     
 
@@ -463,7 +404,6 @@ if (astronaut && moonObject) {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
-    
 }
 
 // Show "You Died" message
@@ -477,7 +417,6 @@ function restartLevel() {
     // Reset health
     health = 100;
     healthElement.innerHTML = `Oxygen: ${health}/100`;
-    clearInventory()
 
     // Hide death and exit menus
     deathMessage.style.display = 'none';
@@ -491,8 +430,6 @@ function restartLevel() {
 
     decreaseHealth();
 }
-
-
 
 // Event Listeners for buttons
 document.getElementById('restartButton').addEventListener('click', restartLevel);
