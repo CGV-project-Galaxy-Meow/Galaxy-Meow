@@ -282,6 +282,50 @@ const objectsToRaycast = [];
             console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
+
+        loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
+            CrystalObject.scale.set(1.7, 1.7, 1.7);
+            CrystalObject.position.set(50, 0, 4);
+            CrystalObject.name = 'Crystal'
+            scene.add(CrystalObject);
+            objectsToRaycast.push(CrystalObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
+            BatteryObject.scale.set(1.7, 1.7, 1.7);
+            BatteryObject.position.set(60, 0, 4);
+            BatteryObject.name = 'Crystal'
+            scene.add(BatteryObject);
+            objectsToRaycast.push(BatteryObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+            CirctuitIObject.scale.set(1.7, 1.7, 1.7);
+            CirctuitIObject.position.set(60, 0, 4);
+            CirctuitIObject.name = 'Crystal'
+            scene.add(CirctuitIObject);
+            objectsToRaycast.push(CirctuitIObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
+            ButtonObject.scale.set(1.7, 1.7, 1.7);
+            ButtonObject.position.set(60, 0, 4);
+            ButtonObject.name = 'Crystal'
+            scene.add(ButtonObject);
+            objectsToRaycast.push(ButtonObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
     });
    
     
