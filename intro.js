@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li>Oxygen Meter - You get 100 units of oxygen</li>
                         <li>If you need help - Click The Cat</li>
                         <li>Esc - Restart/Leave game</li>
-                        <li>Mouse - Look around and click</li>
+                        <li>Mouse Right click and drag - Click and look around</li>
                     </ul>
                 </div>
                 <p>Good luck, ${playerName}!</p>
