@@ -25,7 +25,7 @@ const clock = new THREE.Clock();
 const renderer = new THREE.WebGLRenderer();
 const modal = document.getElementById('myModal');
 const responses = document.getElementById('responses');
-const closeModalBtn = document.getElementById('closeModal');
+const closeModalBtn = document.getElementById('closeModal2');
 const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
@@ -68,7 +68,7 @@ const sound = new THREE.Audio(listener);
 
 // Load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.5);
@@ -315,7 +315,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
 
     // Load the astronaut model and apply controls
     //let characterControls;
-    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
@@ -333,7 +333,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
     
 
     // Load the Moon Plane Model
-    loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
+    loadModel('public/models/moonground.glb', scene, controls, camera, (moonObject) => {
         moonObject.scale.set(1000, 1, 500);  // Scale it large enough to simulate an infinite ground
         moonObject.position.set(100, 0, 0);  // Place the plane below the astronaut
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
@@ -341,7 +341,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
 
 
   // Load the American Flag Model
-  loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
+  loadModel('public/models/american_flag.glb', scene, controls, camera, (flagObject) => {
     flagObject.scale.set(1.7, 1.7, 1.7);
     flagObject.position.set(100, 5,100);
     flagObject.name = 'american_flag';
@@ -351,7 +351,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
 });
 
 
-        loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
+        loadModel('public/models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
 
             barrelObject.scale.set(1.7, 1.7, 1.7);
             barrelObject.position.set(40, 0, 4);
@@ -363,7 +363,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
+        loadModel('public/models/skull.glb', scene, controls, camera, (skullObject) => {
             skullObject.scale.set(0.2, 0.2, 0.2);
             skullObject.position.set(45, 0.3, 4);
             skullObject.name = 'skeleton'
@@ -374,7 +374,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
+        loadModel('public/models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
             CrystalObject.scale.set(0.1, 0.1, 0.1);
             CrystalObject.position.set(50, 0.1, 4);
             CrystalObject.name = 'Crystal'
@@ -385,7 +385,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
+        loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.4, 0.4, 0.4);
             BatteryObject.position.set(60, 0, 4);
             BatteryObject.name = 'Crystal'
@@ -395,7 +395,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
             console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
-        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+        loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.4, 0.4, 0.4);
             CirctuitIObject.position.set(70, 0, 4);
             CirctuitIObject.name = 'Crystal'
@@ -406,7 +406,7 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
+        loadModel('public/models/Button.glb', scene, controls, camera, (ButtonObject) => {
             ButtonObject.scale.set(0.8, 0.8, 0.8);
             ButtonObject.position.set(60, 0, 6);
             ButtonObject.name = 'Crystal'
@@ -420,17 +420,17 @@ audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
     });
 
     // Load the astronaut model and apply controls
-    let characterControls;
-    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
-        astronaut = object;
-        astronaut.scale.set(10.7, 10.7, 10.7);
-        initialAstronautPosition.copy(astronaut.position);
-        astronaut.position.set(50,0,5);
+    // let characterControls;
+    // loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    //     astronaut = object;
+    //     astronaut.scale.set(10.7, 10.7, 10.7);
+    //     initialAstronautPosition.copy(astronaut.position);
+    //     astronaut.position.set(50,0,5);
 
-        astronaut.rotation.x= 0;
+    //     astronaut.rotation.x= 0;
 
-        characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
-    });
+    //     characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
+    // });
 
 
     // Load the cat model model
