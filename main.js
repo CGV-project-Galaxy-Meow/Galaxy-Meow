@@ -61,7 +61,7 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
 // Load ambiance sound
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
     ambianceSound.setBuffer(buffer);
     ambianceSound.setLoop(true);
     ambianceSound.setVolume(0.5);
@@ -69,7 +69,7 @@ audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
 });
 
 // Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
+audioLoader.load('public/sound/game-over.mp3', function(buffer) {
     gameOverSound.setBuffer(buffer);
     gameOverSound.setLoop(false);
     gameOverSound.setVolume(0.5);
