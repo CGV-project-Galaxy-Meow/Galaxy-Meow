@@ -5,9 +5,15 @@ export const items = {
     gems: { img: 'images/gems.png', count: 0 },
     sword: { img: 'images/sword.png', count: 0 },
     potion: { img: 'images/potion.png', count: 0 },
+
     crudeOil: { img: 'images/crude_oil.png', count: 0 } ,
     battery: {img: 'images/ '},
-    skull: {img: 'images/skull.png', count: 0}
+    skull: {img: 'images/skull.png', count: 0},
+
+    crudeOil: { img: 'images/crude_oil.png', count: 0 } ,
+    battery: {img: 'images/ '},
+    skeleton: { img: 'images/skeleton.jpg', count: 0 }
+
 };
 
 function getNextAvailableSlot() {
