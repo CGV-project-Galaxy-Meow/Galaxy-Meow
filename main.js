@@ -498,10 +498,6 @@ helpButton.addEventListener('click', () => {
     });
 }
 
-// Show "You Died" message
-function showDeathMessage() {
-    deathMessage.style.display = 'block';
-}
 
 
 // Restart Level
