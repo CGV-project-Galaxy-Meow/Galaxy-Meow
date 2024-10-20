@@ -117,6 +117,7 @@ body { margin: 0; overflow: hidden; }
 }
 
 
+
 .overlay {
     position: absolute; 
     left: 10px; 
@@ -140,6 +141,7 @@ body { margin: 0; overflow: hidden; }
     list-style-type: none; /* Remove default list style */
     padding: 0; /* Remove default padding */
 }
+
 
 #catConversation{
     overflow: hidden;
