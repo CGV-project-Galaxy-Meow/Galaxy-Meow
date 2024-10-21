@@ -395,13 +395,114 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
+        loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
+            ButtonObject.scale.set(0.8, 0.8, 0.8);
+            ButtonObject.position.set(60, 0, 6);
+            ButtonObject.name = 'Crystal'
+            scene.add(ButtonObject);
+            objectsToRaycast.push(ButtonObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/Rocks.glb', scene, controls, camera, (RocksObject) => {
+            RocksObject.scale.set(10.8, 10.8, 10.8);
+            RocksObject.position.set(-60, 0, 6);
+            RocksObject.name = 'Rocks'
+            scene.add(RocksObject);
+            objectsToRaycast.push(RocksObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/RockQ.glb', scene, controls, camera, (RockQObject) => {
+            RockQObject.scale.set(10.8, 10.8, 10.8);
+            RockQObject.position.set(30, 0, 6);
+            RockQObject.name = 'Rock 1'
+            scene.add(RockQObject);
+            objectsToRaycast.push(RockQObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/Rock.glb', scene, controls, camera, (RockObject) => {
+            RockObject.scale.set(10.8, 10.8, 10.8);
+            RockObject.position.set(56, 0, 6);
+            RockObject.name = 'Rock 2'
+            scene.add(RockObject);
+            objectsToRaycast.push(RockObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+        
+        loadModel('public/models/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
+            GoldRockObject.scale.set(20.8, 20.8, 20.8);
+            GoldRockObject.position.set(-76, 0, 6);
+            GoldRockObject.name = 'Gold Rocks'
+            scene.add(GoldRockObject);
+            objectsToRaycast.push(GoldRockObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
+            BasicRockObject.scale.set(30.8, 30.8, 30.8);
+            BasicRockObject.position.set(-80, 0, 6);
+            BasicRockObject.name = 'Basic Rock'
+            scene.add(BasicRockObject);
+            objectsToRaycast.push(BasicRockObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+        
+        loadModel('public/models/Rubble_Rocks.glb', scene, controls, camera, (RubbleRockObject) => {
+            RubbleRockObject.scale.set(3, 3, 3);
+            RubbleRockObject.position.set(-480, -50, 6);
+            RubbleRockObject.name = 'Rubble Rock2'
+            scene.add(RubbleRockObject);
+            objectsToRaycast.push(RubbleRockObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+        loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipObject) => {
+            RocketshipObject.scale.set(3, 3, 3);
+            RocketshipObject.position.set(-180, 0, 6);
+            RocketshipObject.name = 'Basic Rock'
+            scene.add(RocketshipObject);
+            objectsToRaycast.push(RocketshipObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
+            RuinObject.scale.set(3, 3, 3);
+            RubbleRockObject.position.set(180, 0, 6);
+            RubbleRockObject.name = 'Rubble Rock2'
+            scene.add(RubbleRockObject);
+            objectsToRaycast.push(RubbleRockObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
     });
    
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
-        object.scale.set(7, 7, 7);
+        object.scale.set(1, 1, 1);
         object.position.set(-10, 0, -10);
     
         catObject = object;
