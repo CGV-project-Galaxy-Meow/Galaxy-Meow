@@ -299,14 +299,14 @@ setInterval(createShootingStar, 300);
     //let characterControls;
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
-        astronaut.scale.set(1.7, 1.7, 1.7);
+        astronaut.scale.set(3, 3, 3);
         initialAstronautPosition.copy(astronaut.position);
         astronaut.position.set(50, 0, 5);
         astronaut.rotation.x = 0;
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     
         // Set camera initial position relative to astronaut
-        const initialOffset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        const initialOffset = new THREE.Vector3(0,15, -5); // Adjust as needed
         camera.position.copy(astronaut.position).add(initialOffset);
     
         // Set initial controls target
