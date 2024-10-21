@@ -1,3 +1,5 @@
+
+
 import * as THREE from './node_modules/three/build/three.module.min.js';;
 
 
@@ -155,7 +157,7 @@ export class CharacterControls {
             // Check for collision
             if (box.intersectsBox(objectBox)) {
                 collided = true;
-                console.log("Collision detected with", object.name);
+                //console.log("Collision detected with", object.name);
     
                 // Calculate the overlap vector
                 const overlap = new THREE.Vector3();

@@ -1,6 +1,6 @@
 import * as THREE from 'https://lamp.ms.wits.ac.za/~sgalaxy/node_modules/three/build/three.module.min.js';
 import { GLTFLoader } from './node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-// import { CharacterControls } from './characterControls.js';
+import { CharacterControls } from './characterControls.js';
 
 
 export function loadModel(path, scene, controls, camera, onLoadCallback) {
@@ -22,7 +22,7 @@ export function loadModel(path, scene, controls, camera, onLoadCallback) {
                 const animationsMap = new Map();
 
                 animations.forEach((animation) => {
-                    console.log('Animation name:', animation.name);
+                    //console.log('Animation name:', animation.name);
                     animationsMap.set(animation.name, mixer.clipAction(animation));
                 });
 

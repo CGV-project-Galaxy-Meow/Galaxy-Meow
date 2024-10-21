@@ -732,7 +732,7 @@ scene.add(spotLight.target); // Add the target to the scene
 
     // Load the cat model model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
-        console.log('Static model loaded:', object);
+        //console.log('Static model loaded:', object);
         object.scale.set(1, 1, 1);
         object.position.set(-10, 0, -10);
         object.rotation.y =  Math.PI / 2;
@@ -755,7 +755,7 @@ scene.add(spotLight.target); // Add the target to the scene
                 const intersects = raycaster.intersectObject(catObject, true); 
     
                 if (intersects.length > 0) {
-                    console.log('Model clicked:', catObject);
+                    //console.log('Model clicked:', catObject);
 
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
