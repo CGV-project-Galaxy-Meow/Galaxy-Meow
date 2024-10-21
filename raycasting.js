@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { showCrudeOilModal } from './modal.js';
+import { showCrudeOilModal, showSkeletonModal , showBatteryModal, showGemsModal, showFlagModal, showCircuitModal, showButtonModal} from './modal.js';
 
 export function setupRaycasting(camera, objectsToRaycast) {
     const raycaster = new THREE.Raycaster();
@@ -23,11 +23,27 @@ export function setupRaycasting(camera, objectsToRaycast) {
         if (intersects.length > 0) {
             const clickedObject = intersects[0].object;
             console.log("the clicked object :", clickedObject)
-            // Check if the clicked object is the barrel
             if (clickedObject.name === 'Oil_Barrel_0001') {
                 showCrudeOilModal();
                 
             }
+            else if (clickedObject.name === 'Object_2') {
+                showSkeletonModal();
+                
+            }else if (clickedObject.userData.customId === 'power-crystal') {
+                   showGemsModal();
+            }
+            else if (clickedObject.name === 'Object_4' ||clickedObject.name === 'Object_3' ||clickedObject.name === 'Object_5' ) {
+                showFlagModal();
+            }
+            else if (clickedObject.name === 'Cylinder004' || clickedObject.name === 'Cylinder002') {
+                showBatteryModal();
+            }else if (clickedObject.name === 'Cube' || clickedObject.name === 'Plane') {
+                showCircuitModal();
+            }else if(clickedObject.name === 'Cylinder'){
+                showButtonModal();
+            }
+            
         }
     });
     console.log(objectsToRaycast)

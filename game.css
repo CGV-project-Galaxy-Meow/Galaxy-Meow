@@ -124,6 +124,39 @@ body { margin: 0; overflow: hidden; }
     animation: typing 3.5s steps(60, end), blink-caret 0.75s step-end infinite;
 }
 
+.controls {
+    display: none; /* Initially hidden */
+    position: fixed;
+    z-index: 9999; /* Ensure it's above other elements */
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.controls button {
+    margin: 5px;
+    padding: 10px;
+    color: white;
+    border: none;
+    background-color: #007BFF; /* Button color */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+}
+
+.controls button:hover {
+    background-color: #0056b3; /* Darker on hover */
+}
+
+
+#pipControls {
+    display: none; /* Initially hidden */
+    position: fixed;
+    bottom: 10px; /* Adjust as needed */
+    left: 10px; /* Adjust as needed */
+    z-index: 9999; /* Ensure it's above other elements */
+}
+
+
 @keyframes typing {
     from {
         width: 0;
