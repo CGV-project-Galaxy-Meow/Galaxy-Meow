@@ -91,7 +91,7 @@
     cursor: pointer;     /* Change cursor to pointer on hover */
     transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1001;
+    z-index: 4;
 }
 
 #startPiP:hover {
@@ -282,51 +282,6 @@
                 responses.style.display = 'flex';
             });
         </script>-->
-
-        <script>
-       
-       pipVideo.addEventListener('mouseenter', () => {
-        console.log('Mouse entered PiP video');
-        document.getElementById('pipControls').style.display = 'block';
-    });
-
-    pipVideo.addEventListener('mouseleave', () => {
-        console.log('Mouse left PiP video');
-        document.getElementById('pipControls').style.display = 'none';
-    });
-
-
-document.getElementById('angleManipulator').addEventListener('input', (event) => {
-    const angle = event.target.value;
-    // Call your function to manipulate the angle based on this value
-    setCameraAngle(angle);
-});
-
-function moveCharacter(direction) {
-    switch (direction) {
-        case 'forward':
-            // Add logic to move the character forward
-            break;
-        case 'left':
-            // Add logic to move the character left
-            break;
-        case 'backward':
-            // Add logic to move the character backward
-            break;
-        case 'right':
-            // Add logic to move the character right
-            break;
-    }
-}
-
-function setCameraAngle(angle) {
-    // Logic to change the camera angle based on the input angle
-    camera.rotation.y = THREE.MathUtils.degToRad(angle); // Example for rotating around the Y-axis
-}
-
-
-
-        </script>
     <script type="module" src="/main.js"></script>
     <script type="module" src="/modal.js"></script>
     <script type="module" src="/levelMenus.js"></script>

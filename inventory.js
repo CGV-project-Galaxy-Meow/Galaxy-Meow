@@ -2,7 +2,6 @@ const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 5;
 
-// Define the available items and their images
 export const items = {
     gems: { img: 'images/crystal.png', count: 0 },
     sword: { img: 'images/sword.png', count: 0 },
@@ -18,7 +17,7 @@ export const items = {
 function getNextAvailableSlot() {
     for (let slot of inventorySlots) {
         if (slot.children.length === 0) {
-            return slot; // Return the first empty slot
+            return slot; 
         }
     }
     return null; // No available slot
@@ -179,7 +178,6 @@ inventorySlots.forEach(slot => {
 function toggleInventory() {
     const inventory = document.getElementById('inventory');
     
-   
     if (inventory.style.display === 'none' || inventory.style.display === '') {
         inventory.style.display = 'grid'; 
     } else {
@@ -187,7 +185,16 @@ function toggleInventory() {
     }
 }
 
+// Listen for the "keydown" event to detect the "Shift" key
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Shift') {
+        toggleInventory();  // Toggle inventory when Shift is pressed
+    }
+});
+
+// Optional: Add the existing bag icon click handler if you still want that functionality
 const bagIcon = document.getElementById('bagIcon');
 bagIcon.addEventListener('click', toggleInventory);
+
 
 
