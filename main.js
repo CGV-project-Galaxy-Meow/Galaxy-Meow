@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
@@ -8,13 +9,13 @@ import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import {showDeathMessage} from './levelMenus.js'
-
+import { clearInventory } from './inventory.js';
+import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
-document.getElementById('gameCanvas').style.display = 'block';
 let characterControls;
 let healthInterval; // To control the health timer
 
@@ -39,9 +40,89 @@ let catObject;
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
-let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+let initialAstronautPosition = new THREE.Vector3(3, 0, 0); 
+const pipVideo = document.getElementById('pipVideo'); 
+const pipCanvas = document.createElement('canvas'); 
+const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
+pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
+
+let pipActive = false;
 
 
+async function activatePiP() {
+    try {
+        
+        pipCanvas.width = window.innerWidth;
+        pipCanvas.height = window.innerHeight;
+
+        
+        const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
+        pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
+
+        
+        const stream = pipCanvas.captureStream(30); 
+        pipVideo.srcObject = stream;
+
+        // Start playing the video to ensure the metadata is loaded
+        pipVideo.play();
+
+        // Start rendering the scene in PiP
+        pipActive = true;
+        requestAnimationFrame(renderInPiP);
+        
+        pipVideo.onloadedmetadata = async () => {
+            try {
+                await pipVideo.requestPictureInPicture();
+            } catch (error) {
+                console.error('Error activating Picture-in-Picture:', error);
+            }
+        };
+    } catch (error) {
+        console.error('Error in activatePiP:', error);
+    }
+}
+
+
+function renderInPiP() {
+    if (pipActive) {
+        // Render the current scene to the pipCanvas
+        pipRenderer.render(scene, camera); // Use your existing scene and camera
+
+        requestAnimationFrame(renderInPiP); // Continue rendering
+    }
+}
+
+pipVideo.addEventListener('leavepictureinpicture', () => {
+    pipActive = false; // Stop the rendering loop
+});
+
+
+const startPiPButton = document.getElementById('startPiP');
+startPiPButton.addEventListener('click', activatePiP);
+
+
+
+//set things up
+camera.position.set(50, 10, 2); 
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById('gameCanvas').appendChild(renderer.domElement);
+
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.enableDamping = true;
+orbitControls.dampingFactor = 0.05;
+orbitControls.enableZoom = false;
+orbitControls.enablePan = false;
+orbitControls.mouseButtons = {
+    LEFT: null,
+    MIDDLE: null,
+    RIGHT: THREE.MOUSE.ROTATE
+};
+
+const pointerLockControls = new PointerLockControls(camera, renderer.domElement);
+
+let isFirstPerson = false;
+let controls = orbitControls; // Start with third-person view
 
 // Audio listener
 const listener = new THREE.AudioListener();
@@ -114,18 +195,11 @@ function checkOxygen(){
 }
 
 document.getElementById('bagIcon').style.display = 'none';
-
-
+document.getElementById('startPiP').style.display = 'none';
 
 export function startGame() {
-
-    //show objectives
-    
-    const overlay = document.querySelector('.overlay');
-    overlay.style.display = 'block';
-
     decreaseHealth();
-    
+    document.getElementById('startPiP').style.display = 'block';
     document.getElementById('bagIcon').style.display = 'grid';
 
      document.addEventListener('keydown', (event) => {
@@ -139,30 +213,10 @@ export function startGame() {
     });
 
 
-
-    camera.position.set(50, 10, 2); 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('gameCanvas').appendChild(renderer.domElement);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;        // Enable damping (inertia)
-    controls.dampingFactor = 0.05;        // Damping inertia
-    controls.enableZoom = false;          // Disable zoom if desired
-    controls.enablePan = false;           // Disable pan if desired
-    controls.mouseButtons = {
-        LEFT: null,
-        MIDDLE: null,
-        RIGHT: THREE.MOUSE.ROTATE
-    };
-
-
-
-
 // Prevent context menu from appearing on right-click
 renderer.domElement.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 }, false);
-
-
 
 //create background audio
 const listener = new THREE.AudioListener();
@@ -205,23 +259,6 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     earth.position.set(0, 0, -400);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
-
-    // For celestial bodies
-    const celestialBodies = [];
-    function createCelestialBody(textureUrl, size, position) {
-        const texture = new THREE.TextureLoader().load(textureUrl);
-        const geometry = new THREE.SphereGeometry(size, 32, 32);
-        const material = new THREE.MeshStandardMaterial({ map: texture }); 
-        const body = new THREE.Mesh(geometry, material);
-        body.position.set(position.x, position.y, position.z);
-        body.castShadow = true;  // Enable shadow casting
-        scene.add(body);
-        celestialBodies.push(body);
-    }
-   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
-    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
 
     const shootingStars = [];
 
@@ -312,14 +349,20 @@ setInterval(createShootingStar, 300);
     //let characterControls;
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
-        astronaut.scale.set(1.7, 1.7, 1.7);
+        astronaut.scale.set(3, 3, 3);
         initialAstronautPosition.copy(astronaut.position);
         astronaut.position.set(50, 0, 5);
         astronaut.rotation.x = 0;
+
+
+        astronaut.geometry?.computeBoundingBox();
+        astronaut.boundingBox = new THREE.Box3().setFromObject(astronaut);
+
+
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     
         // Set camera initial position relative to astronaut
-        const initialOffset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        const initialOffset = new THREE.Vector3(0,15, -5); // Adjust as needed
         camera.position.copy(astronaut.position).add(initialOffset);
     
         // Set initial controls target
@@ -347,8 +390,8 @@ setInterval(createShootingStar, 300);
 
 
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
-            barrelObject.scale.set(1.7, 1.7, 1.7);
-            barrelObject.position.set(40, 0, 4);
+            barrelObject.scale.set(3.3, 3.3, 3.3);
+            barrelObject.position.set(-28, 0, 53);
             barrelObject.name = 'barrel'
             scene.add(barrelObject);
             objectsToRaycast.push(barrelObject);
@@ -358,7 +401,7 @@ setInterval(createShootingStar, 300);
         });
 
         loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
-            skullObject.scale.set(0.2, 0.2, 0.2);
+            skullObject.scale.set(0.6, 0.6, 0.6);
             skullObject.position.set(45, 0.3, 4);
             skullObject.name = 'skeleton'
             scene.add(skullObject);
@@ -369,20 +412,33 @@ setInterval(createShootingStar, 300);
         });
 
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
-            CrystalObject.scale.set(0.1, 0.1, 0.1);
-            CrystalObject.position.set(50, 0.1, 4);
-            CrystalObject.name = 'Crystal'
+            CrystalObject.scale.set(0.5, 0.5, 0.5);
+            CrystalObject.position.set(290, 0.6, -80);
+            //280, 0, -78 by the ruins
+            CrystalObject.traverse((child) => {
+                if (child.isMesh) {
+                    // Assign custom name or userData here to ensure we're modifying the correct mesh
+                    child.name = 'CrystalMesh';  // Set a specific name for this child object
+                    child.customId = 'power-crystal';  // Assign a custom property if you want
+                    
+                    // Alternatively, store in child.userData if needed:
+                    child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+                }
+            });
+            
             scene.add(CrystalObject);
             objectsToRaycast.push(CrystalObject);
 
             console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
-
+        
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
-            BatteryObject.scale.set(0.4, 0.4, 0.4);
-            BatteryObject.position.set(60, 0, 4);
-            BatteryObject.name = 'Crystal'
+            BatteryObject.scale.set(0.5, 0.5, 0.5);
+            BatteryObject.position.set(-181, 0, 70);
+
+            BatteryObject.name = 'Battery'
+
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
@@ -390,9 +446,9 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
-            CirctuitIObject.scale.set(0.4, 0.4, 0.4);
-            CirctuitIObject.position.set(70, 0, 4);
-            CirctuitIObject.name = 'Crystal'
+            CirctuitIObject.scale.set(0.2, 0.2, 0.2);
+            CirctuitIObject.position.set(-210, 0.4, -310);
+            CirctuitIObject.name = 'Circuit Board'
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
 
@@ -402,8 +458,8 @@ setInterval(createShootingStar, 300);
 
         loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
             ButtonObject.scale.set(0.8, 0.8, 0.8);
-            ButtonObject.position.set(60, 0, 6);
-            ButtonObject.name = 'Crystal'
+            ButtonObject.position.set(210, 0, 294);
+            ButtonObject.name = 'Button'
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
 
@@ -411,18 +467,215 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
+
+        
+        // Load the model for each position in the array
+        positions.forEach((position) => {
+            loadModel('public/models/Rocks.glb', scene, controls, camera, (RocksObject) => {
+                const scaleFactor = Math.random() * 30 + 5; // Random size between 5 and 15
+                RocksObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size // Scale the model
+                RocksObject.position.copy(position); // Set the position from the array
+                //console.log(position)
+                RocksObject.name = 'Rocks'; // Set a name for reference
+        
+                // Add the object to the scene and collision arrays
+                scene.add(RocksObject);
+                objectsToRaycast.push(RocksObject);
+                characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
+                setupRaycasting(camera, objectsToRaycast);
+            });
+        });
+
+
+        positionsQ.forEach((position) => {
+        loadModel('public/models/RockQ.glb', scene, controls, camera, (RockQObject) => {
+            const scaleFactor = Math.random() * 20 + 5; // Random size 
+            RockQObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+            //RockQObject.scale.set(10.8, 10.8, 10.8);
+            //RockQObject.position.set(30, 0, 50);
+            RockQObject.position.copy(position);
+            RockQObject.rotation.y = Math.random() * Math.PI * 2;
+            RockQObject.name = 'Rock 1'
+            scene.add(RockQObject);
+            
+            objectsToRaycast.push(RockQObject);
+            characterControls.objectsToCollide.push(RockQObject);
+            //console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+        });
+    
+        positions2.forEach((position) => {
+        loadModel('public/models/Rock.glb', scene, controls, camera, (RockObject) => {
+            const scaleFactor = Math.random() * 20 + 5; // Random size 
+            RockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+            //RockObject.scale.set(20.8, 20.8, 20.8);
+            //RockObject.position.set(56, 0, -12);
+            RockObject.position.copy(position);
+            RockObject.rotation.y = Math.random() * Math.PI * 2;
+
+            RockObject.name = 'Rock 2'
+
+            scene.add(RockObject);
+            objectsToRaycast.push(RockObject);
+            console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(RockObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+    });
+    
+
+
+
+    positionsGold.forEach((position) => {
+        loadModel('public/models/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
+
+            const scaleFactor = Math.random() * 40 + 5; // Random size 
+            GoldRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+            //GoldRockObject.scale.set(40.8, 40.8, 40.8);
+            //GoldRockObject.position.set(-76, 0, 34);
+            GoldRockObject.position.copy(position);
+            GoldRockObject.rotation.y = Math.random() * Math.PI * 2;
+
+            GoldRockObject.name = 'Gold Rocks'
+            scene.add(GoldRockObject);
+            objectsToRaycast.push(GoldRockObject);
+
+            // console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(GoldRockObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+    });
+
+
+
+        positionsBaseStone.forEach((position) => {
+        loadModel('public/models/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
+            BasicRockObject.scale.set(50.8, 50.8, 50.8);
+            //BasicRockObject.position.set(-80, 0, -190);
+            BasicRockObject.position.copy(position);
+            BasicRockObject.name = 'Basic Rock'
+            scene.add(BasicRockObject);
+            objectsToRaycast.push(BasicRockObject);
+            //console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(BasicRockObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+    });
+
+
+    positions2.forEach((position) => {
+        loadModel('public/models/Rock.glb', scene, controls, camera, (RockObject) => {
+            const scaleFactor = Math.random() * 20 + 5; // Random size 
+            RockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+            //RockObject.scale.set(20.8, 20.8, 20.8);
+            //RockObject.position.set(56, 0, -12);
+            RockObject.position.copy(position);
+            RockObject.rotation.y = Math.random() * Math.PI * 2;
+
+            RockObject.name = 'Rock 2'
+
+            scene.add(RockObject);
+            objectsToRaycast.push(RockObject);
+            console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(RockObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+    });
+
+    
+    positionsAstroidCluster.forEach((position) => {
+    loadModel('public/models/space_rock.glb', scene, controls, camera, (spaceRockObject) => {
+        //spaceRockObject.scale.set(10.5, 10.5, 10.5);
+        const scaleFactor = Math.random() * 5 + 5; // Random size 
+        spaceRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+        spaceRockObject.position.copy(position);
+        spaceRockObject.rotation.y = Math.random() * Math.PI * 2;
+
+        spaceRockObject.position.copy(position);
+        spaceRockObject.name = 'Round Space Rock'
+        scene.add(spaceRockObject);
+        objectsToRaycast.push(spaceRockObject);
+
+        characterControls.objectsToCollide.push(spaceRockObject);
+        setupRaycasting(camera, objectsToRaycast);
+    });
+});
+
+    const positionRubble = [
+        new THREE.Vector3(-185, 0, 60),
+        new THREE.Vector3(-192, -3, -300)
+    ];
+
+    positionRubble.forEach((position) => {
+        loadModel('public/models/Rubble_Rocks.glb', scene, controls, camera, (RubbleObject) => {
+            RubbleObject.scale.set(15, 15, 15);
+            //RubbleObject.position.set(-185, 0, 60);
+            RubbleObject.position.copy(position);
+            RubbleObject.name = 'Rubble Rock'
+            scene.add(RubbleObject);
+            objectsToRaycast.push(RubbleObject);
+
+            //console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(RubbleObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+    });
+
+
+        loadModel('public/models/Comet.glb', scene, controls, camera, (AstroidObject) => {
+            AstroidObject.scale.set(1, 1, 1);
+            AstroidObject.position.set(-200, -0.7, -300);
+            AstroidObject.name = 'Comet'
+            scene.add(AstroidObject);
+            objectsToRaycast.push(AstroidObject);
+
+            //console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(AstroidObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+        loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipObject) => {
+            RocketshipObject.scale.set(3, 3, 3);
+            RocketshipObject.position.set(-180, 12, 60);
+            RocketshipObject.rotation.x += Math.PI / 3;
+            RocketshipObject.rotation.z += 3*Math.PI / 4;
+            RocketshipObject.name = 'Basic Rock'
+            scene.add(RocketshipObject);
+            objectsToRaycast.push(RocketshipObject);
+
+            characterControls.objectsToCollide.push(RocketshipObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
+            RuinObject.scale.set(8, 8, 8);
+            RuinObject.position.set(280, 0, -78);
+            RuinObject.name = 'Rubble Rock2'
+            scene.add(RuinObject);
+            objectsToRaycast.push(RuinObject);
+
+           
+            characterControls.objectsToCollide.push(RuinObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
     });
    
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
-        object.scale.set(7, 7, 7);
+        object.scale.set(1, 1, 1);
         object.position.set(-10, 0, -10);
-    
+        object.rotation.y =  Math.PI / 2;
+
         catObject = object;
         scene.add(object);
         objectsToRaycast.push(catObject)
+        //characterControls.objectsToCollide.push(object);
         setupRaycasting(camera, objectsToRaycast);
     });
     
@@ -493,18 +746,51 @@ helpButton.addEventListener('click', () => {
         });
 
     const keysPressed = {};
+   
     document.addEventListener('keydown', (event) => {
         if (event.key === ' ' || event.code === 'Space') {
             event.preventDefault();
         }
         keysPressed[event.key.toLowerCase()] = true;
+    
+        if (event.key.toLowerCase() === 'f') {
+            isFirstPerson = !isFirstPerson;
+            if (isFirstPerson) {
+                // Switch to first-person view
+                controls = pointerLockControls;
+                orbitControls.enabled = false;
+                astronaut.visible = false; // Hide the character model
+    
+                // Adjust camera position to character's position
+                camera.position.copy(astronaut.position);
+                camera.position.y += 5; // Adjust for character's height
+    
+                // Lock the pointer
+                pointerLockControls.lock();
+            } else {
+                // Switch back to third-person view
+                controls = orbitControls;
+                orbitControls.enabled = true;
+                astronaut.visible = true; // Show the character model
+    
+                // Reset camera position relative to the character
+                const cameraOffset = new THREE.Vector3(0, 15, -25); // Adjust as needed
+                camera.position.copy(astronaut.position).add(cameraOffset);
+    
+                // Unlock the pointer
+                pointerLockControls.unlock();
+            }
+        }
     }, false);
-
+    
+    
     document.addEventListener('keyup', (event) => {
         keysPressed[event.key.toLowerCase()] = false;
     }, false);
 
     //const clock = new THREE.Clock();
+   
+
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -513,24 +799,28 @@ helpButton.addEventListener('click', () => {
     
         // Background animations
         earth.rotation.y += 0.001;
-        celestialBodies.forEach(body => {
-            body.rotation.y += 0.001;
-        });
     
         updateShootingStars();
     
         if (astronaut) {
-            // Compute the offset between camera and controls.target
-            const cameraOffset = camera.position.clone().sub(controls.target);
-    
-            // Update controls target to astronaut's position
-            controls.target.copy(astronaut.position);
-    
-            // Update camera's position to maintain the offset
-            camera.position.copy(astronaut.position).add(cameraOffset);
+            if (isFirstPerson) {
+                // First-person view adjustments
+                camera.position.copy(astronaut.position);
+                camera.position.y += 5; // Adjust for character's height
+                // No need to update controls target
+            } else {
+                // Third-person view adjustments
+                const cameraOffset = camera.position.clone().sub(controls.target);
+                controls.target.copy(astronaut.position);
+                camera.position.copy(astronaut.position).add(cameraOffset);
+            }
         }
     
-        controls.update();
+        // Update controls if necessary
+        if (!isFirstPerson) {
+            controls.update();
+        }
+    
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
     }
@@ -548,6 +838,7 @@ helpButton.addEventListener('click', () => {
 
 
 function restartLevel() {
+    clearInventory();
     // Reset health
     health = 100;
     healthElement.innerHTML = `Oxygen: ${health}/100`;
@@ -586,4 +877,11 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
+});
+pointerLockControls.addEventListener('lock', () => {
+    console.log('Pointer locked');
+});
+
+pointerLockControls.addEventListener('unlock', () => {
+    console.log('Pointer unlocked');
 });
