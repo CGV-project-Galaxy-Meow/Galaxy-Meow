@@ -11,7 +11,7 @@ export function createSun(scene) {
   });
 
   const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-  sun.position.set(0, 0, -950); 
+  sun.position.set(0, 0, -1500); 
   scene.add(sun);
 }
 
