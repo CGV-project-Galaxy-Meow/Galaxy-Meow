@@ -94,6 +94,16 @@ export function setupRaycasting(camera, objectsToRaycast) {
                 const itemData = itemDataMapping[clickedObject.name] || itemDataMapping[clickedObject.userData.customId];
                 showItemModal(itemData);
             }
+            else if(clickedObject.name ==='node_id31'){
+                const blueprintOverlay = document.getElementById('blueprint-overlay');
+                blueprintOverlay.style.display = 'block';
+                
+                // Add event listener to close the overlay when "X" is clicked
+                const closeButton = document.getElementById('close-blueprint');
+                closeButton.addEventListener('click', function() {
+                    blueprintOverlay.style.display = 'none';
+                });
+            }
             
         }
     });
