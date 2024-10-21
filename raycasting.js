@@ -25,6 +25,20 @@ const itemDataMapping = {
         imgSrc: 'images/flag.png',
         itemName: 'flag'
     },
+    'Object_3': {
+        title: 'U.S Flag',
+        description: 'USA KAWWHHH!!!',
+        additionalInfo: 'Americans never made it to the moon by the way.',
+        imgSrc: 'images/flag.png',
+        itemName: 'flag'
+    },
+    'Object_5': {
+        title: 'U.S Flag',
+        description: 'USA KAWWHHH!!!',
+        additionalInfo: 'Americans never made it to the moon by the way.',
+        imgSrc: 'images/flag.png',
+        itemName: 'flag'
+    },
     'Cylinder002': {
         title: 'Battery',
         description: 'These batteries are essential to powering high-energy devices.',
