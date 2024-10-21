@@ -98,7 +98,7 @@ export function setupRaycasting(camera, objectsToRaycast) {
 
         // Check intersections only with the specific objects passed in
         const intersects = raycaster.intersectObjects(objectsToRaycast, true);
-        console.log('Intersections:', intersects);
+        //console.log('Intersections:', intersects);
 
         // If an intersection is found, process it
         if (intersects.length > 0) {
@@ -121,5 +121,5 @@ export function setupRaycasting(camera, objectsToRaycast) {
             
         }
     });
-    console.log(objectsToRaycast)
+    //console.log(objectsToRaycast)
 }
