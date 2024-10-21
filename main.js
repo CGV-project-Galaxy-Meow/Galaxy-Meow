@@ -398,13 +398,26 @@ setInterval(createShootingStar, 300);
         loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
             skullObject.scale.set(0.6, 0.6, 0.6);
             skullObject.position.set(45, 0.3, 4);
-            skullObject.name = 'skeleton'
+            skullObject.name = 'skeleton';
             scene.add(skullObject);
             objectsToRaycast.push(skullObject);
 
            
             setupRaycasting(camera, objectsToRaycast);
         });
+
+        loadModel('models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
+            blueprintObject.scale.set(5, 5, 5);
+            blueprintObject.position.set(50, 1, 6);
+            blueprintObject.name = 'blueprint';
+            scene.add(blueprintObject);
+            objectsToRaycast.push(blueprintObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
 
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
             CrystalObject.scale.set(0.5, 0.5, 0.5);
