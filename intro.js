@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dialogueText.innerHTML = `
                 <p>You have been trapped on the moon and need to build a teleporter!</p>
                 <p>The path ahead is perilous.</p>
-                <p>You need to collect all the teleporter components around the map.</p>
+                <p>Find the teleporter blueprint and look for the components around the map</p>
                 <div style="display: flex; justify-content: flex-start; align-items: center; height: 100%; padding-left: 160px; margin-top: 2%; ">
                     <ul style="text-align: left; list-style-position: inside; margin: 0; padding-left: 20px;">
                         <li>W - Move forward</li>
