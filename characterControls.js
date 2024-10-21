@@ -213,8 +213,10 @@ export class CharacterControls {
             const cameraEuler = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
             const cameraYRotation = cameraEuler.y;
 
+          
             // Rotate moveVector by the camera's Y-axis rotation
-            moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraYRotation);
+moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraYRotation);
+
 
             // Update astronaut position
             const moveSpeed = this.speed * delta;

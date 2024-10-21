@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
@@ -39,7 +40,66 @@ let catObject;
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
-let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+let initialAstronautPosition = new THREE.Vector3(3, 0, 0); 
+const pipVideo = document.getElementById('pipVideo'); 
+const pipCanvas = document.createElement('canvas'); 
+const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
+pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
+
+let pipActive = false;
+
+
+async function activatePiP() {
+    try {
+        
+        pipCanvas.width = window.innerWidth;
+        pipCanvas.height = window.innerHeight;
+
+        
+        const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
+        pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
+
+        
+        const stream = pipCanvas.captureStream(30); 
+        pipVideo.srcObject = stream;
+
+        // Start playing the video to ensure the metadata is loaded
+        pipVideo.play();
+
+        // Start rendering the scene in PiP
+        pipActive = true;
+        requestAnimationFrame(renderInPiP);
+        
+        pipVideo.onloadedmetadata = async () => {
+            try {
+                await pipVideo.requestPictureInPicture();
+            } catch (error) {
+                console.error('Error activating Picture-in-Picture:', error);
+            }
+        };
+    } catch (error) {
+        console.error('Error in activatePiP:', error);
+    }
+}
+
+
+function renderInPiP() {
+    if (pipActive) {
+        // Render the current scene to the pipCanvas
+        pipRenderer.render(scene, camera); // Use your existing scene and camera
+
+        requestAnimationFrame(renderInPiP); // Continue rendering
+    }
+}
+
+pipVideo.addEventListener('leavepictureinpicture', () => {
+    pipActive = false; // Stop the rendering loop
+});
+
+
+const startPiPButton = document.getElementById('startPiP');
+startPiPButton.addEventListener('click', activatePiP);
+
 
 
 //set things up
@@ -48,17 +108,21 @@ camera.position.set(50, 10, 2);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;        // Enable damping (inertia)
-controls.dampingFactor = 0.05;        // Damping inertia
-controls.enableZoom = false;          // Disable zoom if desired
-controls.enablePan = false;           // Disable pan if desired
-controls.mouseButtons = {
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.enableDamping = true;
+orbitControls.dampingFactor = 0.05;
+orbitControls.enableZoom = false;
+orbitControls.enablePan = false;
+orbitControls.mouseButtons = {
     LEFT: null,
     MIDDLE: null,
     RIGHT: THREE.MOUSE.ROTATE
 };
 
+const pointerLockControls = new PointerLockControls(camera, renderer.domElement);
+
+let isFirstPerson = false;
+let controls = orbitControls; // Start with third-person view
 
 // Audio listener
 const listener = new THREE.AudioListener();
@@ -131,9 +195,11 @@ function checkOxygen(){
 }
 
 document.getElementById('bagIcon').style.display = 'none';
+document.getElementById('startPiP').style.display = 'none';
+
 export function startGame() {
     decreaseHealth();
-    
+    document.getElementById('startPiP').style.display = 'block';
     document.getElementById('bagIcon').style.display = 'grid';
 
      document.addEventListener('keydown', (event) => {
@@ -193,23 +259,6 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     earth.position.set(0, 0, -400);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
-
-    // For celestial bodies
-    const celestialBodies = [];
-    function createCelestialBody(textureUrl, size, position) {
-        const texture = new THREE.TextureLoader().load(textureUrl);
-        const geometry = new THREE.SphereGeometry(size, 32, 32);
-        const material = new THREE.MeshStandardMaterial({ map: texture }); 
-        const body = new THREE.Mesh(geometry, material);
-        body.position.set(position.x, position.y, position.z);
-        body.castShadow = true;  // Enable shadow casting
-        scene.add(body);
-        celestialBodies.push(body);
-    }
-   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
-    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
 
     const shootingStars = [];
 
@@ -300,7 +349,7 @@ setInterval(createShootingStar, 300);
     //let characterControls;
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
-        astronaut.scale.set(1.7, 1.7, 1.7);
+        astronaut.scale.set(3, 3, 3);
         initialAstronautPosition.copy(astronaut.position);
         astronaut.position.set(50, 0, 5);
         astronaut.rotation.x = 0;
@@ -313,7 +362,7 @@ setInterval(createShootingStar, 300);
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     
         // Set camera initial position relative to astronaut
-        const initialOffset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        const initialOffset = new THREE.Vector3(0,15, -5); // Adjust as needed
         camera.position.copy(astronaut.position).add(initialOffset);
     
         // Set initial controls target
@@ -697,18 +746,51 @@ helpButton.addEventListener('click', () => {
         });
 
     const keysPressed = {};
+   
     document.addEventListener('keydown', (event) => {
         if (event.key === ' ' || event.code === 'Space') {
             event.preventDefault();
         }
         keysPressed[event.key.toLowerCase()] = true;
+    
+        if (event.key.toLowerCase() === 'f') {
+            isFirstPerson = !isFirstPerson;
+            if (isFirstPerson) {
+                // Switch to first-person view
+                controls = pointerLockControls;
+                orbitControls.enabled = false;
+                astronaut.visible = false; // Hide the character model
+    
+                // Adjust camera position to character's position
+                camera.position.copy(astronaut.position);
+                camera.position.y += 5; // Adjust for character's height
+    
+                // Lock the pointer
+                pointerLockControls.lock();
+            } else {
+                // Switch back to third-person view
+                controls = orbitControls;
+                orbitControls.enabled = true;
+                astronaut.visible = true; // Show the character model
+    
+                // Reset camera position relative to the character
+                const cameraOffset = new THREE.Vector3(0, 15, -25); // Adjust as needed
+                camera.position.copy(astronaut.position).add(cameraOffset);
+    
+                // Unlock the pointer
+                pointerLockControls.unlock();
+            }
+        }
     }, false);
-
+    
+    
     document.addEventListener('keyup', (event) => {
         keysPressed[event.key.toLowerCase()] = false;
     }, false);
 
     //const clock = new THREE.Clock();
+   
+
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -717,24 +799,28 @@ helpButton.addEventListener('click', () => {
     
         // Background animations
         earth.rotation.y += 0.001;
-        celestialBodies.forEach(body => {
-            body.rotation.y += 0.001;
-        });
     
         updateShootingStars();
     
         if (astronaut) {
-            // Compute the offset between camera and controls.target
-            const cameraOffset = camera.position.clone().sub(controls.target);
-    
-            // Update controls target to astronaut's position
-            controls.target.copy(astronaut.position);
-    
-            // Update camera's position to maintain the offset
-            camera.position.copy(astronaut.position).add(cameraOffset);
+            if (isFirstPerson) {
+                // First-person view adjustments
+                camera.position.copy(astronaut.position);
+                camera.position.y += 5; // Adjust for character's height
+                // No need to update controls target
+            } else {
+                // Third-person view adjustments
+                const cameraOffset = camera.position.clone().sub(controls.target);
+                controls.target.copy(astronaut.position);
+                camera.position.copy(astronaut.position).add(cameraOffset);
+            }
         }
     
-        controls.update();
+        // Update controls if necessary
+        if (!isFirstPerson) {
+            controls.update();
+        }
+    
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
     }
@@ -791,4 +877,11 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
+});
+pointerLockControls.addEventListener('lock', () => {
+    console.log('Pointer locked');
+});
+
+pointerLockControls.addEventListener('unlock', () => {
+    console.log('Pointer unlocked');
 });
