@@ -32,7 +32,7 @@ const catConversation = document.getElementById('catConversation')
 const cat_model = 'models/TheCatGalaxyMeow4.glb';
 
 const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
 export const objectsToRaycast = [];
 
 
@@ -247,7 +247,7 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     createSun(scene);
 
     const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
-    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64);
+    const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
     scene.add(space);
@@ -256,7 +256,7 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    earth.position.set(0, 0, -400);
+    earth.position.set(0, 0, -800);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
