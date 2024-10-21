@@ -468,7 +468,64 @@ setInterval(createShootingStar, 300);
 
             setupRaycasting(camera, objectsToRaycast);
         });
-        
+
+
+
+        ///----place holder for last items!!!!-----
+
+
+        // loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
+        //     CrystalObject.scale.set(0.5, 0.5, 0.5);
+        //     CrystalObject.position.set(-300, 0, 300);
+            
+        //     // this one is an extra place holder
+        //     CrystalObject.traverse((child) => {
+        //         if (child.isMesh) {
+        //             // Assign custom name or userData here to ensure we're modifying the correct mesh
+        //             child.name = 'CrystalMesh';  // Set a specific name for this child object
+        //             child.customId = 'power-crystal';  // Assign a custom property if you want
+                    
+        //             // Alternatively, store in child.userData if needed:
+        //             child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+        //         }
+        //     });
+            
+            scene.add(CrystalObject);
+            objectsToRaycast.push(CrystalObject);
+
+
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+        loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
+            CrystalObject.scale.set(0.5, 0.5, 0.5);
+            //here comes the sun
+            CrystalObject.position.set(0, 0.6, -300);
+           
+            CrystalObject.traverse((child) => {
+                if (child.isMesh) {
+                    // Assign custom name or userData here to ensure we're modifying the correct mesh
+                    child.name = 'CrystalMesh';  // Set a specific name for this child object
+                    child.customId = 'power-crystal';  // Assign a custom property if you want
+                    
+                    // Alternatively, store in child.userData if needed:
+                    child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+                }
+            });
+            
+            scene.add(CrystalObject);
+            objectsToRaycast.push(CrystalObject);
+
+
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+        ///----------------------------------------
+
+
+
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.5, 0.5, 0.5);
             BatteryObject.position.set(-181, 0, 70);
