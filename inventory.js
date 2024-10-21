@@ -1,15 +1,18 @@
 const inventorySlots = document.querySelectorAll('.inventory-slot');
+const inventoryFullElement = document.getElementById('inventoryFull')
+const MAX_ITEMS = 5;
 
 // Define the available items and their images
 export const items = {
-    gems: { img: 'images/gems.png', count: 0 },
+    gems: { img: 'images/crystal.png', count: 0 },
     sword: { img: 'images/sword.png', count: 0 },
     potion: { img: 'images/potion.png', count: 0 },
-    crudeOil: { img: 'images/crude_oil.png', count: 0 } ,
-    battery: {img: 'images/ '},
-    skull: {img: 'images/skull.png', count: 0},
-    flag: {img: 'images/flag.png', count: 0}
-
+    crudeOil: { img: 'images/crude_oil.png', count: 0 },
+    battery: { img: 'images/bat.png', count: 0 },
+    skull: { img: 'images/skull.png', count: 0 },
+    flag: { img: 'images/flag.png', count: 0 },
+    button: { img: 'images/button.png', count: 0 },
+    circuit: { img: 'images/circuit.png', count: 0 },
 };
 
 function getNextAvailableSlot() {
@@ -21,7 +24,19 @@ function getNextAvailableSlot() {
     return null; // No available slot
 }
 
-// Function to add an item to a specific slot
+// Function to check if the inventory is full
+function isInventoryFull() {
+    let itemCount = 0;
+    for (let slot of inventorySlots) {
+        if (slot.children.length > 0) {
+            itemCount++;
+        }
+    }
+    console.log(itemCount)
+    return itemCount >= MAX_ITEMS;
+}
+
+
 function addItemToSlot(slot, itemName) {
     if (items[itemName]) { // Check if the item exists in the items object
         const itemImage = document.createElement('img');
@@ -48,7 +63,6 @@ function removeItemFromSlot(slot, itemName) {
         if (itemImage && countDisplay) {
             items[itemName].count -= 1;
 
-           
             if (items[itemName].count === 0) {
                 slot.removeChild(itemImage); // Remove the item image
                 slot.removeChild(countDisplay); // Remove the item count display
@@ -64,8 +78,13 @@ function removeItemFromSlot(slot, itemName) {
     }
 }
 
-
 export function addItem(itemName) {
+    // Check if the inventory is full
+    if (isInventoryFull()) {
+        showInventoryFullMessage();
+        return; // Stop the function from adding more items
+    }
+
     const availableSlot = getNextAvailableSlot();
 
     // Check if the item is already in the inventory
@@ -77,25 +96,30 @@ export function addItem(itemName) {
     if (availableSlot) {
         addItemToSlot(availableSlot, itemName);
         items[itemName].hasItem = true;
+        clearInventoryFullMessage(); 
     } else {
         showInventoryFullMessage(); 
     }
 }
 
-// Function to show a message when inventory is full
 function showInventoryFullMessage() {
-    const message = document.createElement('div');
-    message.textContent = 'Inventory is full!';
-    message.classList.add('inventory-full-message');
-    document.body.appendChild(message);
+    inventoryFullElement.textContent = 'Inventory is full!'; // Set the message text
+    inventoryFullElement.style.display = 'block'; // Show the message
+    
+    // Hide the message after 2 seconds
     setTimeout(() => {
-        document.body.removeChild(message);
-    }, 2000); // Remove the message after 2 seconds
+        inventoryFullElement.style.display = 'none'; // Hide the message
+    }, 2000); // 2000 milliseconds = 2 seconds
+}
+
+
+function clearInventoryFullMessage() {
+    inventoryFullElement.textContent = ''; // Clear the message text
+    inventoryFullElement.style.display = 'none'; // Hide the message
 }
 
 
 export function clearInventory() {
-   
     inventorySlots.forEach(slot => {
         while (slot.firstChild) {
             slot.removeChild(slot.firstChild);
@@ -112,31 +136,25 @@ export function clearInventory() {
 
 // Function to create and show the "Remove?" prompt
 function showRemovePrompt(slot, itemName) {
-    // Create a small prompt element
     const removePrompt = document.createElement('div');
     removePrompt.textContent = "Remove?";
     removePrompt.classList.add('remove-prompt');
     
-    // Style the prompt
     removePrompt.style.position = 'absolute';
     removePrompt.style.backgroundColor = 'red';
     removePrompt.style.color = 'white';
     removePrompt.style.padding = '5px';
     removePrompt.style.cursor = 'pointer';
-    
-    // Append the prompt to the slot
+
     slot.appendChild(removePrompt);
 
-    
     function handleClickOutside(event) {
         if (!removePrompt.contains(event.target) && !slot.contains(event.target)) {
-            
             slot.removeChild(removePrompt);
-            document.removeEventListener('click', handleClickOutside); 
+            document.removeEventListener('click', handleClickOutside);
         }
     }
 
-   
     removePrompt.addEventListener('click', (e) => {
         e.stopPropagation();
         removeItemFromSlot(slot, itemName); 
@@ -144,10 +162,8 @@ function showRemovePrompt(slot, itemName) {
         document.removeEventListener('click', handleClickOutside); 
     });
 
-   
     document.addEventListener('click', handleClickOutside);
 }
-
 
 inventorySlots.forEach(slot => {
     slot.addEventListener('click', function() {
@@ -158,8 +174,6 @@ inventorySlots.forEach(slot => {
         }
     });
 });
-
-
 
 
 function toggleInventory() {

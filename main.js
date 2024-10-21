@@ -8,6 +8,7 @@ import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import {showDeathMessage} from './levelMenus.js'
+import { clearInventory } from './inventory.js';
 
 
 let health = 100;
@@ -364,7 +365,17 @@ setInterval(createShootingStar, 300);
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
             CrystalObject.scale.set(0.1, 0.1, 0.1);
             CrystalObject.position.set(50, 0.1, 4);
-            CrystalObject.name = 'Crystal'
+            CrystalObject.traverse((child) => {
+                if (child.isMesh) {
+                    // Assign custom name or userData here to ensure we're modifying the correct mesh
+                    child.name = 'CrystalMesh';  // Set a specific name for this child object
+                    child.customId = 'power-crystal';  // Assign a custom property if you want
+                    
+                    // Alternatively, store in child.userData if needed:
+                    child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+                }
+            });
+            
             scene.add(CrystalObject);
             objectsToRaycast.push(CrystalObject);
 
@@ -375,7 +386,9 @@ setInterval(createShootingStar, 300);
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.4, 0.4, 0.4);
             BatteryObject.position.set(60, 0, 4);
-            BatteryObject.name = 'Batteries'
+
+            BatteryObject.name = 'Battery'
+
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
@@ -640,6 +653,7 @@ helpButton.addEventListener('click', () => {
 
 
 function restartLevel() {
+    clearInventory();
     // Reset health
     health = 100;
     healthElement.innerHTML = `Oxygen: ${health}/100`;

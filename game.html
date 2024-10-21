@@ -85,6 +85,15 @@
     animation: typing 3.5s steps(60, end) forwards; /* Keep 'forwards' to retain final state */
 }
 
+#inventoryFull {
+    display: none; 
+    color: red; 
+    font-weight: bold;
+    z-index: 1000;
+    background-color: white;
+}
+
+
 /* Keyframes for typing animation */
 @keyframes typing {
     from {
@@ -206,6 +215,8 @@
         <div class="inventory-slot" id="slot4"></div>
         <div class="inventory-slot" id="slot5"></div>
     </div>
+
+    <span id = "inventoryFull"></span>
 
 
       <!-- Settings Modal -->
