@@ -1,5 +1,5 @@
 
-import { addItem } from "./inventory";
+import { addItem } from "./inventory.js";
 
 
 
@@ -42,7 +42,7 @@ export function showItemModal(itemDetails) {
 
 
    
-    console.log("Showing modal for item:", title, description, imgSrc, itemName);
+    //console.log("Showing modal for item:", title, description, imgSrc, itemName);
 
     const modal = document.getElementById('myModal2');
     const catConversation = document.getElementById('catConversation2');
