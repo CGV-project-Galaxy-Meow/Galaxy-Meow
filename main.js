@@ -303,6 +303,12 @@ setInterval(createShootingStar, 300);
         initialAstronautPosition.copy(astronaut.position);
         astronaut.position.set(50, 0, 5);
         astronaut.rotation.x = 0;
+
+
+        astronaut.geometry?.computeBoundingBox();
+        astronaut.boundingBox = new THREE.Box3().setFromObject(astronaut);
+
+
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     
         // Set camera initial position relative to astronaut
@@ -369,7 +375,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.4, 0.4, 0.4);
             BatteryObject.position.set(60, 0, 4);
-            BatteryObject.name = 'Crystal'
+            BatteryObject.name = 'Batteries'
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
@@ -379,7 +385,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.4, 0.4, 0.4);
             CirctuitIObject.position.set(70, 0, 4);
-            CirctuitIObject.name = 'Crystal'
+            CirctuitIObject.name = 'Circuit Board'
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
 
@@ -390,7 +396,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
             ButtonObject.scale.set(0.8, 0.8, 0.8);
             ButtonObject.position.set(60, 0, 6);
-            ButtonObject.name = 'Crystal'
+            ButtonObject.name = 'Button'
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
 
@@ -398,80 +404,75 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
-            ButtonObject.scale.set(0.8, 0.8, 0.8);
-            ButtonObject.position.set(60, 0, 6);
-            ButtonObject.name = 'Crystal'
-            scene.add(ButtonObject);
-            objectsToRaycast.push(ButtonObject);
-
-            console.log(objectsToRaycast)
-            setupRaycasting(camera, objectsToRaycast);
-        });
+   
 
         loadModel('public/models/Rocks.glb', scene, controls, camera, (RocksObject) => {
             RocksObject.scale.set(10.8, 10.8, 10.8);
-            RocksObject.position.set(-60, 0, 6);
+            RocksObject.position.set(-60, 0, -100);
             RocksObject.name = 'Rocks'
+
             scene.add(RocksObject);
             objectsToRaycast.push(RocksObject);
-
-            console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
             setupRaycasting(camera, objectsToRaycast);
+           
         });
 
         loadModel('public/models/RockQ.glb', scene, controls, camera, (RockQObject) => {
             RockQObject.scale.set(10.8, 10.8, 10.8);
-            RockQObject.position.set(30, 0, 6);
+            RockQObject.position.set(30, 0, 50);
             RockQObject.name = 'Rock 1'
             scene.add(RockQObject);
+            
             objectsToRaycast.push(RockQObject);
-
-            console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(RockQObject);
+            //console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
         loadModel('public/models/Rock.glb', scene, controls, camera, (RockObject) => {
             RockObject.scale.set(10.8, 10.8, 10.8);
-            RockObject.position.set(56, 0, 6);
+            RockObject.position.set(56, 0, -12);
             RockObject.name = 'Rock 2'
             scene.add(RockObject);
             objectsToRaycast.push(RockObject);
-
             console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
         
         loadModel('public/models/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
             GoldRockObject.scale.set(20.8, 20.8, 20.8);
-            GoldRockObject.position.set(-76, 0, 6);
+            GoldRockObject.position.set(-76, 0, 34);
             GoldRockObject.name = 'Gold Rocks'
             scene.add(GoldRockObject);
             objectsToRaycast.push(GoldRockObject);
 
-            console.log(objectsToRaycast)
+            // console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(GoldRockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
 
         loadModel('public/models/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
             BasicRockObject.scale.set(30.8, 30.8, 30.8);
-            BasicRockObject.position.set(-80, 0, 6);
+            BasicRockObject.position.set(-80, 0, -90);
             BasicRockObject.name = 'Basic Rock'
             scene.add(BasicRockObject);
             objectsToRaycast.push(BasicRockObject);
-
-            console.log(objectsToRaycast)
+            //console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(BasicRockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
         
-        loadModel('public/models/Rubble_Rocks.glb', scene, controls, camera, (RubbleRockObject) => {
-            RubbleRockObject.scale.set(3, 3, 3);
-            RubbleRockObject.position.set(-480, -50, 6);
-            RubbleRockObject.name = 'Rubble Rock2'
-            scene.add(RubbleRockObject);
-            objectsToRaycast.push(RubbleRockObject);
+        loadModel('public/models/Rubble_Rocks.glb', scene, controls, camera, (RubbleObject) => {
+            RubbleObject.scale.set(3, 3, 3);
+            RubbleObject.position.set(-280, 0, -18);
+            RubbleObject.name = 'Rubble Rock'
+            scene.add(RubbleObject);
+            objectsToRaycast.push(RubbleObject);
 
-            console.log(objectsToRaycast)
+            //console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(RubbleObject);
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -483,18 +484,20 @@ setInterval(createShootingStar, 300);
             scene.add(RocketshipObject);
             objectsToRaycast.push(RocketshipObject);
 
-            console.log(objectsToRaycast)
+            characterControls.objectsToCollide.push(RocketshipObject);
             setupRaycasting(camera, objectsToRaycast);
         });
 
         loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
             RuinObject.scale.set(3, 3, 3);
-            RubbleRockObject.position.set(180, 0, 6);
-            RubbleRockObject.name = 'Rubble Rock2'
-            scene.add(RubbleRockObject);
-            objectsToRaycast.push(RubbleRockObject);
+            RuinObject.position.set(180, 0, 78);
+            RuinObject.name = 'Rubble Rock2'
+            scene.add(RuinObject);
+            objectsToRaycast.push(RuinObject);
 
-            console.log(objectsToRaycast)
+           
+            characterControls.objectsToCollide.push(RuinObject);
+            //console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -511,6 +514,7 @@ setInterval(createShootingStar, 300);
         catObject = object;
         scene.add(object);
         objectsToRaycast.push(catObject)
+        //characterControls.objectsToCollide.push(object);
         setupRaycasting(camera, objectsToRaycast);
     });
     
