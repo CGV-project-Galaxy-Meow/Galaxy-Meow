@@ -391,7 +391,6 @@ setInterval(createShootingStar, 300);
             scene.add(barrelObject);
             objectsToRaycast.push(barrelObject);
 
-          
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -402,7 +401,8 @@ setInterval(createShootingStar, 300);
             scene.add(skullObject);
             objectsToRaycast.push(skullObject);
 
-           
+
+
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -413,7 +413,7 @@ setInterval(createShootingStar, 300);
             scene.add(blueprintObject);
             objectsToRaycast.push(blueprintObject);
 
-            console.log(objectsToRaycast)
+            //console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -437,7 +437,8 @@ setInterval(createShootingStar, 300);
             scene.add(CrystalObject);
             objectsToRaycast.push(CrystalObject);
 
-          
+
+
             setupRaycasting(camera, objectsToRaycast);
         });
         
@@ -450,7 +451,6 @@ setInterval(createShootingStar, 300);
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
-             
             setupRaycasting(camera, objectsToRaycast);
         });
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
@@ -460,7 +460,6 @@ setInterval(createShootingStar, 300);
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
 
-          
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -471,7 +470,6 @@ setInterval(createShootingStar, 300);
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
 
-           
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -479,7 +477,7 @@ setInterval(createShootingStar, 300);
         
         // Load the model for each position in the array
         positions.forEach((position) => {
-            loadModel('public/models/Rocks.glb', scene, controls, camera, (RocksObject) => {
+            loadModel('public/models/rocks/Rocks.glb', scene, controls, camera, (RocksObject) => {
                 const scaleFactor = Math.random() * 30 + 5; // Random size between 5 and 15
                 RocksObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size // Scale the model
                 RocksObject.position.copy(position); // Set the position from the array
@@ -496,7 +494,7 @@ setInterval(createShootingStar, 300);
 
 
         positionsQ.forEach((position) => {
-        loadModel('public/models/RockQ.glb', scene, controls, camera, (RockQObject) => {
+        loadModel('public/models/rocks/RockQ.glb', scene, controls, camera, (RockQObject) => {
             const scaleFactor = Math.random() * 20 + 5; // Random size 
             RockQObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
             //RockQObject.scale.set(10.8, 10.8, 10.8);
@@ -513,7 +511,7 @@ setInterval(createShootingStar, 300);
         });
     
         positions2.forEach((position) => {
-        loadModel('public/models/Rock.glb', scene, controls, camera, (RockObject) => {
+        loadModel('public/models/rocks/Rock.glb', scene, controls, camera, (RockObject) => {
             const scaleFactor = Math.random() * 20 + 5; // Random size 
             RockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
             //RockObject.scale.set(20.8, 20.8, 20.8);
@@ -525,7 +523,7 @@ setInterval(createShootingStar, 300);
 
             scene.add(RockObject);
             objectsToRaycast.push(RockObject);
-           
+
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -535,7 +533,7 @@ setInterval(createShootingStar, 300);
 
 
     positionsGold.forEach((position) => {
-        loadModel('public/models/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
+        loadModel('public/models/rocks/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
 
             const scaleFactor = Math.random() * 40 + 5; // Random size 
             GoldRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
@@ -557,7 +555,7 @@ setInterval(createShootingStar, 300);
 
 
         positionsBaseStone.forEach((position) => {
-        loadModel('public/models/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
+        loadModel('public/models/rocks/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
             BasicRockObject.scale.set(50.8, 50.8, 50.8);
             //BasicRockObject.position.set(-80, 0, -190);
             BasicRockObject.position.copy(position);
@@ -572,7 +570,7 @@ setInterval(createShootingStar, 300);
 
 
     positions2.forEach((position) => {
-        loadModel('public/models/Rock.glb', scene, controls, camera, (RockObject) => {
+        loadModel('public/models/rocks/Rock.glb', scene, controls, camera, (RockObject) => {
             const scaleFactor = Math.random() * 20 + 5; // Random size 
             RockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
             //RockObject.scale.set(20.8, 20.8, 20.8);
@@ -584,7 +582,7 @@ setInterval(createShootingStar, 300);
 
             scene.add(RockObject);
             objectsToRaycast.push(RockObject);
-             
+
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -592,7 +590,7 @@ setInterval(createShootingStar, 300);
 
     
     positionsAstroidCluster.forEach((position) => {
-    loadModel('public/models/space_rock.glb', scene, controls, camera, (spaceRockObject) => {
+    loadModel('public/models/rocks/space_rock.glb', scene, controls, camera, (spaceRockObject) => {
         //spaceRockObject.scale.set(10.5, 10.5, 10.5);
         const scaleFactor = Math.random() * 5 + 5; // Random size 
         spaceRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
@@ -615,7 +613,7 @@ setInterval(createShootingStar, 300);
     ];
 
     positionRubble.forEach((position) => {
-        loadModel('public/models/Rubble_Rocks.glb', scene, controls, camera, (RubbleObject) => {
+        loadModel('public/models/rocks/Rubble_Rocks.glb', scene, controls, camera, (RubbleObject) => {
             RubbleObject.scale.set(15, 15, 15);
             //RubbleObject.position.set(-185, 0, 60);
             RubbleObject.position.copy(position);
@@ -630,7 +628,7 @@ setInterval(createShootingStar, 300);
     });
 
 
-        loadModel('public/models/Comet.glb', scene, controls, camera, (AstroidObject) => {
+        loadModel('public/models/rocks/Comet.glb', scene, controls, camera, (AstroidObject) => {
             AstroidObject.scale.set(1, 1, 1);
             AstroidObject.position.set(-200, -0.7, -300);
             AstroidObject.name = 'Comet'
