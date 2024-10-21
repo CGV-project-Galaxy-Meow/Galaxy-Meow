@@ -77,6 +77,33 @@
             margin: 10px;
         }
 
+        #startPiP {
+            display: none;
+    position: fixed;
+    top: 70px;           /* Position from the top */
+    left: 15px;          /* Position from the left */
+    padding: 10px 20px;  /* Add some padding for better appearance */
+    background-color: purple; /* Bootstrap primary color or any color you prefer */
+    color: white;        /* Text color */
+    border: none;        /* Remove border */
+    border-radius: 5px;  /* Rounded corners */
+    font-size: 16px;     /* Increase font size */
+    cursor: pointer;     /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 4;
+}
+
+#startPiP:hover {
+    background-color: violet; /* Darker shade for hover effect */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+#startPiP:active {
+    transform: scale(0.95); /* Shrink the button when pressed */
+}
+
+
         #catConversation {
     overflow: hidden;
     text-align: center;
@@ -84,6 +111,15 @@
     max-width: 60%; /* Limit the maximum width */
     animation: typing 3.5s steps(60, end) forwards; /* Keep 'forwards' to retain final state */
 }
+
+#inventoryFull {
+    display: none; 
+    color: red; 
+    font-weight: bold;
+    z-index: 1000;
+    background-color: white;
+}
+
 
 /* Keyframes for typing animation */
 @keyframes typing {
@@ -123,6 +159,8 @@
     </style>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 
 </head>
 <body>
@@ -130,6 +168,30 @@
     <div id="background"></div>
 
     <div id="gameCanvas"></div>
+    
+    <canvas id="pipCanvas" width="800" height="600" style="display:none;"></canvas>
+
+    <video id="pipVideo" controls>
+        <div id="pipControls" class="controls">
+            <button id="moveLeft">←</button>
+            <button id="moveRight">→</button>
+            <button id="moveUp">↑</button>
+            <button id="moveDown">↓</button>
+            <button id="rotateLeft">Rotate Left</button>
+            <button id="rotateRight">Rotate Right</button>
+        </div>
+    </video>
+
+    <div id="blueprint-overlay" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 1000;">
+        <div style="position: relative; margin: auto; top: 10%; width: 80%; text-align: center;">
+          <img id="blueprint-image" src="images/blueprint.jpg" alt="Blueprint" style="max-width: 100%; height: auto;">
+          <button id="close-blueprint" style="position: absolute; top: 10px; right: 10px; background-color: red; color: white; font-size: 20px; border: none; cursor: pointer;">X</button>
+        </div>
+      </div>
+      
+    
+    
+    <button id="startPiP">PiP</button>
 
     <!-- Health Bar -->
     <div id="healthBar">Oxygen: 100/100</div>
@@ -208,6 +270,8 @@
         <div class="inventory-slot" id="slot5"></div>
     </div>
 
+    <span id = "inventoryFull"></span>
+
 
       <!-- Settings Modal -->
   <!-- <div class="modal" id="settingsModal">
@@ -227,7 +291,52 @@
             });
         </script>-->
 
+        
 
+        <script>
+       
+       pipVideo.addEventListener('mouseenter', () => {
+        console.log('Mouse entered PiP video');
+        document.getElementById('pipControls').style.display = 'block';
+    });
+
+    pipVideo.addEventListener('mouseleave', () => {
+        console.log('Mouse left PiP video');
+        document.getElementById('pipControls').style.display = 'none';
+    });
+
+
+document.getElementById('angleManipulator').addEventListener('input', (event) => {
+    const angle = event.target.value;
+    // Call your function to manipulate the angle based on this value
+    setCameraAngle(angle);
+});
+
+function moveCharacter(direction) {
+    switch (direction) {
+        case 'forward':
+            // Add logic to move the character forward
+            break;
+        case 'left':
+            // Add logic to move the character left
+            break;
+        case 'backward':
+            // Add logic to move the character backward
+            break;
+        case 'right':
+            // Add logic to move the character right
+            break;
+    }
+}
+
+function setCameraAngle(angle) {
+    // Logic to change the camera angle based on the input angle
+    camera.rotation.y = THREE.MathUtils.degToRad(angle); // Example for rotating around the Y-axis
+}
+
+
+
+        </script>
     <script type="module" src="/main.js"></script>
     <script type="module" src="/modal.js"></script>
     <script type="module" src="/levelMenus.js"></script>
