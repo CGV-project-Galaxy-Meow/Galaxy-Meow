@@ -230,10 +230,10 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 });
 
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffcc99, 50);
+    const directionalLight = new THREE.DirectionalLight(0x999793, 25);
     directionalLight.position.set(0, 50, -50).normalize();
     //directionalLight.castShadow = true;  // Enable shadows if needed
     scene.add(directionalLight);
@@ -251,7 +251,7 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    earth.position.set(0, 0, -800);
+    earth.position.set(0, 0, -1000);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
@@ -391,7 +391,7 @@ setInterval(createShootingStar, 300);
             scene.add(barrelObject);
             objectsToRaycast.push(barrelObject);
 
-            console.log(objectsToRaycast)
+          
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -402,7 +402,7 @@ setInterval(createShootingStar, 300);
             scene.add(skullObject);
             objectsToRaycast.push(skullObject);
 
-            console.log(objectsToRaycast)
+           
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -424,7 +424,7 @@ setInterval(createShootingStar, 300);
             scene.add(CrystalObject);
             objectsToRaycast.push(CrystalObject);
 
-            console.log(objectsToRaycast)
+          
             setupRaycasting(camera, objectsToRaycast);
         });
         
@@ -437,7 +437,7 @@ setInterval(createShootingStar, 300);
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
-            console.log(objectsToRaycast)
+             
             setupRaycasting(camera, objectsToRaycast);
         });
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
@@ -447,7 +447,7 @@ setInterval(createShootingStar, 300);
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
 
-            console.log(objectsToRaycast)
+          
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -458,7 +458,7 @@ setInterval(createShootingStar, 300);
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
 
-            console.log(objectsToRaycast)
+           
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -495,7 +495,6 @@ setInterval(createShootingStar, 300);
             
             objectsToRaycast.push(RockQObject);
             characterControls.objectsToCollide.push(RockQObject);
-            //console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
         });
@@ -513,7 +512,7 @@ setInterval(createShootingStar, 300);
 
             scene.add(RockObject);
             objectsToRaycast.push(RockObject);
-            console.log(objectsToRaycast)
+           
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -536,7 +535,7 @@ setInterval(createShootingStar, 300);
             scene.add(GoldRockObject);
             objectsToRaycast.push(GoldRockObject);
 
-            // console.log(objectsToRaycast)
+            //  
             characterControls.objectsToCollide.push(GoldRockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -552,7 +551,7 @@ setInterval(createShootingStar, 300);
             BasicRockObject.name = 'Basic Rock'
             scene.add(BasicRockObject);
             objectsToRaycast.push(BasicRockObject);
-            //console.log(objectsToRaycast)
+            // 
             characterControls.objectsToCollide.push(BasicRockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -572,7 +571,7 @@ setInterval(createShootingStar, 300);
 
             scene.add(RockObject);
             objectsToRaycast.push(RockObject);
-            console.log(objectsToRaycast)
+             
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -611,7 +610,7 @@ setInterval(createShootingStar, 300);
             scene.add(RubbleObject);
             objectsToRaycast.push(RubbleObject);
 
-            //console.log(objectsToRaycast)
+            // 
             characterControls.objectsToCollide.push(RubbleObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -625,7 +624,7 @@ setInterval(createShootingStar, 300);
             scene.add(AstroidObject);
             objectsToRaycast.push(AstroidObject);
 
-            //console.log(objectsToRaycast)
+            // 
             characterControls.objectsToCollide.push(AstroidObject);
             setupRaycasting(camera, objectsToRaycast);
         });
