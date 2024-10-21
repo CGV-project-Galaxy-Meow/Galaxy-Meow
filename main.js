@@ -39,7 +39,66 @@ let catObject;
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
-let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+let initialAstronautPosition = new THREE.Vector3(3, 0, 0); 
+const pipVideo = document.getElementById('pipVideo'); 
+const pipCanvas = document.createElement('canvas'); 
+const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
+pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
+
+let pipActive = false;
+
+
+async function activatePiP() {
+    try {
+        
+        pipCanvas.width = window.innerWidth;
+        pipCanvas.height = window.innerHeight;
+
+        
+        const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
+        pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
+
+        
+        const stream = pipCanvas.captureStream(30); 
+        pipVideo.srcObject = stream;
+
+        // Start playing the video to ensure the metadata is loaded
+        pipVideo.play();
+
+        // Start rendering the scene in PiP
+        pipActive = true;
+        requestAnimationFrame(renderInPiP);
+        
+        pipVideo.onloadedmetadata = async () => {
+            try {
+                await pipVideo.requestPictureInPicture();
+            } catch (error) {
+                console.error('Error activating Picture-in-Picture:', error);
+            }
+        };
+    } catch (error) {
+        console.error('Error in activatePiP:', error);
+    }
+}
+
+
+function renderInPiP() {
+    if (pipActive) {
+        // Render the current scene to the pipCanvas
+        pipRenderer.render(scene, camera); // Use your existing scene and camera
+
+        requestAnimationFrame(renderInPiP); // Continue rendering
+    }
+}
+
+pipVideo.addEventListener('leavepictureinpicture', () => {
+    pipActive = false; // Stop the rendering loop
+});
+
+
+const startPiPButton = document.getElementById('startPiP');
+startPiPButton.addEventListener('click', activatePiP);
+
 
 
 //set things up
@@ -131,9 +190,11 @@ function checkOxygen(){
 }
 
 document.getElementById('bagIcon').style.display = 'none';
+document.getElementById('startPiP').style.display = 'none';
+
 export function startGame() {
     decreaseHealth();
-    
+    document.getElementById('startPiP').style.display = 'block';
     document.getElementById('bagIcon').style.display = 'grid';
 
      document.addEventListener('keydown', (event) => {
@@ -193,23 +254,6 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     earth.position.set(0, 0, -400);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
-
-    // For celestial bodies
-    const celestialBodies = [];
-    function createCelestialBody(textureUrl, size, position) {
-        const texture = new THREE.TextureLoader().load(textureUrl);
-        const geometry = new THREE.SphereGeometry(size, 32, 32);
-        const material = new THREE.MeshStandardMaterial({ map: texture }); 
-        const body = new THREE.Mesh(geometry, material);
-        body.position.set(position.x, position.y, position.z);
-        body.castShadow = true;  // Enable shadow casting
-        scene.add(body);
-        celestialBodies.push(body);
-    }
-   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
-    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
 
     const shootingStars = [];
 
@@ -511,9 +555,6 @@ helpButton.addEventListener('click', () => {
     
         // Background animations
         earth.rotation.y += 0.001;
-        celestialBodies.forEach(body => {
-            body.rotation.y += 0.001;
-        });
     
         updateShootingStars();
     
