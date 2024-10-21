@@ -1,5 +1,4 @@
-//Credits for astronaut model
-//"Animated Floating Astronaut in Space Suit Loop" (https://skfb.ly/o9pPT) by LasquetiSpice is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+
 
 
 // import * as THREE from 'three';
@@ -80,8 +79,10 @@
 //     );
 // }
 
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+import * as THREE from 'https://lamp.ms.wits.ac.za/~sgalaxy/node_modules/three/build/three.module.min.js';
+import { GLTFLoader } from './node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+
 
 
 export function loadModel(path, scene, controls, camera, onLoadCallback) {

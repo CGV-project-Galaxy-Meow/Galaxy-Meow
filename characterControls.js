@@ -1,3 +1,4 @@
+
 //original code before collision detection
 // import * as THREE from 'three';
 
@@ -142,7 +143,9 @@
     // }
 // }
 
-import * as THREE from 'three';
+
+import * as THREE from './node_modules/three/build/three.module.min.js';;
+
 
 export class CharacterControls {
     constructor(model, mixer, animationsMap, orbitControl, camera, currentAction) {
