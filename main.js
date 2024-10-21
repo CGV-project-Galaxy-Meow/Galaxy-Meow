@@ -1,23 +1,31 @@
+
+
+//import WebGL from 'three/addons/capabilities/WebGL.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 // okay so probably refrence write links and specific file for three
 // node_modules/three/build/three.module.min.js
 import * as THREE from './node_modules/three/build/three.module.min.js';
 import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
 import './intro.js';
 import { playerName } from './intro.js';
+import { loadCatModel, decreaseHealth } from './cat.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import {showDeathMessage} from './levelMenus.js'
 import { clearInventory } from './inventory.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
 
-let health = 100;
-let healthElement = document.getElementById('healthBar');
+//let health = 100;
+//let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let characterControls;
-let healthInterval; // To control the health timer
+//let healthInterval; // To control the health timer
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -35,7 +43,7 @@ const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 
 
 const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 export const objectsToRaycast = [];
 
 
@@ -111,17 +119,21 @@ camera.position.set(50, 10, 2);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;        // Enable damping (inertia)
-controls.dampingFactor = 0.05;        // Damping inertia
-controls.enableZoom = false;          // Disable zoom if desired
-controls.enablePan = false;           // Disable pan if desired
-controls.mouseButtons = {
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.enableDamping = true;
+orbitControls.dampingFactor = 0.05;
+orbitControls.enableZoom = false;
+orbitControls.enablePan = false;
+orbitControls.mouseButtons = {
     LEFT: null,
     MIDDLE: null,
     RIGHT: THREE.MOUSE.ROTATE
 };
 
+const pointerLockControls = new PointerLockControls(camera, renderer.domElement);
+
+let isFirstPerson = false;
+let controls = orbitControls; // Start with third-person view
 
 
 // Audio listener
@@ -133,8 +145,8 @@ camera.add(listener);
 const audioLoader = new THREE.AudioLoader();
 
 // separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
+export const ambianceSound = new THREE.Audio(listener);
+export const gameOverSound = new THREE.Audio(listener);
 
 // Load ambiance sound
 audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
@@ -158,7 +170,8 @@ audioLoader.load('public/sound/game-over.mp3', function(buffer) {
 //----functions----
 
 
-function decreaseHealth() {
+/*function decreaseHealth() {
+
     if (healthInterval) {
         clearInterval(healthInterval); // Clear any previous interval
     }
@@ -195,7 +208,7 @@ function checkOxygen(){
         // Keep the buttons hidden
         responses.style.display = 'none'; 
     }
-}
+}*/
 
 document.getElementById('bagIcon').style.display = 'none';
 document.getElementById('startPiP').style.display = 'none';
@@ -275,8 +288,12 @@ scene.add(spotLight.target); // Add the target to the scene
     createSun(scene);
 
 
+//     const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+//     const spaceGeometry = new THREE.SphereGeometry(500, 64, 64);
+
     const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
     const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
+
 
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
@@ -381,7 +398,7 @@ scene.add(spotLight.target); // Add the target to the scene
     //let characterControls;
     loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
-        astronaut.scale.set(1.7, 1.7, 1.7);
+        astronaut.scale.set(3, 3, 3);
         initialAstronautPosition.copy(astronaut.position);
         astronaut.position.set(50, 0, 5);
         astronaut.rotation.x = 0;
@@ -394,7 +411,7 @@ scene.add(spotLight.target); // Add the target to the scene
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     
         // Set camera initial position relative to astronaut
-        const initialOffset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        const initialOffset = new THREE.Vector3(0,15, -5); // Adjust as needed
         camera.position.copy(astronaut.position).add(initialOffset);
     
         // Set initial controls target
@@ -438,7 +455,7 @@ scene.add(spotLight.target); // Add the target to the scene
             skullObject.scale.set(0.6, 0.6, 0.6);
 
             skullObject.position.set(45, 0.3, 4);
-            skullObject.name = 'skeleton';
+            skullObject.name = 'skeleton'
             scene.add(skullObject);
             objectsToRaycast.push(skullObject);
 
@@ -485,8 +502,66 @@ scene.add(spotLight.target); // Add the target to the scene
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        
+
+
+        ///----place holder for last items!!!!-----
+
+
+        // loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
+        //     CrystalObject.scale.set(0.5, 0.5, 0.5);
+        //     CrystalObject.position.set(-300, 0, 300);
+            
+        //     // this one is an extra place holder
+        //     CrystalObject.traverse((child) => {
+        //         if (child.isMesh) {
+        //             // Assign custom name or userData here to ensure we're modifying the correct mesh
+        //             child.name = 'CrystalMesh';  // Set a specific name for this child object
+        //             child.customId = 'power-crystal';  // Assign a custom property if you want
+                    
+        //             // Alternatively, store in child.userData if needed:
+        //             child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+        //         }
+        //     });
+            
+            scene.add(CrystalObject);
+            objectsToRaycast.push(CrystalObject);
+
+
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+        loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
+            CrystalObject.scale.set(0.5, 0.5, 0.5);
+            //here comes the sun
+            CrystalObject.position.set(0, 0.6, -300);
+           
+            CrystalObject.traverse((child) => {
+                if (child.isMesh) {
+                    // Assign custom name or userData here to ensure we're modifying the correct mesh
+                    child.name = 'CrystalMesh';  // Set a specific name for this child object
+                    child.customId = 'power-crystal';  // Assign a custom property if you want
+                    
+                    // Alternatively, store in child.userData if needed:
+                    child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+                }
+            });
+            
+            scene.add(CrystalObject);
+            objectsToRaycast.push(CrystalObject);
+
+
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+        ///----------------------------------------
+
+
+
+
         loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
+
             BatteryObject.scale.set(0.5, 0.5, 0.5);
             BatteryObject.position.set(-181, 0, 70);
 
@@ -714,25 +789,17 @@ scene.add(spotLight.target); // Add the target to the scene
         });
 
 
-    });
 
-    // Load the astronaut model and apply controls
-    // let characterControls;
-    // loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
-    //     astronaut = object;
-    //     astronaut.scale.set(10.7, 10.7, 10.7);
-    //     initialAstronautPosition.copy(astronaut.position);
-    //     astronaut.position.set(50,0,5);
-
-    //     astronaut.rotation.x= 0;
-
-    //     characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
-    // });
+    };
 
 
-    // Load the cat model model
-    loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
-        //console.log('Static model loaded:', object);
+   
+    loadCatModel(cat_model, scene, controls, camera, catObject, objectsToRaycast, raycaster, mouse, modal, responses, catConversation, playerName);
+    
+    // Load the static model
+    /*loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
+        console.log('Static model loaded:', object);
+
         object.scale.set(1, 1, 1);
         object.position.set(-10, 0, -10);
         object.rotation.y =  Math.PI / 2;
@@ -825,7 +892,7 @@ helpButton.addEventListener('click', () => {
     catConversation.style.animation = 'none';
     catConversation.textContent = `Very well. You'll find the (part) here...`;
 
-    health -= 5 //remove some health;
+    health -= 98; //remove some health;
 
     void catConversation.offsetWidth; 
     catConversation.style.animation = 'typing 3.5s steps(40, end)';
@@ -846,18 +913,51 @@ helpButton.addEventListener('click', () => {
         });
 
     const keysPressed = {};
+   
     document.addEventListener('keydown', (event) => {
         if (event.key === ' ' || event.code === 'Space') {
             event.preventDefault();
         }
         keysPressed[event.key.toLowerCase()] = true;
+    
+        if (event.key.toLowerCase() === 'f') {
+            isFirstPerson = !isFirstPerson;
+            if (isFirstPerson) {
+                // Switch to first-person view
+                controls = pointerLockControls;
+                orbitControls.enabled = false;
+                astronaut.visible = false; // Hide the character model
+    
+                // Adjust camera position to character's position
+                camera.position.copy(astronaut.position);
+                camera.position.y += 5; // Adjust for character's height
+    
+                // Lock the pointer
+                pointerLockControls.lock();
+            } else {
+                // Switch back to third-person view
+                controls = orbitControls;
+                orbitControls.enabled = true;
+                astronaut.visible = true; // Show the character model
+    
+                // Reset camera position relative to the character
+                const cameraOffset = new THREE.Vector3(0, 15, -25); // Adjust as needed
+                camera.position.copy(astronaut.position).add(cameraOffset);
+    
+                // Unlock the pointer
+                pointerLockControls.unlock();
+            }
+        }
     }, false);
-
+    
+    
     document.addEventListener('keyup', (event) => {
         keysPressed[event.key.toLowerCase()] = false;
     }, false);
 
     //const clock = new THREE.Clock();
+   
+
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -871,18 +971,26 @@ helpButton.addEventListener('click', () => {
 
     
         if (astronaut) {
-            // Compute the offset between camera and controls.target
-            const cameraOffset = camera.position.clone().sub(controls.target);
+            if (isFirstPerson) {
+                // First-person view adjustments
+                camera.position.copy(astronaut.position);
+                camera.position.y += 5; // Adjust for character's height
+                // No need to update controls target
+            } else {
+                // Third-person view adjustments
+                const cameraOffset = camera.position.clone().sub(controls.target);
+                controls.target.copy(astronaut.position);
+                camera.position.copy(astronaut.position).add(cameraOffset);
+            }
+        }
     
-            // Update controls target to astronaut's position
-            controls.target.copy(astronaut.position);
-    
-            // Update camera's position to maintain the offset
-            camera.position.copy(astronaut.position).add(cameraOffset);
+
+        // Update controls if necessary
+        if (!isFirstPerson) {
+            controls.update();
 
         }
     
-        controls.update();
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
     }
@@ -900,7 +1008,7 @@ helpButton.addEventListener('click', () => {
 
 
 
-function restartLevel() {
+/*function restartLevel() {
     clearInventory();
     // Reset health
     health = 100;
@@ -934,7 +1042,7 @@ function restartLevel() {
 
 // Event Listeners for buttons
 document.getElementById('restartButton').addEventListener('click', restartLevel);
-document.getElementById('restartButtonDeath').addEventListener('click', restartLevel);
+document.getElementById('restartButtonDeath').addEventListener('click', restartLevel);*/
 
 // Event Listener for Main Menu Button 
 document.getElementById('mainMenuButton').addEventListener('click', () => {
@@ -942,5 +1050,13 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
+});
+
+pointerLockControls.addEventListener('lock', () => {
+    console.log('Pointer locked');
+});
+
+pointerLockControls.addEventListener('unlock', () => {
+    console.log('Pointer unlocked');
 });
 
