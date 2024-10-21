@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
@@ -47,17 +48,21 @@ camera.position.set(50, 10, 2);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;        // Enable damping (inertia)
-controls.dampingFactor = 0.05;        // Damping inertia
-controls.enableZoom = false;          // Disable zoom if desired
-controls.enablePan = false;           // Disable pan if desired
-controls.mouseButtons = {
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.enableDamping = true;
+orbitControls.dampingFactor = 0.05;
+orbitControls.enableZoom = false;
+orbitControls.enablePan = false;
+orbitControls.mouseButtons = {
     LEFT: null,
     MIDDLE: null,
     RIGHT: THREE.MOUSE.ROTATE
 };
 
+const pointerLockControls = new PointerLockControls(camera, renderer.domElement);
+
+let isFirstPerson = false;
+let controls = orbitControls; // Start with third-person view
 
 // Audio listener
 const listener = new THREE.AudioListener();
@@ -480,18 +485,51 @@ helpButton.addEventListener('click', () => {
         });
 
     const keysPressed = {};
+   
     document.addEventListener('keydown', (event) => {
         if (event.key === ' ' || event.code === 'Space') {
             event.preventDefault();
         }
         keysPressed[event.key.toLowerCase()] = true;
+    
+        if (event.key.toLowerCase() === 'f') {
+            isFirstPerson = !isFirstPerson;
+            if (isFirstPerson) {
+                // Switch to first-person view
+                controls = pointerLockControls;
+                orbitControls.enabled = false;
+                astronaut.visible = false; // Hide the character model
+    
+                // Adjust camera position to character's position
+                camera.position.copy(astronaut.position);
+                camera.position.y += 5; // Adjust for character's height
+    
+                // Lock the pointer
+                pointerLockControls.lock();
+            } else {
+                // Switch back to third-person view
+                controls = orbitControls;
+                orbitControls.enabled = true;
+                astronaut.visible = true; // Show the character model
+    
+                // Reset camera position relative to the character
+                const cameraOffset = new THREE.Vector3(0, 15, -25); // Adjust as needed
+                camera.position.copy(astronaut.position).add(cameraOffset);
+    
+                // Unlock the pointer
+                pointerLockControls.unlock();
+            }
+        }
     }, false);
-
+    
+    
     document.addEventListener('keyup', (event) => {
         keysPressed[event.key.toLowerCase()] = false;
     }, false);
 
     //const clock = new THREE.Clock();
+   
+
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -507,17 +545,24 @@ helpButton.addEventListener('click', () => {
         updateShootingStars();
     
         if (astronaut) {
-            // Compute the offset between camera and controls.target
-            const cameraOffset = camera.position.clone().sub(controls.target);
-    
-            // Update controls target to astronaut's position
-            controls.target.copy(astronaut.position);
-    
-            // Update camera's position to maintain the offset
-            camera.position.copy(astronaut.position).add(cameraOffset);
+            if (isFirstPerson) {
+                // First-person view adjustments
+                camera.position.copy(astronaut.position);
+                camera.position.y += 5; // Adjust for character's height
+                // No need to update controls target
+            } else {
+                // Third-person view adjustments
+                const cameraOffset = camera.position.clone().sub(controls.target);
+                controls.target.copy(astronaut.position);
+                camera.position.copy(astronaut.position).add(cameraOffset);
+            }
         }
     
-        controls.update();
+        // Update controls if necessary
+        if (!isFirstPerson) {
+            controls.update();
+        }
+    
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
     }
@@ -573,4 +618,11 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
+});
+pointerLockControls.addEventListener('lock', () => {
+    console.log('Pointer locked');
+});
+
+pointerLockControls.addEventListener('unlock', () => {
+    console.log('Pointer unlocked');
 });
