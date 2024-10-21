@@ -1,6 +1,6 @@
 // intro.js
 import { startGame} from './main.js';
-let playerName = '';
+export let playerName = '';
 let step = 0;
 
 document.addEventListener('DOMContentLoaded', () => {

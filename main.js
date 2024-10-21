@@ -7,11 +7,12 @@ import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
+import { checkOxygen } from './cat.js';
 import {showDeathMessage} from './levelMenus.js'
 import { clearInventory } from './inventory.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
 
-let health = 100;
+export let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
@@ -175,7 +176,7 @@ function decreaseHealth() {
 }
 
 //cat warns you of the oxygen
-function checkOxygen(){
+/*function checkOxygen(){
     if(health == 30){
         modal.style.display = 'flex';
         catConversation.style.animation = 'none';
@@ -187,7 +188,7 @@ function checkOxygen(){
         // Keep the buttons hidden
         responses.style.display = 'none'; 
     }
-}
+}*/
 
 document.getElementById('bagIcon').style.display = 'none';
 document.getElementById('startPiP').style.display = 'none';
@@ -337,10 +338,7 @@ function updateShootingStars() {
 
 
 setInterval(createShootingStar, 300);
-    
 
-
-    // Load the astronaut model and apply controls
     //let characterControls;
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
