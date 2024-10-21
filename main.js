@@ -751,7 +751,9 @@ setInterval(createShootingStar, 300);
         });
 
 
-    });
+    };
+
+
    
     loadCatModel(cat_model, scene, controls, camera, catObject, objectsToRaycast, raycaster, mouse, modal, responses, catConversation, playerName);
     
@@ -833,7 +835,7 @@ helpButton.addEventListener('click', () => {
             if (event.target === modal) {
                 modal.style.display = 'none'; // Hide the modal when clicking outside
             }
-        });*/
+        });
 
     const keysPressed = {};
    
