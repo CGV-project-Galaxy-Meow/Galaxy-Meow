@@ -82,7 +82,8 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-
+import { setupRaycasting } from './raycasting.js';
+import { CharacterControls } from './characterControls.js'; 
 
 export function loadModel(path, scene, controls, camera, onLoadCallback) {
     const loader = new GLTFLoader();
