@@ -43,6 +43,16 @@ export function setupRaycasting(camera, objectsToRaycast) {
             }else if(clickedObject.name === 'Cylinder'){
                 showButtonModal();
             }
+            else if(clickedObject.name ==='blueprint'){
+                const blueprintOverlay = document.getElementById('blueprint-overlay');
+                blueprintOverlay.style.display = 'block';
+                
+                // Add event listener to close the overlay when "X" is clicked
+                const closeButton = document.getElementById('close-blueprint');
+                closeButton.addEventListener('click', function() {
+                    blueprintOverlay.style.display = 'none';
+                });
+            }
             
         }
     });

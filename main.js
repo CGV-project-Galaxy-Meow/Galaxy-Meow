@@ -381,7 +381,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(1.7, 1.7, 1.7);
             barrelObject.position.set(40, 0, 4);
-            barrelObject.name = 'barrel'
+            barrelObject.name = 'barrel';
             scene.add(barrelObject);
             objectsToRaycast.push(barrelObject);
 
@@ -392,13 +392,26 @@ setInterval(createShootingStar, 300);
         loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
             skullObject.scale.set(0.2, 0.2, 0.2);
             skullObject.position.set(45, 0.3, 4);
-            skullObject.name = 'skeleton'
+            skullObject.name = 'skeleton';
             scene.add(skullObject);
             objectsToRaycast.push(skullObject);
 
             console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
+
+        loadModel('models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
+            blueprintObject.scale.set(5, 5, 5);
+            blueprintObject.position.set(50, 1, 6);
+            blueprintObject.name = 'blueprint';
+            scene.add(blueprintObject);
+            objectsToRaycast.push(blueprintObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
 
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
             CrystalObject.scale.set(0.1, 0.1, 0.1);
@@ -424,7 +437,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.4, 0.4, 0.4);
             BatteryObject.position.set(60, 0, 4);
-            BatteryObject.name = 'Battery'
+            BatteryObject.name = 'Battery';
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
@@ -434,7 +447,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.4, 0.4, 0.4);
             CirctuitIObject.position.set(70, 0, 4);
-            CirctuitIObject.name = 'Crystal'
+            CirctuitIObject.name = 'Crystal';
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
 
@@ -445,7 +458,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
             ButtonObject.scale.set(0.8, 0.8, 0.8);
             ButtonObject.position.set(60, 0, 6);
-            ButtonObject.name = 'Crystal'
+            ButtonObject.name = 'Crystal';
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
 
