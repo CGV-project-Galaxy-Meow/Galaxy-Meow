@@ -8,13 +8,13 @@ import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import {showDeathMessage} from './levelMenus.js'
+import { clearInventory } from './inventory.js';
 
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
-document.getElementById('gameCanvas').style.display = 'block';
 let characterControls;
 let healthInterval; // To control the health timer
 
@@ -39,8 +39,84 @@ let catObject;
 
 // Move astronaut and initial position declarations here, outside of startGame()
 let astronaut;
-let initialAstronautPosition = new THREE.Vector3(3, 0, 0);  // Default initial position
+let initialAstronautPosition = new THREE.Vector3(3, 0, 0); 
+const pipVideo = document.getElementById('pipVideo'); 
+const pipCanvas = document.createElement('canvas'); 
+const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
+pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
 
+let pipActive = false;
+
+
+async function activatePiP() {
+    try {
+        
+        pipCanvas.width = window.innerWidth;
+        pipCanvas.height = window.innerHeight;
+
+        
+        const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
+        pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
+
+        
+        const stream = pipCanvas.captureStream(30); 
+        pipVideo.srcObject = stream;
+
+        // Start playing the video to ensure the metadata is loaded
+        pipVideo.play();
+
+        // Start rendering the scene in PiP
+        pipActive = true;
+        requestAnimationFrame(renderInPiP);
+        
+        pipVideo.onloadedmetadata = async () => {
+            try {
+                await pipVideo.requestPictureInPicture();
+            } catch (error) {
+                console.error('Error activating Picture-in-Picture:', error);
+            }
+        };
+    } catch (error) {
+        console.error('Error in activatePiP:', error);
+    }
+}
+
+
+function renderInPiP() {
+    if (pipActive) {
+        // Render the current scene to the pipCanvas
+        pipRenderer.render(scene, camera); // Use your existing scene and camera
+
+        requestAnimationFrame(renderInPiP); // Continue rendering
+    }
+}
+
+pipVideo.addEventListener('leavepictureinpicture', () => {
+    pipActive = false; // Stop the rendering loop
+});
+
+
+const startPiPButton = document.getElementById('startPiP');
+startPiPButton.addEventListener('click', activatePiP);
+
+
+
+//set things up
+camera.position.set(50, 10, 2); 
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById('gameCanvas').appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;        // Enable damping (inertia)
+controls.dampingFactor = 0.05;        // Damping inertia
+controls.enableZoom = false;          // Disable zoom if desired
+controls.enablePan = false;           // Disable pan if desired
+controls.mouseButtons = {
+    LEFT: null,
+    MIDDLE: null,
+    RIGHT: THREE.MOUSE.ROTATE
+};
 
 
 // Audio listener
@@ -114,18 +190,11 @@ function checkOxygen(){
 }
 
 document.getElementById('bagIcon').style.display = 'none';
-
-
+document.getElementById('startPiP').style.display = 'none';
 
 export function startGame() {
-
-    //show objectives
-    
-    const overlay = document.querySelector('.overlay');
-    overlay.style.display = 'block';
-
     decreaseHealth();
-    
+    document.getElementById('startPiP').style.display = 'block';
     document.getElementById('bagIcon').style.display = 'grid';
 
      document.addEventListener('keydown', (event) => {
@@ -139,30 +208,10 @@ export function startGame() {
     });
 
 
-
-    camera.position.set(50, 10, 2); 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('gameCanvas').appendChild(renderer.domElement);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;        // Enable damping (inertia)
-    controls.dampingFactor = 0.05;        // Damping inertia
-    controls.enableZoom = false;          // Disable zoom if desired
-    controls.enablePan = false;           // Disable pan if desired
-    controls.mouseButtons = {
-        LEFT: null,
-        MIDDLE: null,
-        RIGHT: THREE.MOUSE.ROTATE
-    };
-
-
-
-
 // Prevent context menu from appearing on right-click
 renderer.domElement.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 }, false);
-
-
 
 //create background audio
 const listener = new THREE.AudioListener();
@@ -223,23 +272,6 @@ scene.add(directionalLight);
     earth.position.set(0, 0, -400);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
-
-    // For celestial bodies
-    const celestialBodies = [];
-    function createCelestialBody(textureUrl, size, position) {
-        const texture = new THREE.TextureLoader().load(textureUrl);
-        const geometry = new THREE.SphereGeometry(size, 32, 32);
-        const material = new THREE.MeshStandardMaterial({ map: texture }); 
-        const body = new THREE.Mesh(geometry, material);
-        body.position.set(position.x, position.y, position.z);
-        body.castShadow = true;  // Enable shadow casting
-        scene.add(body);
-        celestialBodies.push(body);
-    }
-   // createCelestialBody('textures/jupiter.jpg', 5, { x: -200, y: 2, z: -15 });
-   // createCelestialBody('textures/planet.jpg', 1.5, { x: 100, y: -30, z: -40 });
-   // createCelestialBody('textures/planet.jpg', 90, { x: 500, y: 0, z: -500 });
-    //createCelestialBody('textures/neptune.jpg', 100, { x: -300, y: 50, z: -500 });
 
     const shootingStars = [];
 
@@ -390,7 +422,17 @@ setInterval(createShootingStar, 300);
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
             CrystalObject.scale.set(0.1, 0.1, 0.1);
             CrystalObject.position.set(50, 0.1, 4);
-            CrystalObject.name = 'Crystal'
+            CrystalObject.traverse((child) => {
+                if (child.isMesh) {
+                    // Assign custom name or userData here to ensure we're modifying the correct mesh
+                    child.name = 'CrystalMesh';  // Set a specific name for this child object
+                    child.customId = 'power-crystal';  // Assign a custom property if you want
+                    
+                    // Alternatively, store in child.userData if needed:
+                    child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+                }
+            });
+            
             scene.add(CrystalObject);
             objectsToRaycast.push(CrystalObject);
 
@@ -401,7 +443,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.4, 0.4, 0.4);
             BatteryObject.position.set(60, 0, 4);
-            BatteryObject.name = 'Crystal'
+            BatteryObject.name = 'Battery'
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
@@ -532,9 +574,6 @@ helpButton.addEventListener('click', () => {
     
         // Background animations
         earth.rotation.y += 0.001;
-        celestialBodies.forEach(body => {
-            body.rotation.y += 0.001;
-        });
     
         updateShootingStars();
     
@@ -567,6 +606,7 @@ helpButton.addEventListener('click', () => {
 
 
 function restartLevel() {
+    clearInventory();
     // Reset health
     health = 100;
     healthElement.innerHTML = `Oxygen: ${health}/100`;
