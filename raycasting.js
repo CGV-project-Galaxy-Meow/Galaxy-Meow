@@ -43,7 +43,7 @@ export function setupRaycasting(camera, objectsToRaycast) {
             }else if(clickedObject.name === 'Cylinder'){
                 showButtonModal();
             }
-            else if(clickedObject.name ==='blueprint'){
+            else if(clickedObject.name ==='node_id31'){
                 const blueprintOverlay = document.getElementById('blueprint-overlay');
                 blueprintOverlay.style.display = 'block';
                 
