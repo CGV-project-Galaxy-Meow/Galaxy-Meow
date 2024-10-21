@@ -91,7 +91,7 @@
     cursor: pointer;     /* Change cursor to pointer on hover */
     transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1001;
+    z-index: 4;
 }
 
 #startPiP:hover {
@@ -181,6 +181,14 @@
             <button id="rotateRight">Rotate Right</button>
         </div>
     </video>
+
+    <div id="blueprint-overlay" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 1000;">
+        <div style="position: relative; margin: auto; top: 10%; width: 80%; text-align: center;">
+          <img id="blueprint-image" src="images/blueprint.jpg" alt="Blueprint" style="max-width: 100%; height: auto;">
+          <button id="close-blueprint" style="position: absolute; top: 10px; right: 10px; background-color: red; color: white; font-size: 20px; border: none; cursor: pointer;">X</button>
+        </div>
+      </div>
+      
     
     
     <button id="startPiP">PiP</button>
@@ -281,6 +289,8 @@
                 responses.style.display = 'flex';
             });
         </script>-->
+
+        
 
         <script>
        
