@@ -36,19 +36,20 @@ document.addEventListener('DOMContentLoaded', () => {
             dialogueText.innerHTML = `
                 <p>You have been trapped on the moon and need to build a teleporter!</p>
                 <p>The path ahead is perilous.</p>
-                <p>You need to collect all the teleporter components around the map.</p>
+                <p>Find the teleporter blueprint and look for the components around the map</p>
                 <div style="display: flex; justify-content: flex-start; align-items: center; height: 100%; padding-left: 160px; margin-top: 2%; ">
                     <ul style="text-align: left; list-style-position: inside; margin: 0; padding-left: 20px;">
                         <li>W - Move forward</li>
                         <li>S - Move backward</li>
                         <li>A - Move left</li>
                         <li>D - Move right</li>
+                        <li>Space - Jump</li>
                         <li>Oxygen Meter - You get 100 units of oxygen</li>
                         <li>If you need help - Click The Cat</li>
                         <li>Esc - Restart/Leave game</li>
-                        <li>Shift - Opens inventory.</li>
-                        <li>Mouse click - Click Objects</li>
-                        <li>Mouse right click and drag- Look around the map</li>
+                        <li>Shift - Opens inventory</li>
+                        <li>Left mouse click - To select objects</li>
+                        <li>Right mouse click and drag - Look around the map</li>
                     </ul>
                 </div>
                 <p>Good luck, ${playerName}!</p>
