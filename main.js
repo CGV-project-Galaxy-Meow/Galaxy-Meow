@@ -181,13 +181,31 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 });
 
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-    scene.add(ambientLight);
+// Ambient light: Simulates the overall illumination on the moon
+const ambientLight = new THREE.AmbientLight(0xaaaaaa, 0.5); // Softer ambient light
+scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffcc99, 50);
-    directionalLight.position.set(0, 50, -50).normalize();
-    //directionalLight.castShadow = true;  // Enable shadows if needed
-    scene.add(directionalLight);
+// Directional light: Simulates sunlight
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // Adjust intensity for realism
+directionalLight.position.set(10, 20, -10).normalize(); // Position it at a suitable angle
+directionalLight.castShadow = true; // Enable shadows
+
+// Optional: Configure shadow properties for better results
+directionalLight.shadow.mapSize.width = 1024; // Shadow map resolution
+directionalLight.shadow.mapSize.height = 1024; // Shadow map resolution
+directionalLight.shadow.camera.near = 0.5; // Near clipping plane for shadow camera
+directionalLight.shadow.camera.far = 50; // Far clipping plane for shadow camera
+directionalLight.shadow.camera.left = -30; // Shadow camera left boundary
+directionalLight.shadow.camera.right = 30; // Shadow camera right boundary
+directionalLight.shadow.camera.top = 30; // Shadow camera top boundary
+directionalLight.shadow.camera.bottom = -30; // Shadow camera bottom boundary
+
+// Optionally, adjust the light helper for debugging
+const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+scene.add(helper);
+
+scene.add(directionalLight);
+
     
 
     createSun(scene);
@@ -317,6 +335,7 @@ setInterval(createShootingStar, 300);
         astronaut.position.set(50, 0, 5);
         astronaut.rotation.x = 0;
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
+
     
         // Set camera initial position relative to astronaut
         const initialOffset = new THREE.Vector3(0, 10, -20); // Adjust as needed
