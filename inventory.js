@@ -178,7 +178,6 @@ inventorySlots.forEach(slot => {
 function toggleInventory() {
     const inventory = document.getElementById('inventory');
     
-   
     if (inventory.style.display === 'none' || inventory.style.display === '') {
         inventory.style.display = 'grid'; 
     } else {
@@ -186,7 +185,16 @@ function toggleInventory() {
     }
 }
 
+// Listen for the "keydown" event to detect the "Shift" key
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Shift') {
+        toggleInventory();  // Toggle inventory when Shift is pressed
+    }
+});
+
+// Optional: Add the existing bag icon click handler if you still want that functionality
 const bagIcon = document.getElementById('bagIcon');
 bagIcon.addEventListener('click', toggleInventory);
+
 
 
