@@ -66,7 +66,7 @@ const itemDataMapping = {
         description: 'Crude oil is a valuable resource used for many purposes.',
         additionalInfo: 'In space exploration, crude oil could be useful as an energy resource.',
         imgSrc: items['crudeOil'].img,
-        itemName: 'button'
+        itemName: 'crudeOil'
     }
 };
 export function setupRaycasting(camera, objectsToRaycast) {
