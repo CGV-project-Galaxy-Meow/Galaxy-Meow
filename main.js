@@ -237,6 +237,27 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     directionalLight.position.set(0, 50, -50).normalize();
     //directionalLight.castShadow = true;  // Enable shadows if needed
     scene.add(directionalLight);
+
+    // Create a spotlight
+const spotLight = new THREE.SpotLight(0xffa200, 80); // Red light with intensity 80
+spotLight.position.set(50, 1, 8); // Positioning the light above the ground
+
+// Set the spotlight to shine directly downwards
+spotLight.angle = Math.PI / 2; // Angle of the spotlight's cone (adjust if needed)
+spotLight.penumbra = 0.1; // Soft edges of the spotlight
+spotLight.decay = 2; // How quickly the light diminishes
+spotLight.distance = 50; // The distance the light reaches
+
+// Enable shadows if needed
+spotLight.castShadow = true;
+
+// Point the light directly downwards
+spotLight.target.position.set(50, 0, 8); // Set the target to the ground (where the torch is pointing)
+spotLight.target.updateMatrixWorld(); // Update the target matrix
+
+// Add the spotlight to the scene
+scene.add(spotLight);
+scene.add(spotLight.target); // Add the target to the scene
     
 
     createSun(scene);
