@@ -60,9 +60,9 @@ const objectsToRaycast = [];
 for (let i = 0; i < numAsteroids; i++) {
     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
         // Randomize position
-        const randomX = Math.random() * 100 - 20; // Random value between -50 and 50
+        const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
         const randomY = Math.random() * 20;       // Random value between 0 and 20
-        const randomZ = Math.random() * 100 - 20; // Random value between -50 and 50
+        const randomZ = Math.random() * 100 - 500; // Random value between -50 and 50
 
         // Randomize rotation
         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
