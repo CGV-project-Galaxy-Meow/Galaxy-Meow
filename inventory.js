@@ -1,3 +1,5 @@
+import { checkForWin, handleWin } from "./win_check";
+
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 5;
@@ -96,6 +98,10 @@ export function addItem(itemName) {
         addItemToSlot(availableSlot, itemName);
         items[itemName].hasItem = true;
         clearInventoryFullMessage(); 
+
+        if(checkForWin()){
+            handleWin();
+        }
     } else {
         showInventoryFullMessage(); 
     }
