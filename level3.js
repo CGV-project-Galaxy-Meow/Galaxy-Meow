@@ -60,9 +60,9 @@ const objectsToRaycast = [];
 for (let i = 0; i < numAsteroids; i++) {
     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
         // Randomize position
-        const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
+        const randomX = Math.random() * 100 - 20; // Random value between -50 and 50
         const randomY = Math.random() * 20;       // Random value between 0 and 20
-        const randomZ = Math.random() * 100 - 50; // Random value between -50 and 50
+        const randomZ = Math.random() * 100 - 20; // Random value between -50 and 50
 
         // Randomize rotation
         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
@@ -93,6 +93,42 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
 
     //setupRaycasting(camera, objectsToRaycast);
 });
+
+// Load the sun model
+// loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
+//     // Scale and position the sun
+//     astroObject.scale.set(50, 50, 50);
+//     astroObject.position.set(300, 100, 4);
+//     astroObject.name = 'sun';
+//     scene.add(astroObject);
+//     objectsToRaycast.push(astroObject);
+
+//     // Create a directional light to simulate sunlight
+//     const sunlight = new THREE.DirectionalLight(0xffffff, 1); // White light, intensity 1
+//     sunlight.position.set(300, 100, 4); // Same position as the sun
+//     sunlight.target.position.set(0, 0, 0); // Target to illuminate towards the origin or another object
+//     scene.add(sunlight);
+//     scene.add(sunlight.target); // Ensure target is part of the scene to get directional lighting working
+
+//     // Optionally, you can add a slight light effect on the sun itself (not required for realism)
+//     const sunLightGlow = new THREE.PointLight(0xffcc33, 2, 500); // Orange-ish glow, intensity 2, range 500
+//     sunLightGlow.position.set(300, 100, 4); // Same position as the sun
+//     scene.add(sunLightGlow);
+// });
+
+
+// loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
+//     astroObject.scale.set(50, 50, 50);
+//     astroObject.position.set(4, 10, -300);
+//     astroObject.name = 'asteroids';
+//     scene.add(astroObject);
+//     objectsToRaycast.push(astroObject);
+
+
+
+//     //setupRaycasting(camera, objectsToRaycast);
+// });
+
 
 let astronaut;
 let characterControls;
