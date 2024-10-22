@@ -26,4 +26,5 @@ document.getElementById('proceedButton').addEventListener('click', function() {
    
     // Hide the modal after clicking
     document.getElementById('winningModal').style.display = 'none';
+    window.location.href = 'level2.html';
   });
