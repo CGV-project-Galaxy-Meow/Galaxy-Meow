@@ -440,28 +440,28 @@ setInterval(createShootingStar, 300);
 
 
 
-        loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
-            CrystalObject.scale.set(0.5, 0.5, 0.5);
-            CrystalObject.position.set(290, 0.6, -80);
-            //280, 0, -78 by the ruins
-            CrystalObject.traverse((child) => {
-                if (child.isMesh) {
-                    // Assign custom name or userData here to ensure we're modifying the correct mesh
-                    child.name = 'CrystalMesh';  // Set a specific name for this child object
-                    child.customId = 'power-crystal';  // Assign a custom property if you want
+        // loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
+        //     CrystalObject.scale.set(0.5, 0.5, 0.5);
+        //     CrystalObject.position.set(290, 0.6, -80);
+        //     //280, 0, -78 by the ruins
+        //     CrystalObject.traverse((child) => {
+        //         if (child.isMesh) {
+        //             // Assign custom name or userData here to ensure we're modifying the correct mesh
+        //             child.name = 'CrystalMesh';  // Set a specific name for this child object
+        //             child.customId = 'power-crystal';  // Assign a custom property if you want
                     
-                    // Alternatively, store in child.userData if needed:
-                    child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
-                }
-            });
+        //             // Alternatively, store in child.userData if needed:
+        //             child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+        //         }
+        //     });
             
-            scene.add(CrystalObject);
-            objectsToRaycast.push(CrystalObject);
+        //     scene.add(CrystalObject);
+        //     objectsToRaycast.push(CrystalObject);
 
 
 
-            setupRaycasting(camera, objectsToRaycast);
-        });
+        //     setupRaycasting(camera, objectsToRaycast);
+        // });
         
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.5, 0.5, 0.5);
@@ -490,6 +490,37 @@ setInterval(createShootingStar, 300);
             ButtonObject.name = 'Button'
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+            CirctuitIObject.scale.set(0.2, 0.2, 0.2);
+            CirctuitIObject.position.set(-210, 0.4, -310);
+            CirctuitIObject.name = 'Circuit Board'
+            scene.add(CirctuitIObject);
+            objectsToRaycast.push(CirctuitIObject);
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
+            antennaObject.scale.set(5, 5, 5);
+            antennaObject.position.set(0, 0, -300);
+            antennaObject.name = 'Antenna'
+            scene.add(antennaObject);
+            objectsToRaycast.push(antennaObject);
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+        loadModel('public/models/console.glb', scene, controls, camera, (consoleObject) => {
+            consoleObject.scale.set(0.7, 0.7, 0.7);
+            consoleObject.position.set(295, 0.1, -80);
+            // by ruin 280, 0, -78
+            consoleObject.name = 'Console'
+            scene.add(consoleObject);
+            objectsToRaycast.push(consoleObject);
 
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -848,7 +879,7 @@ function isItemInInventory(itemName) {
             if (event.target === modal) {
                 modal.style.display = 'none'; // Hide the modal when clicking outside
             }
-        });
+        });  
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
