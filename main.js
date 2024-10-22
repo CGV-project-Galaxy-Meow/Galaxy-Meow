@@ -110,8 +110,8 @@ document.getElementById('gameCanvas').appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
-controls.enableZoom = false;          // Disable zoom if desired
-controls.enablePan = false;           // Disable pan if desired
+controls.enableZoom = true;          // Disable zoom if desired
+controls.enablePan = true;           // Disable pan if desired
 controls.mouseButtons = {
     LEFT: null,
     MIDDLE: null,
@@ -222,7 +222,7 @@ const sound = new THREE.Audio(listener);
 
 // Load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+audioLoader.load('/sound/ambiance-sound.mp3', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.5);
