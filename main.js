@@ -507,7 +507,7 @@ setInterval(createShootingStar, 300);
 
 
         loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
-                 antennaObject.scale.set(5, 5, 5);
+                 antennaObject.scale.set(12, 12, 12);
                 antennaObject.position.set(0, 0, -300);
                 antennaObject.traverse((child) => {
                     if (child.isMesh) {
