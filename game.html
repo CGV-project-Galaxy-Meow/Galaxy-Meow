@@ -260,6 +260,21 @@
         </div>
     </div>
     
+
+
+<!-- Winning Modal -->
+<div id="winningModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 1000; justify-content: center; align-items: center;">
+  <div style="background-color: #b800ccbb; padding: 20px; border-radius: 10px; text-align: center;">
+    <h2 style="color: black;">Congratulations!</h2>
+    <p style="color: black;">You have successfully collected all the items and won the level!</p>
+    
+    <!-- Proceed Button -->
+    <button id="proceedButton" style="margin-top: 20px; padding: 10px 20px; background-color: black; color: rgb(197, 0, 184); border: none; border-radius: 5px; cursor: pointer;">
+      Proceed to Next Level
+    </button>
+  </div>
+</div>
+
     <div class="inventory-icon" id="bagIcon">
         <img src="https://lamp.ms.wits.ac.za/~sgalaxy/public/images/bag.png" alt="Bag Icon">
     </div>
@@ -270,6 +285,9 @@
         <div class="inventory-slot" id="slot3"></div>
         <div class="inventory-slot" id="slot4"></div>
         <div class="inventory-slot" id="slot5"></div>
+        <div class="inventory-slot" id="slot6"></div>
+        <div class="inventory-slot" id="slot7"></div>
+        <div class="inventory-slot" id="slot8"></div>
     </div>
     <span id = "inventoryFull"></span>
   
@@ -280,7 +298,7 @@
     <script type= "module" src="https://lamp.ms.wits.ac.za/~sgalaxy/main.js"></script>
     <script type= "module" src="https://lamp.ms.wits.ac.za/~sgalaxy/intro.js"></script>
     <script type="module" src="https://lamp.ms.wits.ac.za/~sgalaxy/levelMenus.js"></script>
-   
+   <script type = "module" src = "https://lamp.ms.wits.ac.za/~sgalaxy/win_check.js"> </script>
 
 
 
@@ -342,17 +360,6 @@ function setCameraAngle(angle) {
 
 
         </script>
-
-    <script>
-
-        // closeExit = document.getElementById("closeExit");
-        // exitMenu = document.getElementById("exitMenu")
-
-        // // Close exitMenu modal on button click
-        // closeExit.addEventListener('click', () => {
-        //     exitMenu.style.display = 'none'; 
-        // });
-    </script>
 
 </body>
 </html>

@@ -152,3 +152,8 @@ window.onclick = function(event) {
         modal.style.display = 'none';
     }
 };
+
+export function showWinningModal() {
+    const winningModal = document.getElementById('winningModal');
+    winningModal.style.display = 'flex'; // Show the modal
+}

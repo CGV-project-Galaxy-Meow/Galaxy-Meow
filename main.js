@@ -542,25 +542,49 @@ scene.add(spotLight.target); // Add the target to the scene
         //     setupRaycasting(camera, objectsToRaycast);
         // });
 
-        loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
-            antennaObject.scale.set(5, 5, 5);
-            antennaObject.position.set(0, 0, -300);
-            antennaObject.name = 'Antenna'
-            scene.add(antennaObject);
-            objectsToRaycast.push(antennaObject);
 
-            setupRaycasting(camera, objectsToRaycast);
-        });
+        loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
+                 antennaObject.scale.set(12, 12, 12);
+                antennaObject.position.set(0, 0, -300);
+                antennaObject.traverse((child) => {
+                    if (child.isMesh) {
+                        // Assign custom name or userData here to ensure we're modifying the correct mesh
+                        child.name = 'antenna';  // Set a specific name for this child object
+                        child.customId = 'antenna'
+                        
+                         // Alternatively, store in child.userData if needed:
+                         child.userData = { customId: 'antenna' };  // Set custom user data for the mesh
+                    }
+                 });
+                
+                 scene.add(antennaObject);
+                 objectsToRaycast.push(antennaObject);
+    
+    
+    
+                setupRaycasting(camera, objectsToRaycast);
+            });
+
         loadModel('public/models/console.glb', scene, controls, camera, (consoleObject) => {
             consoleObject.scale.set(0.7, 0.7, 0.7);
-            consoleObject.position.set(295, 0.1, -80);
-            // by ruin 280, 0, -78
-            consoleObject.name = 'Console'
+           consoleObject.position.set(295, 0.1, -80);
+           //280, 0, -78 by the ruins
+           consoleObject.traverse((child) => {
+               if (child.isMesh) {
+                   // Assign custom name or userData here to ensure we're modifying the correct mesh
+                   child.name = 'console';  // Set a specific name for this child object
+                   child.customId = 'console'
+                   
+                    // Alternatively, store in child.userData if needed:
+                    child.userData = { customId: 'console' };  // Set custom user data for the mesh
+               }
+            });
+           
             scene.add(consoleObject);
             objectsToRaycast.push(consoleObject);
 
-            setupRaycasting(camera, objectsToRaycast);
-        });
+           setupRaycasting(camera, objectsToRaycast);
+       });
 
 
         
