@@ -1,6 +1,6 @@
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
-const MAX_ITEMS = 5;
+const MAX_ITEMS = 8;
 
 export const items = {
     gems: { img: 'images/crystal.png', count: 0 },
