@@ -81,6 +81,20 @@ const itemDataMapping = {
         additionalInfo: 'In space exploration, crude oil could be useful as an energy resource.',
         imgSrc: items['crudeOil'].img,
         itemName: 'crudeOil'
+    },
+    'antenna': {
+        title: 'Antenna',
+        description: 'The antenna is useful for netowrk.',
+        additionalInfo: 'In space exploration, you need a way to connect back to Earth.',
+        imgSrc: items['antenna'].img,
+        itemName: 'antenna'
+    },
+    'console': {
+        title: 'Console',
+        description: 'The final piece of the puzzle... or is it ?',
+        additionalInfo: 'Did Margie ever see this ?',
+        imgSrc: items['console'].img,
+        itemName: 'console'
     }
 };
 export function setupRaycasting(camera, objectsToRaycast) {

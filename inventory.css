@@ -38,7 +38,7 @@ body {
 .inventory-grid {
     display: none;
     position: fixed;
-    grid-template-columns: repeat(5, 100px);
+    grid-template-columns: repeat(8, 100px);
     grid-gap: 10px;
     justify-content: center;
     z-index: 1000;  
