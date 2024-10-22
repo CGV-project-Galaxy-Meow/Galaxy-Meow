@@ -14,7 +14,7 @@ export class CharacterControls {
 
         this.toggleRun = true;
         this.currentAction = currentAction;
-        this.speed = 3; // Adjust movement speed as needed
+        this.speed = 10; // Adjust movement speed as needed
 
         this.isJumping = false;
         this.jumpHeight = 5; // Height of the jump
