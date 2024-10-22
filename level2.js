@@ -70,6 +70,8 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     console.error('Error loading model:', error);
 });
 
+
+
 let astronaut;
 let characterControls;
 loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
