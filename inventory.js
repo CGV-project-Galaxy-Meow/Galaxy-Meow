@@ -13,7 +13,7 @@ export const items = {
     skull: { img: 'images/skull.png', count: 0 },
     flag: { img: 'images/flag.png', count: 0 },
     button: { img: 'images/button.png', count: 0 },
-    circuit: { img: 'images/circuit.png', count: 0 },
+    circuit: { img: 'images/circuit.png', count: 0},
 };
 
 function getNextAvailableSlot() {

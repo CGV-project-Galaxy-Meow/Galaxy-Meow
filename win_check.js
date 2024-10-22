@@ -3,7 +3,7 @@ import { showWinningModal } from "./modal";
 
 // List of items required to win
 const requiredItems = ['circuit', 'battery','antenna','console', 'button'];
-
+// const requiredItems = ['circuit', 'battery', 'button'];
 // Function to check if the player has won
 export function checkForWin() {
     for (let itemName of requiredItems) {
