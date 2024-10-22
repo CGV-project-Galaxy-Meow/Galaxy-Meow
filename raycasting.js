@@ -25,6 +25,20 @@ const itemDataMapping = {
         imgSrc: 'images/flag.png',
         itemName: 'flag'
     },
+    'Object_3': {
+        title: 'U.S Flag',
+        description: 'USA KAWWHHH!!!',
+        additionalInfo: 'Americans never made it to the moon by the way.',
+        imgSrc: 'images/flag.png',
+        itemName: 'flag'
+    },
+    'Object_5': {
+        title: 'U.S Flag',
+        description: 'USA KAWWHHH!!!',
+        additionalInfo: 'Americans never made it to the moon by the way.',
+        imgSrc: 'images/flag.png',
+        itemName: 'flag'
+    },
     'Cylinder002': {
         title: 'Battery',
         description: 'These batteries are essential to powering high-energy devices.',
@@ -66,7 +80,7 @@ const itemDataMapping = {
         description: 'Crude oil is a valuable resource used for many purposes.',
         additionalInfo: 'In space exploration, crude oil could be useful as an energy resource.',
         imgSrc: items['crudeOil'].img,
-        itemName: 'button'
+        itemName: 'crudeOil'
     }
 };
 export function setupRaycasting(camera, objectsToRaycast) {
@@ -84,7 +98,7 @@ export function setupRaycasting(camera, objectsToRaycast) {
 
         // Check intersections only with the specific objects passed in
         const intersects = raycaster.intersectObjects(objectsToRaycast, true);
-        console.log('Intersections:', intersects);
+        //console.log('Intersections:', intersects);
 
         // If an intersection is found, process it
         if (intersects.length > 0) {
@@ -107,5 +121,5 @@ export function setupRaycasting(camera, objectsToRaycast) {
             
         }
     });
-    console.log(objectsToRaycast)
+    //console.log(objectsToRaycast)
 }

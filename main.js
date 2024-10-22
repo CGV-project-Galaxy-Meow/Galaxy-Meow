@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
@@ -108,21 +107,17 @@ camera.position.set(50, 10, 2);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
-const orbitControls = new OrbitControls(camera, renderer.domElement);
-orbitControls.enableDamping = true;
-orbitControls.dampingFactor = 0.05;
-orbitControls.enableZoom = false;
-orbitControls.enablePan = false;
-orbitControls.mouseButtons = {
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;        // Enable damping (inertia)
+controls.dampingFactor = 0.05;        // Damping inertia
+controls.enableZoom = false;          // Disable zoom if desired
+controls.enablePan = false;           // Disable pan if desired
+controls.mouseButtons = {
     LEFT: null,
     MIDDLE: null,
     RIGHT: THREE.MOUSE.ROTATE
 };
 
-const pointerLockControls = new PointerLockControls(camera, renderer.domElement);
-
-let isFirstPerson = false;
-let controls = orbitControls; // Start with third-person view
 
 // Audio listener
 const listener = new THREE.AudioListener();
@@ -235,13 +230,34 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 });
 
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffcc99, 50);
+    const directionalLight = new THREE.DirectionalLight(0x999793, 25);
     directionalLight.position.set(0, 50, -50).normalize();
     //directionalLight.castShadow = true;  // Enable shadows if needed
     scene.add(directionalLight);
+
+    // Create a spotlight
+const spotLight = new THREE.SpotLight(0xffa200, 80); // Red light with intensity 80
+spotLight.position.set(50, 1, 8); // Positioning the light above the ground
+
+// Set the spotlight to shine directly downwards
+spotLight.angle = Math.PI / 2; // Angle of the spotlight's cone (adjust if needed)
+spotLight.penumbra = 0.1; // Soft edges of the spotlight
+spotLight.decay = 2; // How quickly the light diminishes
+spotLight.distance = 50; // The distance the light reaches
+
+// Enable shadows if needed
+spotLight.castShadow = true;
+
+// Point the light directly downwards
+spotLight.target.position.set(50, 0, 8); // Set the target to the ground (where the torch is pointing)
+spotLight.target.updateMatrixWorld(); // Update the target matrix
+
+// Add the spotlight to the scene
+scene.add(spotLight);
+scene.add(spotLight.target); // Add the target to the scene
     
 
     createSun(scene);
@@ -256,7 +272,7 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    earth.position.set(0, 0, -800);
+    earth.position.set(0, 0, -1000);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
@@ -349,7 +365,7 @@ setInterval(createShootingStar, 300);
     //let characterControls;
     loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
-        astronaut.scale.set(3, 3, 3);
+        astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
         astronaut.position.set(50, 0, 5);
         astronaut.rotation.x = 0;
@@ -362,7 +378,7 @@ setInterval(createShootingStar, 300);
         characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
     
         // Set camera initial position relative to astronaut
-        const initialOffset = new THREE.Vector3(0,15, -5); // Adjust as needed
+        const initialOffset = new THREE.Vector3(0, 10, -20); // Adjust as needed
         camera.position.copy(astronaut.position).add(initialOffset);
     
         // Set initial controls target
@@ -396,7 +412,6 @@ setInterval(createShootingStar, 300);
             scene.add(barrelObject);
             objectsToRaycast.push(barrelObject);
 
-            console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -407,7 +422,8 @@ setInterval(createShootingStar, 300);
             scene.add(skullObject);
             objectsToRaycast.push(skullObject);
 
-            console.log(objectsToRaycast)
+
+
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -418,7 +434,7 @@ setInterval(createShootingStar, 300);
             scene.add(blueprintObject);
             objectsToRaycast.push(blueprintObject);
 
-            console.log(objectsToRaycast)
+            //console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -442,7 +458,8 @@ setInterval(createShootingStar, 300);
             scene.add(CrystalObject);
             objectsToRaycast.push(CrystalObject);
 
-            console.log(objectsToRaycast)
+
+
             setupRaycasting(camera, objectsToRaycast);
         });
         
@@ -455,7 +472,6 @@ setInterval(createShootingStar, 300);
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
-            console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
@@ -465,7 +481,6 @@ setInterval(createShootingStar, 300);
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
 
-            console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -476,7 +491,6 @@ setInterval(createShootingStar, 300);
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
 
-            console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
 
@@ -484,7 +498,7 @@ setInterval(createShootingStar, 300);
         
         // Load the model for each position in the array
         positions.forEach((position) => {
-            loadModel('public/models/Rocks.glb', scene, controls, camera, (RocksObject) => {
+            loadModel('public/models/rocks/Rocks.glb', scene, controls, camera, (RocksObject) => {
                 const scaleFactor = Math.random() * 30 + 5; // Random size between 5 and 15
                 RocksObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size // Scale the model
                 RocksObject.position.copy(position); // Set the position from the array
@@ -501,7 +515,7 @@ setInterval(createShootingStar, 300);
 
 
         positionsQ.forEach((position) => {
-        loadModel('public/models/RockQ.glb', scene, controls, camera, (RockQObject) => {
+        loadModel('public/models/rocks/RockQ.glb', scene, controls, camera, (RockQObject) => {
             const scaleFactor = Math.random() * 20 + 5; // Random size 
             RockQObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
             //RockQObject.scale.set(10.8, 10.8, 10.8);
@@ -513,13 +527,12 @@ setInterval(createShootingStar, 300);
             
             objectsToRaycast.push(RockQObject);
             characterControls.objectsToCollide.push(RockQObject);
-            //console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
         });
         });
     
         positions2.forEach((position) => {
-        loadModel('public/models/Rock.glb', scene, controls, camera, (RockObject) => {
+        loadModel('public/models/rocks/Rock.glb', scene, controls, camera, (RockObject) => {
             const scaleFactor = Math.random() * 20 + 5; // Random size 
             RockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
             //RockObject.scale.set(20.8, 20.8, 20.8);
@@ -531,7 +544,7 @@ setInterval(createShootingStar, 300);
 
             scene.add(RockObject);
             objectsToRaycast.push(RockObject);
-            console.log(objectsToRaycast)
+
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -541,7 +554,7 @@ setInterval(createShootingStar, 300);
 
 
     positionsGold.forEach((position) => {
-        loadModel('public/models/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
+        loadModel('public/models/rocks/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
 
             const scaleFactor = Math.random() * 40 + 5; // Random size 
             GoldRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
@@ -554,7 +567,7 @@ setInterval(createShootingStar, 300);
             scene.add(GoldRockObject);
             objectsToRaycast.push(GoldRockObject);
 
-            // console.log(objectsToRaycast)
+            //  
             characterControls.objectsToCollide.push(GoldRockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -563,14 +576,14 @@ setInterval(createShootingStar, 300);
 
 
         positionsBaseStone.forEach((position) => {
-        loadModel('public/models/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
+        loadModel('public/models/rocks/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
             BasicRockObject.scale.set(50.8, 50.8, 50.8);
             //BasicRockObject.position.set(-80, 0, -190);
             BasicRockObject.position.copy(position);
             BasicRockObject.name = 'Basic Rock'
             scene.add(BasicRockObject);
             objectsToRaycast.push(BasicRockObject);
-            //console.log(objectsToRaycast)
+            // 
             characterControls.objectsToCollide.push(BasicRockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -578,7 +591,7 @@ setInterval(createShootingStar, 300);
 
 
     positions2.forEach((position) => {
-        loadModel('public/models/Rock.glb', scene, controls, camera, (RockObject) => {
+        loadModel('public/models/rocks/Rock.glb', scene, controls, camera, (RockObject) => {
             const scaleFactor = Math.random() * 20 + 5; // Random size 
             RockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
             //RockObject.scale.set(20.8, 20.8, 20.8);
@@ -590,7 +603,7 @@ setInterval(createShootingStar, 300);
 
             scene.add(RockObject);
             objectsToRaycast.push(RockObject);
-            console.log(objectsToRaycast)
+
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -598,7 +611,7 @@ setInterval(createShootingStar, 300);
 
     
     positionsAstroidCluster.forEach((position) => {
-    loadModel('public/models/space_rock.glb', scene, controls, camera, (spaceRockObject) => {
+    loadModel('public/models/rocks/space_rock.glb', scene, controls, camera, (spaceRockObject) => {
         //spaceRockObject.scale.set(10.5, 10.5, 10.5);
         const scaleFactor = Math.random() * 5 + 5; // Random size 
         spaceRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
@@ -621,7 +634,7 @@ setInterval(createShootingStar, 300);
     ];
 
     positionRubble.forEach((position) => {
-        loadModel('public/models/Rubble_Rocks.glb', scene, controls, camera, (RubbleObject) => {
+        loadModel('public/models/rocks/Rubble_Rocks.glb', scene, controls, camera, (RubbleObject) => {
             RubbleObject.scale.set(15, 15, 15);
             //RubbleObject.position.set(-185, 0, 60);
             RubbleObject.position.copy(position);
@@ -629,21 +642,21 @@ setInterval(createShootingStar, 300);
             scene.add(RubbleObject);
             objectsToRaycast.push(RubbleObject);
 
-            //console.log(objectsToRaycast)
+            // 
             characterControls.objectsToCollide.push(RubbleObject);
             setupRaycasting(camera, objectsToRaycast);
         });
     });
 
 
-        loadModel('public/models/Comet.glb', scene, controls, camera, (AstroidObject) => {
+        loadModel('public/models/rocks/Comet.glb', scene, controls, camera, (AstroidObject) => {
             AstroidObject.scale.set(1, 1, 1);
             AstroidObject.position.set(-200, -0.7, -300);
             AstroidObject.name = 'Comet'
             scene.add(AstroidObject);
             objectsToRaycast.push(AstroidObject);
 
-            //console.log(objectsToRaycast)
+            // 
             characterControls.objectsToCollide.push(AstroidObject);
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -759,51 +772,18 @@ helpButton.addEventListener('click', () => {
         });
 
     const keysPressed = {};
-   
     document.addEventListener('keydown', (event) => {
         if (event.key === ' ' || event.code === 'Space') {
             event.preventDefault();
         }
         keysPressed[event.key.toLowerCase()] = true;
-    
-        if (event.key.toLowerCase() === 'f') {
-            isFirstPerson = !isFirstPerson;
-            if (isFirstPerson) {
-                // Switch to first-person view
-                controls = pointerLockControls;
-                orbitControls.enabled = false;
-                astronaut.visible = false; // Hide the character model
-    
-                // Adjust camera position to character's position
-                camera.position.copy(astronaut.position);
-                camera.position.y += 5; // Adjust for character's height
-    
-                // Lock the pointer
-                pointerLockControls.lock();
-            } else {
-                // Switch back to third-person view
-                controls = orbitControls;
-                orbitControls.enabled = true;
-                astronaut.visible = true; // Show the character model
-    
-                // Reset camera position relative to the character
-                const cameraOffset = new THREE.Vector3(0, 15, -25); // Adjust as needed
-                camera.position.copy(astronaut.position).add(cameraOffset);
-    
-                // Unlock the pointer
-                pointerLockControls.unlock();
-            }
-        }
     }, false);
-    
-    
+
     document.addEventListener('keyup', (event) => {
         keysPressed[event.key.toLowerCase()] = false;
     }, false);
 
     //const clock = new THREE.Clock();
-   
-
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
@@ -816,24 +796,17 @@ helpButton.addEventListener('click', () => {
         updateShootingStars();
     
         if (astronaut) {
-            if (isFirstPerson) {
-                // First-person view adjustments
-                camera.position.copy(astronaut.position);
-                camera.position.y += 5; // Adjust for character's height
-                // No need to update controls target
-            } else {
-                // Third-person view adjustments
-                const cameraOffset = camera.position.clone().sub(controls.target);
-                controls.target.copy(astronaut.position);
-                camera.position.copy(astronaut.position).add(cameraOffset);
-            }
+            // Compute the offset between camera and controls.target
+            const cameraOffset = camera.position.clone().sub(controls.target);
+    
+            // Update controls target to astronaut's position
+            controls.target.copy(astronaut.position);
+    
+            // Update camera's position to maintain the offset
+            camera.position.copy(astronaut.position).add(cameraOffset);
         }
     
-        // Update controls if necessary
-        if (!isFirstPerson) {
-            controls.update();
-        }
-    
+        controls.update();
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
     }
@@ -890,11 +863,4 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
-});
-pointerLockControls.addEventListener('lock', () => {
-    console.log('Pointer locked');
-});
-
-pointerLockControls.addEventListener('unlock', () => {
-    console.log('Pointer unlocked');
 });
