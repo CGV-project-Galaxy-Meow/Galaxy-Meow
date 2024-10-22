@@ -15,17 +15,17 @@
   <div class="start-menu">
     <div class="menu-bar">
       <button class="menu-button" id="startGame">Start</button>
-      <button class="menu-button" id="openSettings">Settings</button>
+    <!--  <button class="menu-button" id="openSettings">Settings</button> -->
       <button class="menu-button" id="openControls">Controls</button> <!-- New Controls Button -->
       <button class="menu-button" id="openCredits">Credits</button>
     </div>
   </div>
 
-  <!-- Settings Modal -->
+  <!-- Settings Modal 
   <div class="modal" id="settingsModal">
     <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
     <p>Settings not implemented yet.</p>
-  </div>
+  </div> -->
 
   <!-- Controls Modal -->
   <div class="modal" id="controlsModal">
@@ -37,10 +37,11 @@
       <li>A - Move left</li>
       <li>D - Move right</li>
       <li>Space - Jump</li>
+      <li>Shift + direction to sprint</li>
       <li>Oxygen Meter - You get 100 units of oxygen</li>
       <li>If you need help - Click The Cat</li>
       <li>Esc - Restart/Leave game</li>
-      <li>Shift - Opens inventory</li>
+      <li>Control - Opens inventory</li>
       <li>Left mouse click - To select objects</li>
       <li>Right mouse click and drag - Look around the map</li>
     </ul>
@@ -69,6 +70,7 @@
       <br>Ruin by nha pham [CC-BY] via Poly Pizza
       <br>Space rock by 11.10melons on Sketchfab
       <br>Comet by Poly by Google [CC-BY] via Poly Pizza
+      <br>Moon plane from Sketchfab uploaded by SebastianSosnowski
     </p>
   </div>
 
@@ -96,17 +98,18 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
     });
 
     // Open and close Settings Modal
-    const settingsModal = document.getElementById('settingsModal');
+  //  const settingsModal = document.getElementById('settingsModal');
     const creditsModal = document.getElementById('creditsModal');
     const controlsModal = document.getElementById('controlsModal'); // Controls Modal
 
-    document.getElementById('openSettings').addEventListener('click', function() {
+  /*  document.getElementById('openSettings').addEventListener('click', function() {
       settingsModal.style.display = 'block';
     });
 
     document.getElementById('closeSettings').addEventListener('click', function() {
       settingsModal.style.display = 'none';
     });
+    */
 
     // Open and close Controls Modal
     document.getElementById('openControls').addEventListener('click', function() {

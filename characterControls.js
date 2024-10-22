@@ -155,7 +155,9 @@ export class CharacterControls {
 
         this.toggleRun = true;
         this.currentAction = currentAction;
-        this.speed = 10; // Adjust movement speed as needed
+        this.speed = 10; // Default movement speed
+        this.sprintSpeed = 20; // Sprinting speed
+        this.isSprinting = false; // Flag to check if sprinting is active
 
         this.isJumping = false;
         this.jumpHeight = 20; // Height of the jump
@@ -173,8 +175,8 @@ export class CharacterControls {
             action.reset().fadeIn(0.2).play();
         }
     }
-    
-     update(delta, keysPressed) {
+
+    update(delta, keysPressed) {
         this.mixer.update(delta);
 
         let previousAction = this.currentAction;
@@ -186,6 +188,7 @@ export class CharacterControls {
         // Compute movement direction based on key presses
         const moveVector = new THREE.Vector3();
 
+        // Check for movement keys
         if (keysPressed['arrowup'] || keysPressed['w']) {
             moveVector.z -= 1;
             this.currentAction = 'floating';
@@ -205,6 +208,12 @@ export class CharacterControls {
 
         let isMoving = moveVector.lengthSq() > 0;
 
+        // Check if sprint key (Shift) is held down
+        this.isSprinting = keysPressed['shift'];
+
+        // Set movement speed based on whether the player is sprinting or not
+        const moveSpeed = (this.isSprinting ? this.sprintSpeed : this.speed) * delta;
+
         if (isMoving) {
             // Normalize moveVector to ensure consistent movement speed
             moveVector.normalize();
@@ -217,7 +226,6 @@ export class CharacterControls {
             moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraYRotation);
 
             // Update astronaut position
-            const moveSpeed = this.speed * delta;
             const newPosition = new THREE.Vector3().copy(this.model.position);
             newPosition.addScaledVector(moveVector, moveSpeed);
 
@@ -244,96 +252,14 @@ export class CharacterControls {
             this.currentAction = 'idle';
         }
 
-        // Handle jumping
-        if (keysPressed[' '] && this.isOnGround) {
-            this.isJumping = true;
-            this.velocityY = this.jumpSpeed;
-            this.isOnGround = false;
+        // Handle jumping logic
+        this.handleJumping(delta, keysPressed);
 
-            // Switch to jumping animation if available
-            if (this.animationsMap.has('jumping')) {
-                this.currentAction = 'jumping';
-            } else {
-                this.currentAction = 'floating'; // Fallback to floating if no jump animation
-            }
-        }
-
-        // Apply gravity and vertical movement
-        if (this.isJumping) {
-            this.velocityY -= this.gravity * delta; // Apply gravity
-            this.model.position.y += this.velocityY * delta; // Update vertical position
-
-            // Allow lateral movement during the jump
-            if (isMoving) {
-                const moveSpeed = this.speed * delta;
-                this.model.position.x += moveVector.x * moveSpeed;
-                this.model.position.z += moveVector.z * moveSpeed;
-            }
-
-            // Detect when the character lands on the ground
-            if (this.model.position.y <= 0) {
-                this.model.position.y = 0;
-                this.isJumping = false;
-                this.isOnGround = true;
-                this.currentAction = isMoving ? 'floating' : 'idle'; // Reset to appropriate action
-            }
-        }
-        this.detectCollision(moveVector);
         // Play current action if it has changed
         if (this.currentAction !== previousAction) {
             this.playCurrentAction();
         }
     }
-
-    detectCollision(moveVector) {
-        if (!this.objectsToCollide) return; // Ensure objectsToCollide is defined
-    
-        const box = new THREE.Box3().setFromObject(this.model); // Bounding box of the character
-        let collided = false;
-    
-        // Loop through all objects to check for collisions
-        for (const object of this.objectsToCollide) {
-            const objectBox = new THREE.Box3().setFromObject(object); // Bounding box of the object
-            
-            // Check for collision
-            if (box.intersectsBox(objectBox)) {
-                collided = true;
-                console.log("Collision detected with", object.name);
-    
-                // Calculate the overlap vector
-                const overlap = new THREE.Vector3();
-                box.getSize(overlap); // Get the size of the character's bounding box
-    
-                // Check how much the boxes are overlapping
-                const minX = Math.min(box.max.x - objectBox.min.x, objectBox.max.x - box.min.x);
-                const minY = Math.min(box.max.y - objectBox.min.y, objectBox.max.y - box.min.y);
-                const minZ = Math.min(box.max.z - objectBox.min.z, objectBox.max.z - box.min.z);
-                
-                const smallestOverlap = Math.min(minX, minY, minZ);
-                if (smallestOverlap === minX) {
-                    overlap.x = (box.max.x > objectBox.min.x) ? minX : -minX;
-                    overlap.y = 0; // No vertical overlap correction
-                    overlap.z = 0; // No depth overlap correction
-                 }
-                else if (smallestOverlap === minY) {
-                    overlap.x = 0; // No horizontal overlap correction
-                    overlap.y = 0  // No vertical overlap correction
-                    overlap.z = 0; // No depth overlap correction
-                } else {
-                    overlap.x = 0; // No horizontal overlap correction
-                    overlap.y = 0; // No vertical overlap correction
-                    overlap.z = (box.max.z > objectBox.min.z) ? minZ : -minZ; // Push out in depth
-                }
-    
-                // Move the character away from the collision
-                this.model.position.add(overlap.normalize().multiplyScalar(0.1)); 
-                break; // Exit loop after handling one collision
-            }
-        }
-    
-    }
- 
-    
 
     handleJumping(delta, keysPressed) {
         if (keysPressed[' '] && this.isOnGround) {
@@ -353,6 +279,23 @@ export class CharacterControls {
                 this.isJumping = false;
                 this.isOnGround = true;
                 this.currentAction = this.currentAction === 'jumping' ? 'idle' : this.currentAction;
+            }
+        }
+    }
+
+    // Detect collisions
+    detectCollision(moveVector) {
+        if (!this.objectsToCollide) return;
+
+        const box = new THREE.Box3().setFromObject(this.model);
+        let collided = false;
+
+        for (const object of this.objectsToCollide) {
+            const objectBox = new THREE.Box3().setFromObject(object);
+            if (box.intersectsBox(objectBox)) {
+                collided = true;
+                console.log("Collision detected with", object.name);
+                break;
             }
         }
     }
