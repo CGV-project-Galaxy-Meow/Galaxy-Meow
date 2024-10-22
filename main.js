@@ -8,7 +8,7 @@ import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import {showDeathMessage} from './levelMenus.js'
-import { clearInventory } from './inventory.js';
+import { clearInventory, items } from './inventory.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
 
 let health = 100;
@@ -746,19 +746,98 @@ dontHelpButton.addEventListener('click', () => {
     responses.style.display = 'none'; 
 });
 
-// Event listener for 'Help' button
-helpButton.addEventListener('click', () => {
-    catConversation.style.animation = 'none';
-    catConversation.textContent = `Very well. You'll find the (part) here...`;
+function isItemInInventory(itemName) {
+    return items[itemName] && items[itemName].count > 0;
+}
 
-    health -= 5 //remove some health;
+    // Event listener for 'Help' button
+    helpButton.addEventListener('click', () => {
+        let conversationText;
+        catConversation.style.animation = 'none';
+    
+        if (!isItemInInventory('battery')) {
+            conversationText = `Very well. The battery can be found near the vehicle you arrived here with.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+    
+            setTimeout(() => {
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
 
-    void catConversation.offsetWidth; 
-    catConversation.style.animation = 'typing 3.5s steps(40, end)';
+                void catConversation.offsetWidth; 
+                catConversation.style.animation = 'none';
 
-    // Keep the buttons hidden
-    responses.style.display = 'none'; 
-});
+                setTimeout(() => {
+                    catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+                }, 50);
+            }, 5000); 
+        }
+
+        else if(!isItemInInventory('button')){
+            conversationText = `Perhaps you can ask Mr Neil Armstrong on the whereabouts of the button.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+    
+            setTimeout(() => {
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'By the way, who was it that sent you here?';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+                void catConversation.offsetWidth; 
+                catConversation.style.animation = 'none';
+
+                setTimeout(() => {
+                    catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+                }, 50);
+            }, 5000); 
+        }
+
+        else if(!isItemInInventory('circuit')){
+            conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        else if(!isItemInInventory('console')){
+            conversationText = `Ruins on the moon... How did they get here?`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        //for antenna
+        else if(!isItemInInventory('antenna')){
+            conversationText = `Here comes the sun...`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        else{
+            conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        responses.style.display = 'none';
+
+        health -= 10;
+    });
 
         // Close modal on button click
         closeModalBtn.addEventListener('click', () => {
