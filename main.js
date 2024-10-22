@@ -17,7 +17,7 @@ import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import {showDeathMessage} from './levelMenus.js'
-import { clearInventory } from './inventory.js';
+import { clearInventory, items } from './inventory.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
 
 let health = 100;
@@ -470,91 +470,33 @@ scene.add(spotLight.target); // Add the target to the scene
 
 
 
-        loadModel('public/models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
-            CrystalObject.scale.set(0.5, 0.5, 0.5);
-            CrystalObject.position.set(290, 0.6, -80);
-            //280, 0, -78 by the ruins
-            CrystalObject.traverse((child) => {
-                if (child.isMesh) {
-                    // Assign custom name or userData here to ensure we're modifying the correct mesh
-                    child.name = 'CrystalMesh';  // Set a specific name for this child object
-                    child.customId = 'power-crystal';  // Assign a custom property if you want
-                    
-                    // Alternatively, store in child.userData if needed:
-                    child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
-                }
-            });
-            
-
-            scene.add(CrystalObject);
-            objectsToRaycast.push(CrystalObject);
-
-
-
-            setupRaycasting(camera, objectsToRaycast);
-        });
-
-
-
-
-        ///----place holder for last items!!!!-----
-
 
         // loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
         //     CrystalObject.scale.set(0.5, 0.5, 0.5);
-        //     CrystalObject.position.set(-300, 0, 300);
-            
-        //     // this one is an extra place holder
+        //     CrystalObject.position.set(290, 0.6, -80);
+        //     //280, 0, -78 by the ruins
         //     CrystalObject.traverse((child) => {
         //         if (child.isMesh) {
         //             // Assign custom name or userData here to ensure we're modifying the correct mesh
         //             child.name = 'CrystalMesh';  // Set a specific name for this child object
         //             child.customId = 'power-crystal';  // Assign a custom property if you want
+
                     
         //             // Alternatively, store in child.userData if needed:
         //             child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
         //         }
         //     });
             
-//             scene.add(CrystalObject);
-//             objectsToRaycast.push(CrystalObject);
+
+        //     scene.add(CrystalObject);
+        //     objectsToRaycast.push(CrystalObject);
 
 
 
-//             setupRaycasting(camera, objectsToRaycast);
-//         });
-//         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
-//             CrystalObject.scale.set(0.5, 0.5, 0.5);
-//             //here comes the sun
-//             CrystalObject.position.set(0, 0.6, -300);
-           
-//             CrystalObject.traverse((child) => {
-//                 if (child.isMesh) {
-//                     // Assign custom name or userData here to ensure we're modifying the correct mesh
-//                     child.name = 'CrystalMesh';  // Set a specific name for this child object
-//                     child.customId = 'power-crystal';  // Assign a custom property if you want
-                    
-//                     // Alternatively, store in child.userData if needed:
-//                     child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
-//                 }
-//             });
-            
-//             scene.add(CrystalObject);
-//             objectsToRaycast.push(CrystalObject);
-
-
-
-//             setupRaycasting(camera, objectsToRaycast);
-//         });
-
-
-        ///----------------------------------------
-
-
-
-
+        //     setupRaycasting(camera, objectsToRaycast);
+        // });
+        
         loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
-
 
             BatteryObject.scale.set(0.5, 0.5, 0.5);
             BatteryObject.position.set(-181, 0, 70);
@@ -585,6 +527,37 @@ scene.add(spotLight.target); // Add the target to the scene
             ButtonObject.name = 'Button'
             scene.add(ButtonObject);
             objectsToRaycast.push(ButtonObject);
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+            CirctuitIObject.scale.set(0.2, 0.2, 0.2);
+            CirctuitIObject.position.set(-210, 0.4, -310);
+            CirctuitIObject.name = 'Circuit Board'
+            scene.add(CirctuitIObject);
+            objectsToRaycast.push(CirctuitIObject);
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
+            antennaObject.scale.set(5, 5, 5);
+            antennaObject.position.set(0, 0, -300);
+            antennaObject.name = 'Antenna'
+            scene.add(antennaObject);
+            objectsToRaycast.push(antennaObject);
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+        loadModel('public/models/console.glb', scene, controls, camera, (consoleObject) => {
+            consoleObject.scale.set(0.7, 0.7, 0.7);
+            consoleObject.position.set(295, 0.1, -80);
+            // by ruin 280, 0, -78
+            consoleObject.name = 'Console'
+            scene.add(consoleObject);
+            objectsToRaycast.push(consoleObject);
 
             setupRaycasting(camera, objectsToRaycast);
         });
@@ -878,19 +851,98 @@ dontHelpButton.addEventListener('click', () => {
     responses.style.display = 'none'; 
 });
 
-// Event listener for 'Help' button
-helpButton.addEventListener('click', () => {
-    catConversation.style.animation = 'none';
-    catConversation.textContent = `Very well. You'll find the (part) here...`;
+function isItemInInventory(itemName) {
+    return items[itemName] && items[itemName].count > 0;
+}
 
-    health -= 5 //remove some health;
+    // Event listener for 'Help' button
+    helpButton.addEventListener('click', () => {
+        let conversationText;
+        catConversation.style.animation = 'none';
+    
+        if (!isItemInInventory('battery')) {
+            conversationText = `Very well. The battery can be found near the vehicle you arrived here with.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+    
+            setTimeout(() => {
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
 
-    void catConversation.offsetWidth; 
-    catConversation.style.animation = 'typing 3.5s steps(40, end)';
+                void catConversation.offsetWidth; 
+                catConversation.style.animation = 'none';
 
-    // Keep the buttons hidden
-    responses.style.display = 'none'; 
-});
+                setTimeout(() => {
+                    catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+                }, 50);
+            }, 5000); 
+        }
+
+        else if(!isItemInInventory('button')){
+            conversationText = `Perhaps you can ask Mr Neil Armstrong on the whereabouts of the button.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+    
+            setTimeout(() => {
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'By the way, who was it that sent you here?';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+                void catConversation.offsetWidth; 
+                catConversation.style.animation = 'none';
+
+                setTimeout(() => {
+                    catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+                }, 50);
+            }, 5000); 
+        }
+
+        else if(!isItemInInventory('circuit')){
+            conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        else if(!isItemInInventory('console')){
+            conversationText = `Ruins on the moon... How did they get here?`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        //for antenna
+        else if(!isItemInInventory('antenna')){
+            conversationText = `Here comes the sun...`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        else{
+            conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        responses.style.display = 'none';
+
+        health -= 10;
+    });
 
         // Close modal on button click
         closeModalBtn.addEventListener('click', () => {
@@ -901,7 +953,9 @@ helpButton.addEventListener('click', () => {
             if (event.target === modal) {
                 modal.style.display = 'none'; // Hide the modal when clicking outside
             }
-        });
+
+        });  
+
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
