@@ -1,4 +1,4 @@
-import {items} from "./inventory";
+import {items} from "./inventory.js";
 import { showWinningModal } from "./modal";
 
 // List of items required to win
