@@ -185,7 +185,7 @@
 
     <div id="blueprint-overlay" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 1000;">
         <div style="position: relative; margin: auto; top: 10%; width: 80%; text-align: center;">
-          <img id="blueprint-image" src="images/blueprint.jpg" alt="Blueprint" style="max-width: 100%; height: auto;">
+          <img id="blueprint-image" src="https://lamp.ms.wits.ac.za/~sgalaxy/public/images/blueprint.jpg" alt="Blueprint" style="max-width: 100%; height: auto;">
           <button id="close-blueprint" style="position: absolute; top: 10px; right: 10px; background-color: red; color: white; font-size: 20px; border: none; cursor: pointer;">X</button>
         </div>
       </div>
@@ -221,6 +221,7 @@
         </div>
     </div>
 
+
     <!-- explanation before game starts screen -->
     <!-- <div id="explanationScreen" style="display: none; flex-direction: column; justify-content: center; align-items: center;">
         <h1>Game Controls and Objective</h1>
@@ -236,20 +237,21 @@
     <!--Popup when clicking on cat-->
     <div id="myModal">
         <div id="modal-content">
-            <img id="catImage" src="/Graphics/SpaceCat.png" alt="cat_sprite">
+            <img id="catImage" src="https://lamp.ms.wits.ac.za/~sgalaxy/public/Graphics/SpaceCat.png" alt="cat_sprite">
             <p id="catConversation" style="color: aliceblue; font-size: large;"></p>
 
             <div id="responses" style="display: none; flex-direction: column; margin-left: 30px;">
                 <button id="helpButton">Please help me!</button>
                 <button id="dontHelpButton">I do not need help.</button>
+
             </div>
-            <span id="closeModal">&times;</span>
         </div>
+
     </div>
 
     <div id="myModal2">
         <div id="modal-content2">
-            <img id="catImage2" src="/Graphics/SpaceCat.png" alt="cat_sprite">
+            <img id="catImage2" src="https://lamp.ms.wits.ac.za/~sgalaxy/public/Graphics/SpaceCat.png" alt="cat_sprite">
             <p id="catConversation2" style="color: aliceblue; font-size: large;"></p>
             <div id="responses2" style="display: none; flex-direction: column; margin-left: 30px;">
                 <button id="helpButton2">Add to inventory!</button>
@@ -259,7 +261,7 @@
     </div>
     
     <div class="inventory-icon" id="bagIcon">
-        <img src="images/bag.png" alt="Bag Icon">
+        <img src="https://lamp.ms.wits.ac.za/~sgalaxy/public/images/bag.png" alt="Bag Icon">
     </div>
 
     <div class="inventory-grid" id="inventory" >
@@ -269,15 +271,18 @@
         <div class="inventory-slot" id="slot4"></div>
         <div class="inventory-slot" id="slot5"></div>
     </div>
-
     <span id = "inventoryFull"></span>
+  
+  
+
+    <script type= "module" src="https://lamp.ms.wits.ac.za/~sgalaxy/modal.js"></script>
+    <script type= "module" src ="https://lamp.ms.wits.ac.za/~sgalaxy/inventory.js"> </script>
+    <script type= "module" src="https://lamp.ms.wits.ac.za/~sgalaxy/main.js"></script>
+    <script type= "module" src="https://lamp.ms.wits.ac.za/~sgalaxy/intro.js"></script>
+    <script type="module" src="https://lamp.ms.wits.ac.za/~sgalaxy/levelMenus.js"></script>
+    <script type = "module" src = "https://lamp.ms.wits.ac.za/~sgalaxy/cat.js"> </script>
 
 
-      <!-- Settings Modal -->
-  <!-- <div class="modal" id="settingsModal">
-    <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
-    <p>Settings not implemented yet.</p>
-  </div> -->
 
         <!--<script>
             // Get the text element and the response buttons
@@ -337,10 +342,17 @@ function setCameraAngle(angle) {
 
 
         </script>
-    <script type="module" src="/main.js"></script>
-    <script type="module" src="/modal.js"></script>
-    <script type="module" src="/levelMenus.js"></script>
-    <script type="module" src="/intro.js"></script>
-    <script type = "module" src = "/inventory.js"> </script>
+
+    <script>
+
+        // closeExit = document.getElementById("closeExit");
+        // exitMenu = document.getElementById("exitMenu")
+
+        // // Close exitMenu modal on button click
+        // closeExit.addEventListener('click', () => {
+        //     exitMenu.style.display = 'none'; 
+        // });
+    </script>
+
 </body>
 </html>
