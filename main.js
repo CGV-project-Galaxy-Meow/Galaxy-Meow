@@ -343,12 +343,13 @@ setInterval(createShootingStar, 300);
     
         // Set initial controls target
         controls.target.copy(astronaut.position);
+        update();
     });
     
 
     // Load the Moon Plane Model
     loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
-        moonObject.scale.set(1000, 1, 500);  // Scale it large enough to simulate an infinite ground
+        moonObject.scale.set(1000, 500, 500);  // Scale it large enough to simulate an infinite ground
         moonObject.position.set(100, 0, 0);  // Place the plane below the astronaut
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
         scene.add(moonObject);
@@ -430,7 +431,55 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
+        
+        loadModel('models/antenna1.glb', scene, controls, camera, (antenna1Object) => {
+            antenna1Object.scale.set(0.8, 0.8, 0.8);
+            antenna1Object.position.set(60, 0, 6);
+            antenna1Object.name = 'Crystal'
+            scene.add(antenna1Object);
+            objectsToRaycast.push(antenna1Object);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        
+        loadModel('models/console.glb', scene, controls, camera, (consoleObject) => {
+            consoleObject.scale.set(0.8, 0.8, 0.8);
+            consoleObject.position.set(60, 0, 6);
+            consoleObject.name = 'Crystal'
+            scene.add(consoleObject);
+            objectsToRaycast.push(consoleObject);
+
+            console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
     });
+
+    function update() {
+        // Ensure the astronaut is positioned above the moon
+        if (astronaut && moonObject) {
+            // Set the raycaster to start from the astronaut's position and cast downwards
+            raycaster.set(astronaut.position.clone(), new THREE.Vector3(0, -1, 0));
+    
+            // Check for intersections with the moon's surface
+            const intersects = raycaster.intersectObject(moonObject, true); // true for recursive checking
+    
+            if (intersects.length > 0) {
+                // Get the height from the intersection point
+                const moonHeight = intersects[0].point.y; // Height at the intersection point
+                astronaut.position.y = moonHeight + 1; // +1 to give some height above the moon's surface
+            }
+        }
+    
+        // Other update logic, such as character movement, etc.
+        characterControls.update(); // Assuming characterControls handles astronaut movement
+    
+        // Render the scene
+        renderer.render(scene, camera);
+        requestAnimationFrame(update);
+    }
    
     
     // Load the static model
