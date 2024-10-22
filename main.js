@@ -532,15 +532,15 @@ scene.add(spotLight.target); // Add the target to the scene
         });
 
 
-        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
-            CirctuitIObject.scale.set(0.2, 0.2, 0.2);
-            CirctuitIObject.position.set(-210, 0.4, -310);
-            CirctuitIObject.name = 'Circuit Board'
-            scene.add(CirctuitIObject);
-            objectsToRaycast.push(CirctuitIObject);
+        // loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+        //     CirctuitIObject.scale.set(0.2, 0.2, 0.2);
+        //     CirctuitIObject.position.set(-210, 0.4, -310);
+        //     CirctuitIObject.name = 'Circuit Board'
+        //     scene.add(CirctuitIObject);
+        //     objectsToRaycast.push(CirctuitIObject);
 
-            setupRaycasting(camera, objectsToRaycast);
-        });
+        //     setupRaycasting(camera, objectsToRaycast);
+        // });
 
         loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
             antennaObject.scale.set(5, 5, 5);
