@@ -1,7 +1,4 @@
 
-import { setupRaycasting } from './raycasting.js';
-
-
 import * as THREE from 'https://lamp.ms.wits.ac.za/~sgalaxy/node_modules/three/build/three.module.min.js';
 import { GLTFLoader } from './node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { setupRaycasting } from './raycasting.js';

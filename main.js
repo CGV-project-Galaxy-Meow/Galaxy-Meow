@@ -1,7 +1,7 @@
 
 
 //import WebGL from 'three/addons/capabilities/WebGL.js';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
 //import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // okay so probably refrence write links and specific file for three
@@ -901,7 +901,7 @@ helpButton.addEventListener('click', () => {
             if (event.target === modal) {
                 modal.style.display = 'none'; // Hide the modal when clicking outside
             }
-        });*/
+        });
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
