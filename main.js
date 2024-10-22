@@ -769,7 +769,7 @@ helpButton.addEventListener('click', () => {
             if (event.target === modal) {
                 modal.style.display = 'none'; // Hide the modal when clicking outside
             }
-        });*/
+        });
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
