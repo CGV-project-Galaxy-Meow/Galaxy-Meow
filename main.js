@@ -1,6 +1,15 @@
-import * as THREE from 'three';
-import WebGL from 'three/addons/capabilities/WebGL.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+
+//import WebGL from 'three/addons/capabilities/WebGL.js';
+import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
+//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+// okay so probably refrence write links and specific file for three
+// node_modules/three/build/three.module.min.js
+import * as THREE from './node_modules/three/build/three.module.min.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
+
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
 import './intro.js';
@@ -24,11 +33,14 @@ const clock = new THREE.Clock();
 const renderer = new THREE.WebGLRenderer();
 const modal = document.getElementById('myModal');
 const responses = document.getElementById('responses');
-const closeModalBtn = document.getElementById('closeModal');
+const closeModalBtn = document.getElementById('closeModal2');
 const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
-const cat_model = 'models/TheCatGalaxyMeow4.glb';
+
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
+
+
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
@@ -119,7 +131,9 @@ controls.mouseButtons = {
 };
 
 
+
 // Audio listener
+
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
@@ -131,7 +145,7 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
 // Load ambiance sound
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
     ambianceSound.setBuffer(buffer);
     ambianceSound.setLoop(true);
     ambianceSound.setVolume(0.5);
@@ -139,7 +153,7 @@ audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
 });
 
 // Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
+audioLoader.load('public/sound/game-over.mp3', function(buffer) {
     gameOverSound.setBuffer(buffer);
     gameOverSound.setLoop(false);
     gameOverSound.setVolume(0.5);
@@ -148,9 +162,12 @@ audioLoader.load('/sound/game-over.mp3', function(buffer) {
 
 
 
+
 //----functions----
 
+
 function decreaseHealth() {
+
     if (healthInterval) {
         clearInterval(healthInterval); // Clear any previous interval
     }
@@ -194,7 +211,9 @@ document.getElementById('startPiP').style.display = 'none';
 
 export function startGame() {
     decreaseHealth();
+
     document.getElementById('startPiP').style.display = 'block';
+
     document.getElementById('bagIcon').style.display = 'grid';
 
      document.addEventListener('keydown', (event) => {
@@ -206,6 +225,7 @@ export function startGame() {
             }
         }
     });
+
 
 
 // Prevent context menu from appearing on right-click
@@ -222,7 +242,7 @@ const sound = new THREE.Audio(listener);
 
 // Load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.5);
@@ -230,12 +250,13 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
 });
 
 
+
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
     scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0x999793, 25);
+
     directionalLight.position.set(0, 50, -50).normalize();
-    //directionalLight.castShadow = true;  // Enable shadows if needed
     scene.add(directionalLight);
 
     // Create a spotlight
@@ -259,35 +280,39 @@ spotLight.target.updateMatrixWorld(); // Update the target matrix
 scene.add(spotLight);
 scene.add(spotLight.target); // Add the target to the scene
     
-
+    //create sun
     createSun(scene);
 
-    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+
+    const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
     const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
+
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
     scene.add(space);
 
-    const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
+    //there is a floating earth
+    const earthTexture = new THREE.TextureLoader().load('public/textures/earth.jpg');
     const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
+
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     earth.position.set(0, 0, -1000);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
+
     const shootingStars = [];
 
-function createShootingStar() {
-    const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-    const starMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0xffffff, 
-        transparent: true, 
-        opacity: Math.random() 
+    function createShootingStar() {
+        const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+        const starMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0xffffff, 
+            transparent: true, 
+            opacity: Math.random() 
     });
     const shootingStar = new THREE.Mesh(starGeometry, starMaterial);
-
-   
+    //control the shooting star
     const startX = 50;  
     const startY = 0;  
     const startZ = -50
@@ -300,10 +325,11 @@ function createShootingStar() {
     const velocityY = Math.random() * 0.1 - 0.05;  // Y velocity range
     const velocityZ = Math.random() * 0.2 - 0.1;   // Z velocity towards the camera
 
-    // Create an array for the tail positions
+    // Create an array for the tail positions for the shooting stars
     const tailPositions = [];
     const tailLength = 5;
     const tailColor = 0x00ff00;
+
 
     for (let i = 0; i < tailLength; i++) {
         const tailStar = new THREE.Mesh(
@@ -324,12 +350,12 @@ function createShootingStar() {
 }
 
 
-function updateShootingStars() {
-    shootingStars.forEach((star, index) => {
-        star.mesh.position.add(star.velocity);
+    function updateShootingStars() {
+        shootingStars.forEach((star, index) => {
+            star.mesh.position.add(star.velocity);
         
-        // Update opacity for strobing effect
-        star.mesh.material.opacity += 0.05 * star.fadeDirection;
+            // Update opacity for strobing effect
+            star.mesh.material.opacity += 0.05 * star.fadeDirection;
 
         // Reverse fade direction when reaching limits
         if (star.mesh.material.opacity >= 1 || star.mesh.material.opacity <= 0) {
@@ -357,13 +383,12 @@ function updateShootingStars() {
 }
 
 
-setInterval(createShootingStar, 300);
+    setInterval(createShootingStar, 300);
     
-
 
     // Load the astronaut model and apply controls
     //let characterControls;
-    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
@@ -387,7 +412,7 @@ setInterval(createShootingStar, 300);
     
 
     // Load the Moon Plane Model
-    loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
+    loadModel('public/models/moonground.glb', scene, controls, camera, (moonObject) => {
         moonObject.scale.set(1000, 1, 500);  // Scale it large enough to simulate an infinite ground
         moonObject.position.set(100, 0, 0);  // Place the plane below the astronaut
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
@@ -395,7 +420,7 @@ setInterval(createShootingStar, 300);
 
 
   // Load the American Flag Model
-  loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
+  loadModel('public/models/american_flag.glb', scene, controls, camera, (flagObject) => {
     flagObject.scale.set(1.7, 1.7, 1.7);
     flagObject.position.set(100, 5,100);
     flagObject.name = 'american_flag';
@@ -405,9 +430,11 @@ setInterval(createShootingStar, 300);
 });
 
 
-        loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
+
+        loadModel('public/models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(3.3, 3.3, 3.3);
             barrelObject.position.set(-28, 0, 53);
+
             barrelObject.name = 'barrel'
             scene.add(barrelObject);
             objectsToRaycast.push(barrelObject);
@@ -415,8 +442,10 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
+
+        loadModel('public/models/skull.glb', scene, controls, camera, (skullObject) => {
             skullObject.scale.set(0.6, 0.6, 0.6);
+
             skullObject.position.set(45, 0.3, 4);
             skullObject.name = 'skeleton';
             scene.add(skullObject);
@@ -427,7 +456,8 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
+
+        loadModel('public/models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
             blueprintObject.scale.set(5, 5, 5);
             blueprintObject.position.set(50, 1, 6);
             blueprintObject.name = 'blueprint';
@@ -440,6 +470,7 @@ setInterval(createShootingStar, 300);
 
 
 
+
         // loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
         //     CrystalObject.scale.set(0.5, 0.5, 0.5);
         //     CrystalObject.position.set(290, 0.6, -80);
@@ -449,12 +480,14 @@ setInterval(createShootingStar, 300);
         //             // Assign custom name or userData here to ensure we're modifying the correct mesh
         //             child.name = 'CrystalMesh';  // Set a specific name for this child object
         //             child.customId = 'power-crystal';  // Assign a custom property if you want
+
                     
         //             // Alternatively, store in child.userData if needed:
         //             child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
         //         }
         //     });
             
+
         //     scene.add(CrystalObject);
         //     objectsToRaycast.push(CrystalObject);
 
@@ -463,28 +496,32 @@ setInterval(createShootingStar, 300);
         //     setupRaycasting(camera, objectsToRaycast);
         // });
         
-        loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
+        loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
+
             BatteryObject.scale.set(0.5, 0.5, 0.5);
             BatteryObject.position.set(-181, 0, 70);
 
             BatteryObject.name = 'Battery'
+
 
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
 
             setupRaycasting(camera, objectsToRaycast);
         });
-        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+
+        loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
             CirctuitIObject.position.set(-210, 0.4, -310);
             CirctuitIObject.name = 'Circuit Board'
+
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
 
             setupRaycasting(camera, objectsToRaycast);
         });
 
-        loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
+        loadModel('public/models/Button.glb', scene, controls, camera, (ButtonObject) => {
             ButtonObject.scale.set(0.8, 0.8, 0.8);
             ButtonObject.position.set(210, 0, 294);
             ButtonObject.name = 'Button'
@@ -495,15 +532,15 @@ setInterval(createShootingStar, 300);
         });
 
 
-        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
-            CirctuitIObject.scale.set(0.2, 0.2, 0.2);
-            CirctuitIObject.position.set(-210, 0.4, -310);
-            CirctuitIObject.name = 'Circuit Board'
-            scene.add(CirctuitIObject);
-            objectsToRaycast.push(CirctuitIObject);
+        // loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+        //     CirctuitIObject.scale.set(0.2, 0.2, 0.2);
+        //     CirctuitIObject.position.set(-210, 0.4, -310);
+        //     CirctuitIObject.name = 'Circuit Board'
+        //     scene.add(CirctuitIObject);
+        //     objectsToRaycast.push(CirctuitIObject);
 
-            setupRaycasting(camera, objectsToRaycast);
-        });
+        //     setupRaycasting(camera, objectsToRaycast);
+        // });
 
 
         loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
@@ -744,11 +781,13 @@ setInterval(createShootingStar, 300);
 
 
     });
+
    
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
+
         object.scale.set(1, 1, 1);
         object.position.set(-10, 0, -10);
         object.rotation.y =  Math.PI / 2;
@@ -771,7 +810,7 @@ setInterval(createShootingStar, 300);
                 const intersects = raycaster.intersectObject(catObject, true); 
     
                 if (intersects.length > 0) {
-                    console.log('Model clicked:', catObject);
+                    //console.log('Model clicked:', catObject);
 
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
@@ -788,6 +827,41 @@ setInterval(createShootingStar, 300);
                 }
             }
         });
+
+
+
+
+//     // Remove these lines
+//     const astronautBox = new THREE.Box3(); // Astronaut bounding box
+//     const moonBox = new THREE.Box3();      // Moon bounding box
+
+//     function updateBoundingBoxes() {
+//         if (astronaut && moonObject) {
+//             astronautBox.setFromObject(astronaut);
+//             moonBox.setFromObject(moonObject);
+//             return true; // Bounding boxes updated successfully
+//         } else {
+//             return false; // Cannot update bounding boxes
+//         }
+//     }
+
+
+//     // Check collision during animation
+//     // Remove or comment out this function
+//     function checkCollision() {
+//         if (astronaut && moonObject) {
+//         // Adjust 'offset' based on the astronaut's model height if necessary
+//             const offset = 1; // Adjust this value as needed
+//             const moonY = moonObject.position.y;
+//             const astronautY = astronaut.position.y;
+
+//             if (astronautY < moonY + offset) {
+//             astronaut.position.y = moonY + offset;
+//             }
+//         }
+//     }
+
+
 
 // Event listener for 'Don't Help' button
 dontHelpButton.addEventListener('click', () => {
@@ -903,7 +977,9 @@ function isItemInInventory(itemName) {
             if (event.target === modal) {
                 modal.style.display = 'none'; // Hide the modal when clicking outside
             }
+
         });  
+
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
@@ -928,6 +1004,7 @@ function isItemInInventory(itemName) {
         earth.rotation.y += 0.001;
     
         updateShootingStars();
+
     
         if (astronaut) {
             // Compute the offset between camera and controls.target
@@ -936,8 +1013,10 @@ function isItemInInventory(itemName) {
             // Update controls target to astronaut's position
             controls.target.copy(astronaut.position);
     
+
             // Update camera's position to maintain the offset
             camera.position.copy(astronaut.position).add(cameraOffset);
+
         }
     
         controls.update();
@@ -953,6 +1032,7 @@ function isItemInInventory(itemName) {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
 }
 
 
@@ -970,7 +1050,9 @@ function restartLevel() {
     // Reset astronaut position and controls
     if (astronaut) {
         astronaut.position.copy(initialAstronautPosition);
+
         astronaut.rotation.set(0, 0, 0); 
+
     }
 
     // Stop the game over sound if it's playing
@@ -997,4 +1079,6 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
+
 });
+

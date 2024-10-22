@@ -5,18 +5,20 @@ const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 8;
 
 export const items = {
-    gems: { img: 'images/crystal.png', count: 0 },
-    sword: { img: 'images/sword.png', count: 0 },
-    potion: { img: 'images/potion.png', count: 0 },
-    crudeOil: { img: 'images/crude_oil.png', count: 0 },
-    battery: { img: 'images/bat.png', count: 0 },
-    skull: { img: 'images/skull.png', count: 0 },
-    flag: { img: 'images/flag.png', count: 0 },
-    button: { img: 'images/button.png', count: 0 },
 
-    circuit: { img: 'images/circuit.png', count: 0 },
-    antenna: { img: 'Graphics/anttena.png', count: 0 },
-    console: { img: 'Graphics/teleporterHull.png', count: 0 }
+
+    gems: { img: 'public/images/crystal.png', count: 0 },
+    sword: { img: 'public/images/sword.png', count: 0 },
+    potion: { img: 'public/images/potion.png', count: 0 },
+    crudeOil: { img: 'public/images/crude_oil.png', count: 0 },
+    battery: { img: 'public/images/bat.png', count: 0 },
+    skull: { img: 'public/images/skull.png', count: 0 },
+    flag: { img: 'public/images/flag.png', count: 0 },
+    button: { img: 'public/images/button.png', count: 0 },
+    circuit: { img: 'public/images/circuit.png', count: 0 },
+    antenna: { img: 'public/Graphics/anttena.png', count: 0 },
+    console: { img: 'public/Graphics/teleporterHull.png', count: 0 }
+
 
 };
 
