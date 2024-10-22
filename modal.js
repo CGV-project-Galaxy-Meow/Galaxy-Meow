@@ -319,6 +319,7 @@ window.onclick = function(event) {
     }
 };
 
+<<<<<<< HEAD
 window.addEventListener('click', (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -333,3 +334,9 @@ window.addEventListener('click', (event) => {
         }
     }
 });
+=======
+export function showWinningModal() {
+    const winningModal = document.getElementById('winningModal');
+    winningModal.style.display = 'flex'; // Show the modal
+}
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3

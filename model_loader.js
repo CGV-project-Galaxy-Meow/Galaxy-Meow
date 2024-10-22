@@ -40,6 +40,10 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
 
 export function loadModel(path, scene, controls, camera, onLoadCallback) {
     const loader = new GLTFLoader();

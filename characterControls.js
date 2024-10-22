@@ -10,11 +10,19 @@ export class CharacterControls {
 
         this.toggleRun = true;
         this.currentAction = currentAction;
+<<<<<<< HEAD
         this.speed = 2; // Adjust movement speed as needed
 
         this.isJumping = false;
         this.jumpHeight = 10; // Height of the jump
         this.jumpSpeed = 10; // Speed of the jump ascent
+=======
+        this.speed = 3; // Adjust movement speed as needed
+
+        this.isJumping = false;
+        this.jumpHeight = 5; // Height of the jump
+        this.jumpSpeed = 12; // Speed of the jump ascent
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
         this.gravity = 12; // Gravity affecting the character
         this.velocityY = 0; // Vertical velocity
         this.isOnGround = true; // Check if the character is on the ground
@@ -43,6 +51,7 @@ export class CharacterControls {
     
         if (keysPressed['arrowup'] || keysPressed['w']) {
             moveVector.z -= 1;
+<<<<<<< HEAD
         }
         if (keysPressed['arrowdown'] || keysPressed['s']) {
             moveVector.z += 1;
@@ -52,6 +61,21 @@ export class CharacterControls {
         }
         if (keysPressed['arrowright'] || keysPressed['d']) {
             moveVector.x += 1;
+=======
+            this.currentAction = 'moon_walk';
+        }
+        if (keysPressed['arrowdown'] || keysPressed['s']) {
+            moveVector.z += 1;
+            this.currentAction = 'moon_walk';
+        }
+        if (keysPressed['arrowleft'] || keysPressed['a']) {
+            moveVector.x -= 1;
+            this.currentAction = 'moon_walk';
+        }
+        if (keysPressed['arrowright'] || keysPressed['d']) {
+            moveVector.x += 1;
+            this.currentAction = 'moon_walk';
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
         }
     
         let isMoving = moveVector.lengthSq() > 0;

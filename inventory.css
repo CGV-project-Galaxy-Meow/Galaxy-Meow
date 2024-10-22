@@ -37,7 +37,12 @@ body {
 
 .inventory-grid {
     display: none;
+<<<<<<< HEAD
     grid-template-columns: repeat(5, 100px);
+=======
+    position: fixed;
+    grid-template-columns: repeat(8, 100px);
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
     grid-gap: 10px;
     justify-content: center;
     z-index: 1000;  

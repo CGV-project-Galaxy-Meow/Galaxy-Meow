@@ -8,9 +8,15 @@ import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import {showDeathMessage} from './levelMenus.js'
+<<<<<<< HEAD
 import { clearInventory } from './inventory.js';
 
 
+=======
+import { clearInventory, items } from './inventory.js';
+import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
+
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
@@ -31,7 +37,7 @@ const catConversation = document.getElementById('catConversation')
 const cat_model = 'models/TheCatGalaxyMeow4.glb';
 
 const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
 export const objectsToRaycast = [];
 
 
@@ -260,7 +266,7 @@ scene.add(directionalLight);
     createSun(scene);
 
     const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
-    const spaceGeometry = new THREE.SphereGeometry(500, 64, 64);
+    const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
     scene.add(space);
@@ -412,7 +418,7 @@ setInterval(createShootingStar, 300);
         loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
             skullObject.scale.set(0.2, 0.2, 0.2);
             skullObject.position.set(45, 0.3, 4);
-            skullObject.name = 'skeleton'
+            skullObject.name = 'skeleton';
             scene.add(skullObject);
             objectsToRaycast.push(skullObject);
 
@@ -420,6 +426,7 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
+<<<<<<< HEAD
         loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
             CrystalObject.scale.set(0.1, 0.1, 0.1);
             CrystalObject.position.set(50, 0.1, 4);
@@ -441,6 +448,44 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
+=======
+        loadModel('models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
+            blueprintObject.scale.set(5, 5, 5);
+            blueprintObject.position.set(50, 1, 6);
+            blueprintObject.name = 'blueprint';
+            scene.add(blueprintObject);
+            objectsToRaycast.push(blueprintObject);
+
+            //console.log(objectsToRaycast)
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+
+        // loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
+        //     CrystalObject.scale.set(0.5, 0.5, 0.5);
+        //     CrystalObject.position.set(290, 0.6, -80);
+        //     //280, 0, -78 by the ruins
+        //     CrystalObject.traverse((child) => {
+        //         if (child.isMesh) {
+        //             // Assign custom name or userData here to ensure we're modifying the correct mesh
+        //             child.name = 'CrystalMesh';  // Set a specific name for this child object
+        //             child.customId = 'power-crystal';  // Assign a custom property if you want
+                    
+        //             // Alternatively, store in child.userData if needed:
+        //             child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
+        //         }
+        //     });
+            
+        //     scene.add(CrystalObject);
+        //     objectsToRaycast.push(CrystalObject);
+
+
+
+        //     setupRaycasting(camera, objectsToRaycast);
+        // });
+        
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.4, 0.4, 0.4);
             BatteryObject.position.set(60, 0, 4);
@@ -473,6 +518,65 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
+<<<<<<< HEAD
+=======
+
+        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+            CirctuitIObject.scale.set(0.2, 0.2, 0.2);
+            CirctuitIObject.position.set(-210, 0.4, -310);
+            CirctuitIObject.name = 'Circuit Board'
+            scene.add(CirctuitIObject);
+            objectsToRaycast.push(CirctuitIObject);
+
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+        loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
+                 antennaObject.scale.set(12, 12, 12);
+                antennaObject.position.set(0, 0, -300);
+                antennaObject.traverse((child) => {
+                    if (child.isMesh) {
+                        // Assign custom name or userData here to ensure we're modifying the correct mesh
+                        child.name = 'antenna';  // Set a specific name for this child object
+                        child.customId = 'antenna'
+                        
+                         // Alternatively, store in child.userData if needed:
+                         child.userData = { customId: 'antenna' };  // Set custom user data for the mesh
+                    }
+                 });
+                
+                 scene.add(antennaObject);
+                 objectsToRaycast.push(antennaObject);
+    
+    
+    
+                setupRaycasting(camera, objectsToRaycast);
+            });
+
+        loadModel('public/models/console.glb', scene, controls, camera, (consoleObject) => {
+            consoleObject.scale.set(0.7, 0.7, 0.7);
+           consoleObject.position.set(295, 0.1, -80);
+           //280, 0, -78 by the ruins
+           consoleObject.traverse((child) => {
+               if (child.isMesh) {
+                   // Assign custom name or userData here to ensure we're modifying the correct mesh
+                   child.name = 'console';  // Set a specific name for this child object
+                   child.customId = 'console'
+                   
+                    // Alternatively, store in child.userData if needed:
+                    child.userData = { customId: 'console' };  // Set custom user data for the mesh
+               }
+            });
+           
+            scene.add(consoleObject);
+            objectsToRaycast.push(consoleObject);
+
+           setupRaycasting(camera, objectsToRaycast);
+       });
+
+
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
         
         loadModel('models/antenna1.glb', scene, controls, camera, (antenna1Object) => {
             antenna1Object.scale.set(0.8, 0.8, 0.8);
@@ -515,6 +619,7 @@ setInterval(createShootingStar, 300);
             }
         }
     
+<<<<<<< HEAD
         // Other update logic, such as character movement, etc.
         characterControls.update(); // Assuming characterControls handles astronaut movement
     
@@ -522,6 +627,87 @@ setInterval(createShootingStar, 300);
         renderer.render(scene, camera);
         requestAnimationFrame(update);
     }
+=======
+    positionsAstroidCluster.forEach((position) => {
+    loadModel('public/models/rocks/space_rock.glb', scene, controls, camera, (spaceRockObject) => {
+        //spaceRockObject.scale.set(10.5, 10.5, 10.5);
+        const scaleFactor = Math.random() * 5 + 5; // Random size 
+        spaceRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+        spaceRockObject.position.copy(position);
+        spaceRockObject.rotation.y = Math.random() * Math.PI * 2;
+
+        spaceRockObject.position.copy(position);
+        spaceRockObject.name = 'Round Space Rock'
+        scene.add(spaceRockObject);
+        objectsToRaycast.push(spaceRockObject);
+
+        characterControls.objectsToCollide.push(spaceRockObject);
+        setupRaycasting(camera, objectsToRaycast);
+    });
+});
+
+    const positionRubble = [
+        new THREE.Vector3(-185, 0, 60),
+        new THREE.Vector3(-192, -3, -300)
+    ];
+
+    positionRubble.forEach((position) => {
+        loadModel('public/models/rocks/Rubble_Rocks.glb', scene, controls, camera, (RubbleObject) => {
+            RubbleObject.scale.set(15, 15, 15);
+            //RubbleObject.position.set(-185, 0, 60);
+            RubbleObject.position.copy(position);
+            RubbleObject.name = 'Rubble Rock'
+            scene.add(RubbleObject);
+            objectsToRaycast.push(RubbleObject);
+
+            // 
+            characterControls.objectsToCollide.push(RubbleObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+    });
+
+
+        loadModel('public/models/rocks/Comet.glb', scene, controls, camera, (AstroidObject) => {
+            AstroidObject.scale.set(1, 1, 1);
+            AstroidObject.position.set(-200, -0.7, -300);
+            AstroidObject.name = 'Comet'
+            scene.add(AstroidObject);
+            objectsToRaycast.push(AstroidObject);
+
+            // 
+            characterControls.objectsToCollide.push(AstroidObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+        loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipObject) => {
+            RocketshipObject.scale.set(3, 3, 3);
+            RocketshipObject.position.set(-180, 12, 60);
+            RocketshipObject.rotation.x += Math.PI / 3;
+            RocketshipObject.rotation.z += 3*Math.PI / 4;
+            RocketshipObject.name = 'Basic Rock'
+            scene.add(RocketshipObject);
+            objectsToRaycast.push(RocketshipObject);
+
+            characterControls.objectsToCollide.push(RocketshipObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+        loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
+            RuinObject.scale.set(8, 8, 8);
+            RuinObject.position.set(280, 0, -78);
+            RuinObject.name = 'Rubble Rock2'
+            scene.add(RuinObject);
+            objectsToRaycast.push(RuinObject);
+
+           
+            characterControls.objectsToCollide.push(RuinObject);
+            setupRaycasting(camera, objectsToRaycast);
+        });
+
+
+    });
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
    
     
     // Load the static model
@@ -577,19 +763,102 @@ dontHelpButton.addEventListener('click', () => {
     responses.style.display = 'none'; 
 });
 
-// Event listener for 'Help' button
-helpButton.addEventListener('click', () => {
-    catConversation.style.animation = 'none';
-    catConversation.textContent = `Very well. You'll find the (part) here...`;
+function isItemInInventory(itemName) {
+    return items[itemName] && items[itemName].count > 0;
+}
 
+<<<<<<< HEAD
     health -= 5 //remove some health;
+=======
+    // Event listener for 'Help' button
+    helpButton.addEventListener('click', () => {
+        let conversationText;
+        catConversation.style.animation = 'none';
+    
+        if (!isItemInInventory('battery')) {
+            conversationText = `Very well. The battery can be found near the vehicle you arrived here with.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+    
+            setTimeout(() => {
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+>>>>>>> 270c5e6e2c74eebdbb4cc7d491968d0bb33dd3a3
 
-    void catConversation.offsetWidth; 
-    catConversation.style.animation = 'typing 3.5s steps(40, end)';
+                void catConversation.offsetWidth; 
+                catConversation.style.animation = 'none';
 
-    // Keep the buttons hidden
-    responses.style.display = 'none'; 
-});
+                setTimeout(() => {
+                    catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+                }, 50);
+            }, 5000); 
+        }
+
+        else if(!isItemInInventory('button')){
+            conversationText = `Perhaps you can ask Mr Neil Armstrong on the whereabouts of the button.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+    
+            setTimeout(() => {
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'By the way, who was it that sent you here?';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+                void catConversation.offsetWidth; 
+                catConversation.style.animation = 'none';
+
+                setTimeout(() => {
+                    catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
+                }, 50);
+            }, 5000); 
+        }
+
+        else if(!isItemInInventory('circuit')){
+            conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        else if(!isItemInInventory('console')){
+            conversationText = `Ruins on the moon... How did they get here?`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        //for antenna
+        else if(!isItemInInventory('antenna')){
+            conversationText = `Here comes the sun...`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        else{
+            conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            void catConversation.offsetWidth; 
+            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+        }
+
+        responses.style.display = 'none';
+
+        health -= 10;
+    });
 
         // Close modal on button click
         closeModalBtn.addEventListener('click', () => {
@@ -600,7 +869,7 @@ helpButton.addEventListener('click', () => {
             if (event.target === modal) {
                 modal.style.display = 'none'; // Hide the modal when clicking outside
             }
-        });
+        });  
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {

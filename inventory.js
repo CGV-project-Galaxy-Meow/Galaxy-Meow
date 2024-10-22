@@ -1,6 +1,8 @@
+import { checkForWin, handleWin } from "./win_check";
+
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
-const MAX_ITEMS = 5;
+const MAX_ITEMS = 8;
 
 // Define the available items and their images
 export const items = {
@@ -12,7 +14,11 @@ export const items = {
     skull: { img: 'images/skull.png', count: 0 },
     flag: { img: 'images/flag.png', count: 0 },
     button: { img: 'images/button.png', count: 0 },
+
     circuit: { img: 'images/circuit.png', count: 0 },
+    antenna: { img: 'Graphics/anttena.png', count: 0 },
+    console: { img: 'Graphics/teleporterHull.png', count: 0 }
+
 };
 
 function getNextAvailableSlot() {
@@ -97,6 +103,10 @@ export function addItem(itemName) {
         addItemToSlot(availableSlot, itemName);
         items[itemName].hasItem = true;
         clearInventoryFullMessage(); 
+
+        if(checkForWin()){
+            handleWin();
+        }
     } else {
         showInventoryFullMessage(); 
     }
