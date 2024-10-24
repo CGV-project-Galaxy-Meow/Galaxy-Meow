@@ -1,6 +1,8 @@
-import * as THREE from 'three';
-import WebGL from 'three/addons/capabilities/WebGL.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+//import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
+import * as THREE from './node_modules/three/build/three.module.min.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 
