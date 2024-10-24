@@ -438,30 +438,6 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
         });
 
-
-
-        // loadModel('models/Crystal1.glb', scene, controls, camera, (CrystalObject) => {
-        //     CrystalObject.scale.set(0.5, 0.5, 0.5);
-        //     CrystalObject.position.set(290, 0.6, -80);
-        //     //280, 0, -78 by the ruins
-        //     CrystalObject.traverse((child) => {
-        //         if (child.isMesh) {
-        //             // Assign custom name or userData here to ensure we're modifying the correct mesh
-        //             child.name = 'CrystalMesh';  // Set a specific name for this child object
-        //             child.customId = 'power-crystal';  // Assign a custom property if you want
-                    
-        //             // Alternatively, store in child.userData if needed:
-        //             child.userData = { customId: 'power-crystal' };  // Set custom user data for the mesh
-        //         }
-        //     });
-            
-        //     scene.add(CrystalObject);
-        //     objectsToRaycast.push(CrystalObject);
-
-
-
-        //     setupRaycasting(camera, objectsToRaycast);
-        // });
         
         loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.5, 0.5, 0.5);
@@ -571,7 +547,7 @@ setInterval(createShootingStar, 300);
 
         positionsQ.forEach((position) => {
         loadModel('public/models/rocks/RockQ.glb', scene, controls, camera, (RockQObject) => {
-            const scaleFactor = Math.random() * 20 + 5; // Random size 
+            const scaleFactor = Math.random() * 15 + 5; // Random size 
             RockQObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
             //RockQObject.scale.set(10.8, 10.8, 10.8);
             //RockQObject.position.set(30, 0, 50);
@@ -586,28 +562,6 @@ setInterval(createShootingStar, 300);
         });
         });
     
-        positions2.forEach((position) => {
-        loadModel('public/models/rocks/Rock.glb', scene, controls, camera, (RockObject) => {
-            const scaleFactor = Math.random() * 20 + 5; // Random size 
-            RockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
-            //RockObject.scale.set(20.8, 20.8, 20.8);
-            //RockObject.position.set(56, 0, -12);
-            RockObject.position.copy(position);
-            RockObject.rotation.y = Math.random() * Math.PI * 2;
-
-            RockObject.name = 'Rock 2'
-
-            scene.add(RockObject);
-            objectsToRaycast.push(RockObject);
-
-            characterControls.objectsToCollide.push(RockObject);
-            setupRaycasting(camera, objectsToRaycast);
-        });
-    });
-    
-
-
-
     positionsGold.forEach((position) => {
         loadModel('public/models/rocks/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
 
@@ -632,9 +586,10 @@ setInterval(createShootingStar, 300);
 
         positionsBaseStone.forEach((position) => {
         loadModel('public/models/rocks/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
-            BasicRockObject.scale.set(50.8, 50.8, 50.8);
+            BasicRockObject.scale.set(30.8, 30.8, 30.8);
             //BasicRockObject.position.set(-80, 0, -190);
             BasicRockObject.position.copy(position);
+            BasicRockObject.rotation.y = Math.random() * Math.PI * 2;
             BasicRockObject.name = 'Basic Rock'
             scene.add(BasicRockObject);
             objectsToRaycast.push(BasicRockObject);
