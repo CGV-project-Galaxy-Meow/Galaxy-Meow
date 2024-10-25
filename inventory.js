@@ -197,7 +197,7 @@ function toggleInventory() {
 
 // Listen for the "keydown" event to detect the "Shift" key
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'Shift') {
+    if (event.key === 'Control') {
         toggleInventory();  // Toggle inventory when Shift is pressed
     }
 });

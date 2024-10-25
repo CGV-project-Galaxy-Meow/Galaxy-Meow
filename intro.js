@@ -1,5 +1,6 @@
 // intro.js
 import { startGame} from './main.js';
+
 let playerName = '';
 let step = 0;
 
