@@ -778,13 +778,9 @@ setInterval(createShootingStar, 300);
                     catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
                 
                     catConversation.style.animation = 'none'; 
-                    void catConversation.offsetWidth; 
-                    catConversation.style.animation = 'typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite';
-                
-                    catConversation.addEventListener('animationend', function onAnimationEnd() {
+                    setTimeout(() => {
                         responses.style.display = 'flex'; 
-                        catConversation.removeEventListener('animationend', onAnimationEnd); 
-                    });
+                    }, 4000);
                 }
             }
         });
@@ -793,9 +789,6 @@ setInterval(createShootingStar, 300);
 dontHelpButton.addEventListener('click', () => {
     catConversation.style.animation = 'none';
     catConversation.textContent = `As you wish.`;
-
-    void catConversation.offsetWidth; 
-    catConversation.style.animation = 'typing 3.5s steps(40, end)';
 
     // Keep the buttons hidden
     responses.style.display = 'none'; 
@@ -808,14 +801,11 @@ function isItemInInventory(itemName) {
     // Event listener for 'Help' button
     helpButton.addEventListener('click', () => {
         let conversationText;
-        catConversation.style.animation = 'none';
     
         if (!isItemInInventory('battery')) {
             conversationText = `Very well. The battery can be found near the vehicle you arrived here with.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
-            void catConversation.offsetWidth; 
-            catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
     
             setTimeout(() => {
                 conversationText = '';
@@ -824,21 +814,13 @@ function isItemInInventory(itemName) {
                 conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-                void catConversation.offsetWidth; 
-                catConversation.style.animation = 'none';
-
-                setTimeout(() => {
-                    catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
-                }, 50);
-            }, 5000); 
+            }, 4000); 
         }
 
         else if(!isItemInInventory('button')){
             conversationText = `Perhaps you can ask Mr Neil Armstrong on the whereabouts of the button.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
-            void catConversation.offsetWidth; 
-            catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
     
             setTimeout(() => {
                 conversationText = '';
@@ -847,46 +829,40 @@ function isItemInInventory(itemName) {
                 conversationText = 'By the way, who was it that sent you here?';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-                void catConversation.offsetWidth; 
-                catConversation.style.animation = 'none';
-
-                setTimeout(() => {
-                    catConversation.style.animation = 'typing 3.5s steps(40, end)'; 
-                }, 50);
-            }, 5000); 
+            }, 4000); 
         }
 
         else if(!isItemInInventory('circuit')){
             conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
-            void catConversation.offsetWidth; 
-            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
         }
 
         else if(!isItemInInventory('console')){
             conversationText = `Ruins on the moon... How did they get here?`;             
             document.getElementById('catConversation').innerHTML = conversationText;
-            catConversation.textContent = conversationText;
-            void catConversation.offsetWidth; 
-            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+            catConversation.textContent = conversationText; 
         }
 
-        //for antenna
         else if(!isItemInInventory('antenna')){
             conversationText = `Here comes the sun...`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
-            void catConversation.offsetWidth; 
-            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
+    
+            setTimeout(() => {
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'Be careful, though. Humans are fragile.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 4000); 
         }
 
         else{
             conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
-            void catConversation.offsetWidth; 
-            catConversation.style.animation = 'typing 3.5s steps(40, end)';  
         }
 
         responses.style.display = 'none';
