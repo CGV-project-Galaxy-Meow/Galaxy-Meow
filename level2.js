@@ -8,6 +8,8 @@ import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockCont
 
 const clock = new THREE.Clock();
 let isFirstPerson = false;
+let astronautHeight = 0;
+
 
 // Check if WebGL is supported
 // if (isWebGLAvailable()) {
@@ -43,15 +45,17 @@ document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to 
 // Orbit controls
 
 const controls = new OrbitControls(camera, renderer.domElement);
+
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
-controls.enableZoom = true;          // Disable zoom if desired
-controls.enablePan = true;           // Disable pan if desired
+controls.enableZoom = true;           // Enable zoom
+controls.enablePan = true;            // Enable pan
 controls.mouseButtons = {
     LEFT: null,
     MIDDLE: null,
     RIGHT: THREE.MOUSE.ROTATE
 };
+
 
 
 // Handle window resize events
@@ -177,14 +181,18 @@ loadModel('models/model.glb', scene, controls, camera, (skullObject) => {
 
 let astronaut;
 let characterControls;
+
+
 loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
     astronaut.scale.set(1.7, 1.7, 1.7);
     astronaut.position.set(50, 0, 5);
     astronaut.rotation.x = 0;
 
-    astronaut.geometry?.computeBoundingBox();
+    // Compute bounding box after scaling
     astronaut.boundingBox = new THREE.Box3().setFromObject(astronaut);
+    astronautHeight = astronaut.boundingBox.max.y - astronaut.boundingBox.min.y;
+    console.log("Astronaut height:", astronautHeight);
 
     characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
 
@@ -194,7 +202,9 @@ loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (objec
 
     // Set initial controls target
     controls.target.copy(astronaut.position);
+    controls.update();
 });
+
 
 
 
@@ -215,6 +225,17 @@ document.addEventListener('keydown', (event) => {
 
             // Hide the astronaut model
             if (astronaut) astronaut.visible = false;
+
+            // Set camera position and rotation to match astronaut
+            if (astronaut) {
+                const headPosition = new THREE.Vector3();
+                headPosition.copy(astronaut.position);
+                headPosition.y += astronautHeight * 0.9; // Adjust to the astronaut's eye level
+                camera.position.copy(headPosition);
+
+                // Set camera rotation to match astronaut's rotation
+                camera.rotation.set(0, astronaut.rotation.y, 0);
+            }
         } else {
             pointerControls.unlock();           // Unlock pointer
             pointerControls.enabled = false;    // Disable PointerLockControls
@@ -222,9 +243,14 @@ document.addEventListener('keydown', (event) => {
 
             // Show the astronaut model
             if (astronaut) astronaut.visible = true;
+
+            // No need to set the camera position here since it's handled in animate()
         }
     }
 }, false);
+
+
+
 
 
 document.addEventListener('keyup', (event) => {
@@ -244,7 +270,7 @@ function animate() {
             // First-person view adjustments
             const headPosition = new THREE.Vector3();
             headPosition.copy(astronaut.position);
-            headPosition.y += 1.7; // Adjust to the astronaut's eye level
+            headPosition.y += astronautHeight * 0.9; // Adjust to the astronaut's eye level
 
             camera.position.copy(headPosition);
 
@@ -252,8 +278,15 @@ function animate() {
             astronaut.rotation.y = camera.rotation.y;
         } else {
             // Third-person view adjustments
-            const cameraOffset = camera.position.clone().sub(controls.target);
+
+            // Compute the offset between the camera and the astronaut
+            const cameraOffset = new THREE.Vector3();
+            cameraOffset.copy(camera.position).sub(controls.target);
+
+            // Update the controls target to the astronaut's position
             controls.target.copy(astronaut.position);
+
+            // Update the camera position to maintain the offset
             camera.position.copy(astronaut.position).add(cameraOffset);
         }
     }
