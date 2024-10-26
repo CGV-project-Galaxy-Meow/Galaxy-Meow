@@ -1,5 +1,16 @@
 import {items} from "./inventory";
 import { showWinningModal } from "./modal";
+import * as THREE from 'three';
+
+const winSound=new THREE.Audio(listener);
+
+
+audioLoader.load('/sound/triumph-83761.mp3', function(buffer) {
+    winSound.setBuffer(buffer);
+    winSound.setLoop(false);
+    winSound.setVolume(0.5);
+
+});
 
 // List of items required to win
 const requiredItems = ['circuit', 'battery','antenna','console', 'button'];
@@ -11,6 +22,7 @@ export function checkForWin() {
             return false; // Player hasn't collected all required items
         }
     }
+    winSound.play();
     return true; // All required items collected
 }
 
