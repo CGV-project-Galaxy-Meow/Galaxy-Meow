@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="inventory.css">
+    <link rel="stylesheet" href="game.css">
     <title>Level 2</title>
     <style>
         body {
@@ -13,10 +15,177 @@
         canvas {
             display: block;  /* Ensure the canvas takes full space */
         }
+
+        /* Modal popup style */
+        #myModal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*background-color: rgba(0, 0, 0, 0.5);*/
+            justify-content: center;
+            align-items: end;
+            z-index: 5;
+        }
+
+        #modal-content {
+            display: flex;
+            align-items: center; /* Center items vertically */
+            justify-content: space-between; /* Space items evenly */
+            background-color: rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            padding: 5px;
+            border-radius: 8px;
+            border-top: 2px solid rgb(74, 22, 123);
+            justify-content: space-between;
+            align-items: center;
+            max-width: 80%;
+            z-index: 5;
+        }
+        
+        #closeModal {
+            cursor: pointer;
+            color: red;
+            font-size: 20px;
+            margin: 10px;
+        }
+
+        #myModal2 {
+            display: none; 
+            position: fixed; /* Fixed position to stay in place on scroll */
+            /*bottom: 0;  Aligns the modal to the bottom */
+            top: 30%;
+            left: 10%; /* Centers the modal horizontally */
+            /*transform: translateX(-50%);  Offsets the modal back to center */
+            width: 100%; /* Width can be adjusted based on content */
+            height: 100%; /* Height can be adjusted based on content */
+            z-index: 5; /* Keeps it above other elements */
+            padding: 20px; /* Padding around the content */
+        }
+
+        #modal-content2 {
+            display: flex;
+            align-items: center; /* Center items vertically */
+            justify-content: space-between; /* Space items evenly */
+            background-color: rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            padding: 5px;
+            border-radius: 8px;
+            border-top: 2px solid rgb(74, 22, 123);
+            justify-content: space-between;
+            align-items: center;
+            max-width: 80%;
+            z-index: 5;
+        }
+
+        #closeModal2 {
+            cursor: pointer;
+            color: red;
+            font-size: 20px;
+            margin: 10px;
+        }
+
+        #startPiP {
+            display: none;
+    position: fixed;
+    top: 70px;           /* Position from the top */
+    left: 15px;          /* Position from the left */
+    padding: 10px 20px;  /* Add some padding for better appearance */
+    background-color: purple; /* Bootstrap primary color or any color you prefer */
+    color: white;        /* Text color */
+    border: none;        /* Remove border */
+    border-radius: 5px;  /* Rounded corners */
+    font-size: 16px;     /* Increase font size */
+    cursor: pointer;     /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 4;
+}
+
+#startPiP:hover {
+    background-color: violet; /* Darker shade for hover effect */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+#startPiP:active {
+    transform: scale(0.95); /* Shrink the button when pressed */
+}
+
+
+        #catConversation {
+    overflow: hidden;
+    text-align: center;
+    white-space: nowrap; /* Prevent text wrapping */
+    max-width: 60%; /* Limit the maximum width */
+}
+
+#inventoryFull {
+    display: none; 
+    color: red; 
+    font-weight: bold;
+    z-index: 1000;
+    background-color: white;
+}
+
+
+        #catImage {
+          max-width: 10%;
+          max-height: 10%;
+        }
+
+        #catImage2 {
+          max-width: 10%;
+          max-height: 10%;
+        }
+
+
+        #helpButton, #dontHelpButton{
+          margin: 5px;
+          padding: 5px 5px;
+          font-size: 13px;
+          border-radius: 5px;
+        }
+
+        #helpButton2 {
+          margin: 5px;
+          padding: 5px 5px;
+          font-size: 13px;
+          border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <!-- Three.js and game content will be rendered in the canvas attached to the body -->
+
+    <div id="myModal2">
+        <div id="modal-content2">
+            <img id="catImage2" src="/Graphics/SpaceCat.png" alt="cat_sprite">
+            <p id="catConversation2" style="color: aliceblue; font-size: large;"></p>
+            <div id="responses2" style="display: none; flex-direction: column; margin-left: 30px;">
+                <button id="helpButton2">Add to inventory!</button>
+            </div>
+            <span id="closeModal2">&times;</span>
+        </div>
+    </div>
+
+    <div class="inventory-icon" id="bagIcon">
+        <img src="images/bag.png" alt="Bag Icon">
+    </div>
+
+    <div class="inventory-grid" id="inventory" >
+        <div class="inventory-slot" id="slot1"></div>
+        <div class="inventory-slot" id="slot2"></div>
+        <div class="inventory-slot" id="slot3"></div>
+        <div class="inventory-slot" id="slot4"></div>
+        <div class="inventory-slot" id="slot5"></div>
+        <div class="inventory-slot" id="slot6"></div>
+        <div class="inventory-slot" id="slot7"></div>
+        <div class="inventory-slot" id="slot8"></div>
+    </div>
+
+    <span id = "inventoryFull"></span>
 
     <!-- Import Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
@@ -28,6 +197,8 @@
 
 
     <!-- Import your custom JavaScript file -->
-    <script type="module" src="level2.js"></script>
+    <script type="module" src="/level2.js"></script>
+    <script type = "module" src = "/inventory.js"> </script>
+    
 </body>
 </html>

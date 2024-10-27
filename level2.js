@@ -4,9 +4,12 @@ import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, po
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
+import { setupRaycasting } from './raycasting.js';
+
+
 
 const clock = new THREE.Clock();
-
+let objectsToRaycast = []
 
 // Check if WebGL is supported
 // if (isWebGLAvailable()) {
@@ -68,71 +71,84 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     scene.add(marsObject);
     console.log('Ground model loaded and added to the scene');
 
-    // Load the skull model after the ground
-    loadModel('models/Crystal1.glb', scene, controls, camera, (skullObject) => {
-        skullObject.scale.set(0.2, 0.2, 0.2);  // Set size of skull
-        skullObject.position.set(45, 0.3, 4);  // Position it relative to ground
-        skullObject.name = 'skeleton';         // Set a name for identification
-        scene.add(skullObject);                // Add skull to the scene
-        //objectsToRaycast.push(skullObject);    // Add skull to raycasting array
-
-       // setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+    
+    loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
+        crystalObject.scale.set(0.2, 0.2, 0.2); // Set size of crystal
+        crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
+        
+        // Traverse the object to set custom properties
+        crystalObject.traverse((child) => {
+            if (child.isMesh) {
+                // Assign custom name or userData to ensure we're modifying the correct mesh
+                child.name = 'power-crystal'; // Set a specific name for this child object
+                child.customId = 'power-crystal'; // Alternatively, assign a custom ID
+                
+                // Store additional custom data if needed
+                child.userData = { customId: 'power-crystal' }; // Set custom user data for the mesh
+            }
+        });
+    
+        scene.add(crystalObject); // Add crystal object to the scene
+        objectsToRaycast.push(crystalObject); // Add crystal object to raycasting array
+    
+        setupRaycasting(camera, objectsToRaycast); // Initialize raycasting with new objects
     }, function (error) {
-        console.error('Error loading skull model:', error);
+        console.error('Error loading crystal model:', error);
     });
+    
 
     loadModel('models/space_crytal.glb', scene, controls, camera, (skullObject) => {
         skullObject.scale.set(0.2, 0.2, 0.2);  // Set size of skull
-        skullObject.position.set(55, 0.4, 4);  // Position it relative to ground
+        skullObject.position.set(-211.47354442104583,0, -330.745265951462);  // Position it relative to ground
         skullObject.name = 'skeleton';         // Set a name for identification
         scene.add(skullObject);                // Add skull to the scene
-        //objectsToRaycast.push(skullObject);    // Add skull to raycasting array
+        objectsToRaycast.push(skullObject);    // Add skull to raycasting array
 
-       // setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
 
     loadModel('models/red_crystal.glb', scene, controls, camera, (skullObject) => {
         skullObject.scale.set(0.1, 0.1, 0.1);  // Set size of skull
-        skullObject.position.set(40, -3, 4);  // Position it relative to ground
+        skullObject.position.set(-203.48028357285114, -3,52.6573197913732);  // Position it relative to ground
         skullObject.name = 'skeleton';         // Set a name for identification
         scene.add(skullObject);                // Add skull to the scene
-        //objectsToRaycast.push(skullObject);    // Add skull to raycasting array
+        objectsToRaycast.push(skullObject);    // Add skull to raycasting array
 
-       // setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
 
     loadModel('models/GLB.glb', scene, controls, camera, (skullObject) => {
         skullObject.scale.set(26, 26, 26);  // Set size of skull
-        skullObject.position.set(65, 0.3, 4);  // Position it relative to ground
+        skullObject.position.set(-5.927182022763221, 0 ,-136.58502827742493);
         skullObject.name = 'skeleton';         // Set a name for identification
         scene.add(skullObject);                // Add skull to the scene
-        //objectsToRaycast.push(skullObject);    // Add skull to raycasting array
+        objectsToRaycast.push(skullObject);    // Add skull to raycasting array
 
-       // setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
 
     loadModel('models/chest.glb', scene, controls, camera, (skullObject) => {
         skullObject.scale.set(0.4, 0.4, 0.4);  // Set size of skull
-        skullObject.position.set(65, 1, 7);  // Position it relative to ground
+        skullObject.position.set(65, 0, 7);  // Position it relative to ground
         skullObject.name = 'skeleton';         // Set a name for identification
         scene.add(skullObject);                // Add skull to the scene
-        //objectsToRaycast.push(skullObject);    // Add skull to raycasting array
+        objectsToRaycast.push(skullObject);    // Add skull to raycasting array
 
-       // setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
 
 loadModel('models/model.glb', scene, controls, camera, (skullObject) => {
     skullObject.scale.set(1, 1, 1);  // Set size of skull
-    skullObject.position.set(70, -4, 7);    // Position it relative to ground
-    skullObject.name = 'skeleton';         // Set a name for identification
+    skullObject.position.set(-17.359087005804316, -4,240.28950987634434);    // Position it relative to ground
+    skullObject.name = 'skeleton';         
 
     // Load texture
     const textureLoader = new THREE.TextureLoader();
@@ -149,8 +165,8 @@ loadModel('models/model.glb', scene, controls, camera, (skullObject) => {
 
     // Add skull to the scene
     scene.add(skullObject);
-    // objectsToRaycast.push(skullObject);  // Uncomment to add to raycasting array
-    // setupRaycasting(camera, objectsToRaycast);  // Uncomment if needed
+    objectsToRaycast.push(skullObject);  // Uncomment to add to raycasting array
+    setupRaycasting(camera, objectsToRaycast);  // Uncomment if needed
 }, function (error) {
     console.error('Error loading skull model:', error);
 });
@@ -352,6 +368,7 @@ loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (objec
 
     // Set initial controls target
     controls.target.copy(astronaut.position);
+
 });
 
 
@@ -380,6 +397,7 @@ function animate() {
 
     if (astronaut) {
         // Compute the offset between camera and controls.target
+        console.log("Astronaut position - X:", astronaut.position.x, "Y:", astronaut.position.y, "Z:", astronaut.position.z);
         const cameraOffset = camera.position.clone().sub(controls.target);
 
         // Update controls target to astronaut's position

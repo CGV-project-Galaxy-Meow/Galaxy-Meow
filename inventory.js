@@ -16,7 +16,12 @@ export const items = {
 
     circuit: { img: 'images/circuit.png', count: 0},
     antenna: { img: 'Graphics/anttena.png', count: 0 },
-    console: { img: 'Graphics/teleporterHull.png', count: 0}
+    console: { img: 'Graphics/teleporterHull.png', count: 0},
+    chest: {img: 'Graphics/chest.png', count: 0},
+    redgem: {img: 'Graphics/redgem.png', count: 0},
+    redruby: {img: 'Graphics/redruby.jpg', count: 0},
+    diamant: {img: 'Graphics/quartz.png', count: 0},
+    jub: {img: 'Graphics/jub.jpg', count: 0}
 
 };
 
