@@ -159,6 +159,23 @@
 <body>
     <!-- Three.js and game content will be rendered in the canvas attached to the body -->
 
+    <!-- Health Bar -->
+    <div id="healthBar">Oxygen: 100/100</div>
+
+        <!--Popup when clicking on cat-->
+        <div id="myModal">
+            <div id="modal-content">
+                <img id="catImage" src="/Graphics/SpaceCat.png" alt="cat_sprite">
+                <p id="catConversation" style="color: aliceblue; font-size: large;"></p>
+    
+                <div id="responses" style="display: none; flex-direction: column; margin-left: 30px;">
+                    <button id="helpButton">Yes, please assist me.</button>
+                    <button id="dontHelpButton">No, I don't need assisstance.</button>
+                </div>
+                <span id="closeModal">&times;</span>
+            </div>
+        </div>
+
     <div id="myModal2">
         <div id="modal-content2">
             <img id="catImage2" src="/Graphics/SpaceCat.png" alt="cat_sprite">

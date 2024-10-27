@@ -14,7 +14,7 @@ export class CharacterControls {
         this.speed = 20; // Adjust movement speed as needed
 
         this.isJumping = false;
-        this.jumpHeight = 5; // Height of the jump
+        this.jumpHeight = 15; // Height of the jump
         this.jumpSpeed = 12; // Speed of the jump ascent
         this.gravity = 12; // Gravity affecting the character
         this.velocityY = 0; // Vertical velocity
