@@ -110,7 +110,6 @@
     text-align: center;
     white-space: nowrap; /* Prevent text wrapping */
     max-width: 60%; /* Limit the maximum width */
-    animation: typing 3.5s steps(60, end) forwards; /* Keep 'forwards' to retain final state */
 }
 
 #inventoryFull {
@@ -119,17 +118,6 @@
     font-weight: bold;
     z-index: 1000;
     background-color: white;
-}
-
-
-/* Keyframes for typing animation */
-@keyframes typing {
-    from {
-        width: 0; /* Start width */
-    }
-    to {
-        width: 100%; /* End width */
-    }
 }
 
 
@@ -267,9 +255,11 @@
     <p style="color: black;">You have successfully collected all the items and won the level!</p>
     
     <!-- Proceed Button -->
+     <a href="./level2.html">
     <button id="proceedButton" style="margin-top: 20px; padding: 10px 20px; background-color: black; color: rgb(197, 0, 184); border: none; border-radius: 5px; cursor: pointer;">
       Proceed to Next Level
     </button>
+    </a>
   </div>
 </div>
 
