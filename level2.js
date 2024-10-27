@@ -4,11 +4,18 @@ import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, po
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
+
 import { setupRaycasting } from './raycasting.js';
 
 
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+
 
 const clock = new THREE.Clock();
+let isFirstPerson = false;
+let astronautHeight = 0;
+
+
 let objectsToRaycast = []
 
 // Check if WebGL is supported
@@ -17,6 +24,8 @@ let objectsToRaycast = []
 // } else {
 //     document.body.appendChild(getWebGLErrorMessage());
 // }
+
+
 
 // Create the scene
 const scene = new THREE.Scene();
@@ -32,6 +41,8 @@ scene.add(directionalLight);
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
 camera.position.set(50, 10, 2);   // Set an initial camera position
+const pointerControls = new PointerLockControls(camera, document.body);
+pointerControls.enabled = false; // Start with pointer controls disabled
 
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
@@ -39,7 +50,20 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
 // Orbit controls
+
 const controls = new OrbitControls(camera, renderer.domElement);
+
+controls.enableDamping = true;        // Enable damping (inertia)
+controls.dampingFactor = 0.05;        // Damping inertia
+controls.enableZoom = true;           // Enable zoom
+controls.enablePan = true;            // Enable pan
+controls.mouseButtons = {
+    LEFT: null,
+    MIDDLE: null,
+    RIGHT: THREE.MOUSE.ROTATE
+};
+
+
 
 // Handle window resize events
 window.addEventListener('resize', () => {
@@ -349,27 +373,33 @@ loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
 
 let astronaut;
 let characterControls;
+
+
 loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
     astronaut.scale.set(1.7, 1.7, 1.7);
     astronaut.position.set(50, 0, 5);
     astronaut.rotation.x = 0;
 
-
-    astronaut.geometry?.computeBoundingBox();
+    // Compute bounding box after scaling
     astronaut.boundingBox = new THREE.Box3().setFromObject(astronaut);
-
+    astronautHeight = astronaut.boundingBox.max.y - astronaut.boundingBox.min.y;
+    console.log("Astronaut height:", astronautHeight);
 
     characterControls = new CharacterControls(object, mixer, animationsMap, controls, camera, 'idle');
 
-    // Set camera initial position relative to astronaut
+    // Set camera initial position relative to astronaut for third-person view
     const initialOffset = new THREE.Vector3(0, 10, -20); // Adjust as needed
     camera.position.copy(astronaut.position).add(initialOffset);
 
     // Set initial controls target
     controls.target.copy(astronaut.position);
 
+    controls.update();
+
 });
+
+
 
 
 const keysPressed = {};
@@ -378,21 +408,74 @@ document.addEventListener('keydown', (event) => {
         event.preventDefault();
     }
     keysPressed[event.key.toLowerCase()] = true;
+
+    if (event.key.toLowerCase() === 'f') {
+        isFirstPerson = !isFirstPerson; // Toggle first-person mode
+
+        if (isFirstPerson) {
+            controls.enabled = false;           // Disable OrbitControls
+            pointerControls.enabled = true;     // Enable PointerLockControls
+            pointerControls.lock();             // Lock pointer to the screen
+
+            // Hide the astronaut model
+            if (astronaut) astronaut.visible = false;
+
+            // Set camera position and rotation to match astronaut
+            if (astronaut) {
+                const headPosition = new THREE.Vector3();
+                headPosition.copy(astronaut.position);
+                headPosition.y += astronautHeight * 0.9; // Adjust to the astronaut's eye level
+                camera.position.copy(headPosition);
+
+                // Set camera rotation to match astronaut's rotation
+                camera.rotation.set(0, astronaut.rotation.y, 0);
+            }
+        } else {
+            pointerControls.unlock();           // Unlock pointer
+            pointerControls.enabled = false;    // Disable PointerLockControls
+            controls.enabled = true;            // Enable OrbitControls
+
+            // Show the astronaut model
+            if (astronaut) astronaut.visible = true;
+
+            // No need to set the camera position here since it's handled in animate()
+        }
+    }
 }, false);
+
+
+
+
 
 document.addEventListener('keyup', (event) => {
     keysPressed[event.key.toLowerCase()] = false;
 }, false);
 
+
 // Render loop
 function animate() {
     let delta = clock.getDelta();
     if (characterControls) {
-        characterControls.update(delta, keysPressed);
+        characterControls.update(delta, keysPressed, isFirstPerson);
     }
 
+    if (astronaut) {
+        if (isFirstPerson) {
+            // First-person view adjustments
+            const headPosition = new THREE.Vector3();
+            headPosition.copy(astronaut.position);
+            headPosition.y += astronautHeight * 0.9; // Adjust to the astronaut's eye level
 
+            camera.position.copy(headPosition);
 
+            // Sync the astronaut's rotation with the camera
+            astronaut.rotation.y = camera.rotation.y;
+        } else {
+            // Third-person view adjustments
+
+            // Compute the offset between the camera and the astronaut
+            const cameraOffset = new THREE.Vector3();
+            cameraOffset.copy(camera.position).sub(controls.target);
 
 
     if (astronaut) {
@@ -400,16 +483,29 @@ function animate() {
         console.log("Astronaut position - X:", astronaut.position.x, "Y:", astronaut.position.y, "Z:", astronaut.position.z);
         const cameraOffset = camera.position.clone().sub(controls.target);
 
-        // Update controls target to astronaut's position
-        controls.target.copy(astronaut.position);
+            // Update the controls target to the astronaut's position
+            controls.target.copy(astronaut.position);
 
-        // Update camera's position to maintain the offset
-        camera.position.copy(astronaut.position).add(cameraOffset);
+
+            // Update the camera position to maintain the offset
+            camera.position.copy(astronaut.position).add(cameraOffset);
+        }
     }
 
-    controls.update();
+    // Update controls
+    if (isFirstPerson) {
+        // PointerLockControls handle camera rotation in first-person
+        pointerControls.update();
+    } else {
+        // OrbitControls handle camera rotation in third-person
+        controls.update();
+    }
+
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
+
+
+animate(); // Start the animation loop
 
 animate();  // Start the animation loop

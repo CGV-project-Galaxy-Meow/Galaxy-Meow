@@ -29,8 +29,8 @@ export class CharacterControls {
             action.reset().fadeIn(0.2).play();
         }
     }
-    
-     update(delta, keysPressed) {
+
+    update(delta, keysPressed, isFirstPerson) {
         this.mixer.update(delta);
 
         let previousAction = this.currentAction;
@@ -65,15 +65,25 @@ export class CharacterControls {
             // Normalize moveVector to ensure consistent movement speed
             moveVector.normalize();
 
-            // Get the camera's Y-axis rotation
-            const cameraEuler = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
-            const cameraYRotation = cameraEuler.y;
+            if (isFirstPerson) {
+                // Rotate moveVector by the camera's rotation
+                moveVector.applyQuaternion(this.camera.quaternion);
 
-            // Rotate moveVector by the camera's Y-axis rotation
-            moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraYRotation);
+                // Prevent vertical movement
+                moveVector.y = 0;
+                moveVector.normalize();
+            } else {
+                // Third-person mode: rotate moveVector by the camera's Y-axis rotation
+                const cameraEuler = new THREE.Euler().setFromQuaternion(this.camera.quaternion, 'YXZ');
+                const cameraYRotation = cameraEuler.y;
+
+                // Rotate moveVector by the camera's Y-axis rotation
+                moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraYRotation);
+            }
+
+            const moveSpeed = this.speed * delta;
 
             // Update astronaut position
-            const moveSpeed = this.speed * delta;
             const newPosition = new THREE.Vector3().copy(this.model.position);
             newPosition.addScaledVector(moveVector, moveSpeed);
 
@@ -88,13 +98,18 @@ export class CharacterControls {
             }
 
             // Rotate astronaut to face movement direction
-            const targetQuaternion = new THREE.Quaternion().setFromUnitVectors(
-                new THREE.Vector3(0, 0, 1), // The astronaut's forward vector
-                moveVector.clone().normalize() // The desired movement direction
-            );
+            if (!isFirstPerson) {
+                const targetQuaternion = new THREE.Quaternion().setFromUnitVectors(
+                    new THREE.Vector3(0, 0, 1), // The astronaut's forward vector
+                    moveVector.clone().normalize() // The desired movement direction
+                );
 
-            // Smoothly rotate astronaut towards the movement direction
-            this.model.quaternion.slerp(targetQuaternion, 0.1); // Adjust slerp factor as needed
+                // Smoothly rotate astronaut towards the movement direction
+                this.model.quaternion.slerp(targetQuaternion, 0.1); // Adjust slerp factor as needed
+            } else {
+                // In first-person mode, sync the character's rotation with the camera
+                this.model.rotation.y = this.camera.rotation.y;
+            }
         } else if (!this.isJumping) {
             // If not moving and not jumping, switch to idle animation
             this.currentAction = 'idle';
@@ -134,12 +149,16 @@ export class CharacterControls {
                 this.currentAction = isMoving ? 'floating' : 'idle'; // Reset to appropriate action
             }
         }
+
+        // Collision detection (if applicable)
         this.detectCollision(moveVector);
+
         // Play current action if it has changed
         if (this.currentAction !== previousAction) {
             this.playCurrentAction();
         }
     }
+
 
     detectCollision(moveVector) {
         if (!this.objectsToCollide) return; // Ensure objectsToCollide is defined
