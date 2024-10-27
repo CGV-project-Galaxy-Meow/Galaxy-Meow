@@ -53,7 +53,7 @@ window.addEventListener('resize', () => {
 
 // Load the texture
 
-// Function to load and apply texture to the moon model
+// Function to load and apply texture to the moon modelwrwrwr
 const numAsteroids = 100; // Number of asteroids to load
 const objectsToRaycast = [];
 
