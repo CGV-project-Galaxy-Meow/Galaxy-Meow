@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
+import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
@@ -153,6 +154,176 @@ loadModel('models/model.glb', scene, controls, camera, (skullObject) => {
 }, function (error) {
     console.error('Error loading skull model:', error);
 });
+// Load the model for each position in the array
+positions.forEach((position) => {
+    loadModel('public/models/rocks/Rocks.glb', scene, controls, camera, (RocksObject) => {
+        const scaleFactor = Math.random() * 30 + 5; // Random size between 5 and 15
+        RocksObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size // Scale the model
+        RocksObject.position.copy(position); // Set the position from the array
+        //console.log(position)
+        RocksObject.name = 'Rocks'; // Set a name for reference
+
+        // Add the object to the scene and collision arrays
+        scene.add(RocksObject);
+        //objectsToRaycast.push(RocksObject);
+        characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
+        //setupRaycasting(camera, objectsToRaycast);
+    });
+});
+
+
+positionsQ.forEach((position) => {
+loadModel('public/models/rocks/RockQ.glb', scene, controls, camera, (RockQObject) => {
+    const scaleFactor = Math.random() * 15 + 5; // Random size 
+    RockQObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+    //RockQObject.scale.set(10.8, 10.8, 10.8);
+    //RockQObject.position.set(30, 0, 50);
+    RockQObject.position.copy(position);
+    RockQObject.rotation.y = Math.random() * Math.PI * 2;
+    RockQObject.name = 'Rock 1'
+    scene.add(RockQObject);
+    
+    //objectsToRaycast.push(RockQObject);
+    characterControls.objectsToCollide.push(RockQObject);
+    //setupRaycasting(camera, objectsToRaycast);
+});
+});
+
+positionsGold.forEach((position) => {
+loadModel('public/models/rocks/Gold_Rocks.glb', scene, controls, camera, (GoldRockObject) => {
+
+    const scaleFactor = Math.random() * 40 + 5; // Random size 
+    GoldRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+    //GoldRockObject.scale.set(40.8, 40.8, 40.8);
+    //GoldRockObject.position.set(-76, 0, 34);
+    GoldRockObject.position.copy(position);
+    GoldRockObject.rotation.y = Math.random() * Math.PI * 2;
+
+    GoldRockObject.name = 'Gold Rocks'
+    scene.add(GoldRockObject);
+    //objectsToRaycast.push(GoldRockObject);
+
+    //  
+    characterControls.objectsToCollide.push(GoldRockObject);
+    //setupRaycasting(camera, objectsToRaycast);
+});
+});
+
+
+
+positionsBaseStone.forEach((position) => {
+loadModel('public/models/rocks/basic_stone_3.glb', scene, controls, camera, (BasicRockObject) => {
+    BasicRockObject.scale.set(30.8, 30.8, 30.8);
+    //BasicRockObject.position.set(-80, 0, -190);
+    BasicRockObject.position.copy(position);
+    BasicRockObject.rotation.y = Math.random() * Math.PI * 2;
+    BasicRockObject.name = 'Basic Rock'
+    scene.add(BasicRockObject);
+   // objectsToRaycast.push(BasicRockObject);
+    // 
+    characterControls.objectsToCollide.push(BasicRockObject);
+    //setupRaycasting(camera, objectsToRaycast);
+});
+});
+
+
+positions2.forEach((position) => {
+loadModel('public/models/rocks/Rock.glb', scene, controls, camera, (RockObject) => {
+    const scaleFactor = Math.random() * 20 + 5; // Random size 
+    RockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+    //RockObject.scale.set(20.8, 20.8, 20.8);
+    //RockObject.position.set(56, 0, -12);
+    RockObject.position.copy(position);
+    RockObject.rotation.y = Math.random() * Math.PI * 2;
+
+    RockObject.name = 'Rock 2'
+
+    scene.add(RockObject);
+    //objectsToRaycast.push(RockObject);
+
+    characterControls.objectsToCollide.push(RockObject);
+   // setupRaycasting(camera, objectsToRaycast);
+});
+});
+
+
+positionsAstroidCluster.forEach((position) => {
+loadModel('public/models/rocks/space_rock.glb', scene, controls, camera, (spaceRockObject) => {
+//spaceRockObject.scale.set(10.5, 10.5, 10.5);
+const scaleFactor = Math.random() * 5 + 5; // Random size 
+spaceRockObject.scale.set(scaleFactor, scaleFactor, scaleFactor); // Set the model size
+spaceRockObject.position.copy(position);
+spaceRockObject.rotation.y = Math.random() * Math.PI * 2;
+
+spaceRockObject.position.copy(position);
+spaceRockObject.name = 'Round Space Rock'
+scene.add(spaceRockObject);
+//objectsToRaycast.push(spaceRockObject);
+
+characterControls.objectsToCollide.push(spaceRockObject);
+//setupRaycasting(camera, objectsToRaycast);
+});
+});
+
+const positionRubble = [
+new THREE.Vector3(-185, 0, 60),
+new THREE.Vector3(-192, -3, -300)
+];
+
+positionRubble.forEach((position) => {
+loadModel('public/models/rocks/Rubble_Rocks.glb', scene, controls, camera, (RubbleObject) => {
+    RubbleObject.scale.set(15, 15, 15);
+    //RubbleObject.position.set(-185, 0, 60);
+    RubbleObject.position.copy(position);
+    RubbleObject.name = 'Rubble Rock'
+    scene.add(RubbleObject);
+    //objectsToRaycast.push(RubbleObject);
+
+    // 
+    characterControls.objectsToCollide.push(RubbleObject);
+    //setupRaycasting(camera, objectsToRaycast);
+});
+});
+
+
+loadModel('public/models/rocks/Comet.glb', scene, controls, camera, (AstroidObject) => {
+    AstroidObject.scale.set(1, 1, 1);
+    AstroidObject.position.set(-200, -0.7, -300);
+    AstroidObject.name = 'Comet'
+    scene.add(AstroidObject);
+   /// objectsToRaycast.push(AstroidObject);
+
+    // 
+    characterControls.objectsToCollide.push(AstroidObject);
+   // setupRaycasting(camera, objectsToRaycast);
+});
+
+
+loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipObject) => {
+    RocketshipObject.scale.set(3, 3, 3);
+    RocketshipObject.position.set(-180, 12, 60);
+    RocketshipObject.rotation.x += Math.PI / 3;
+    RocketshipObject.rotation.z += 3*Math.PI / 4;
+    RocketshipObject.name = 'Basic Rock'
+    scene.add(RocketshipObject);
+    //objectsToRaycast.push(RocketshipObject);
+
+    characterControls.objectsToCollide.push(RocketshipObject);
+    //setupRaycasting(camera, objectsToRaycast);
+});
+
+loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
+    RuinObject.scale.set(8, 8, 8);
+    RuinObject.position.set(280, 0, -78);
+    RuinObject.name = 'Rubble Rock2'
+    scene.add(RuinObject);
+    //objectsToRaycast.push(RuinObject);
+
+   
+    characterControls.objectsToCollide.push(RuinObject);
+    //setupRaycasting(camera, objectsToRaycast);
+});
+
 
 }, function (error) {
     console.error('Error loading ground model:', error);
