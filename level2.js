@@ -122,13 +122,26 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     });
 
     loadModel('models/GLB.glb', scene, controls, camera, (skullObject) => {
-        skullObject.scale.set(26, 26, 26);  // Set size of skull
-        skullObject.position.set(-5.927182022763221, 0 ,-136.58502827742493);
-        skullObject.name = 'skeleton';         // Set a name for identification
+        skullObject.scale.set(50, 50, 50);  // Set size of skull
+        skullObject.position.set(-5.927182022763221, 0, -136.58502827742493);
+        const textureLoader = new THREE.TextureLoader();
+        const skullTexture = textureLoader.load('textures/blue.jpg')
+    
+        // Traverse the object and apply the texture
+        skullObject.traverse((child) => {
+            if (child.isMesh) {
+                // Apply texture to the material
+                if (child.material) {
+                    child.material.map = skullTexture; // Set the texture map
+                    child.material.needsUpdate = true; // Flag material for update
+                }
+            }
+        });
+    
         scene.add(skullObject);                // Add skull to the scene
         objectsToRaycast.push(skullObject);    // Add skull to raycasting array
-
-       setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+    
+        setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
@@ -148,7 +161,6 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
 loadModel('models/model.glb', scene, controls, camera, (skullObject) => {
     skullObject.scale.set(1, 1, 1);  // Set size of skull
     skullObject.position.set(-17.359087005804316, -4,240.28950987634434);    // Position it relative to ground
-    skullObject.name = 'skeleton';         
 
     // Load texture
     const textureLoader = new THREE.TextureLoader();
