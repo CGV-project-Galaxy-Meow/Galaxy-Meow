@@ -123,10 +123,10 @@ const itemDataMapping = {
         itemName: 'redruby'
 
     },
-    'Diamnt':{
+    'Dimant':{
 
         title: 'Diamant',
-        description: 'In 1932, many countries powereed their ships with this.',
+        description: 'In 1932, many countries powered their ships with this.',
         additionalInfo: 'Well there is no ocean on Mars.',
         imgSrc: items['diamant'].img,
         itemName: 'diamant'
