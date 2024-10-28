@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 3</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;  /* Prevent scrollbars */
+        }
+
+        canvas {
+            display: block;  /* Ensure the canvas takes full space */
+        }
+    </style>
+</head>
+<body>
+    <!-- Three.js and game content will be rendered in the canvas attached to the body -->
+
+    <!-- Import Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+
+    <!-- Import OrbitControls from Three.js examples (this must be served correctly from your project or CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Import your custom JavaScript file -->
+    <script type="module" src="level3.js"></script>
+</body>
+</html>
