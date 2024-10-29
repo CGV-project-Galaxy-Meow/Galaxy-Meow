@@ -147,6 +147,9 @@ function checkOxygen(){
     }
 }
 
+
+
+export function startGame() {
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         if (exitMenu.style.display === 'none') {
@@ -156,8 +159,6 @@ document.addEventListener('keydown', (event) => {
         }
     }
 });
-
-
 
 
 // Load the texture
@@ -728,4 +729,4 @@ document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
 
 
 animate();  // Start the animation loop
-
+}
