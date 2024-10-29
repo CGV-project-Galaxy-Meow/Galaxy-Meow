@@ -31,6 +31,19 @@ let catObject;
 const clock = new THREE.Clock();
 let objectsToRaycast = []
 
+let assetsToLoad = 14; // Total number of assets to load, adjust based on actual count
+let assetsLoaded = 0;  // Counter for loaded assets
+
+const loadingScreen = document.getElementById('loadingScreen');
+
+function onAssetLoaded() {
+    assetsLoaded++;
+    console.log(assetsLoaded);
+    if (assetsLoaded === assetsToLoad) {
+        loadingScreen.style.display = 'none'; // Hide loading screen 
+        decreaseHealth();
+    }
+}
 
 // ---------Create the scene--------------
 const scene = new THREE.Scene();
@@ -145,7 +158,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 
-decreaseHealth();
+
 
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
@@ -162,6 +175,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
             // Apply the texture to the mesh material
             child.material.map = marsTexture;
             child.material.needsUpdate = true;  // Ensure the material updates with the new texture
+            onAssetLoaded();
         }
     });
     
@@ -185,6 +199,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
                 // Store additional custom data if needed
                 child.userData = { customId: 'power-crystal' }; // Set custom user data for the mesh
             }
+            onAssetLoaded();
         });
     
         scene.add(crystalObject); // Add crystal object to the scene
@@ -204,6 +219,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         objectsToRaycast.push(skullObject);    // Add  to raycasting array
 
        setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       onAssetLoaded();
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
@@ -216,6 +232,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         objectsToRaycast.push(skullObject);    // Add skull to raycasting array
 
        setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       onAssetLoaded();
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
@@ -233,6 +250,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
                 if (child.material) {
                     child.material.map = skullTexture; // Set the texture map
                     child.material.needsUpdate = true; // Flag material for update
+                    onAssetLoaded();
                 }
             }
         });
@@ -253,8 +271,10 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         objectsToRaycast.push(skullObject);    // Add skull to raycasting array
 
        setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       onAssetLoaded();
     }, function (error) {
         console.error('Error loading skull model:', error);
+
     });
 
 loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
@@ -269,6 +289,7 @@ loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
                 child.material.map = texture;  // Apply texture to the material
                 child.material.needsUpdate = true;
             }
+            onAssetLoaded();
         });
     }, undefined, function (error) {
         console.error('Error loading texture:', error);
@@ -408,6 +429,7 @@ loadModel('public/models/rocks/Rubble_Rocks.glb', scene, controls, camera, (Rubb
 
     // 
     characterControls.objectsToCollide.push(RubbleObject);
+    onAssetLoaded();
     //setupRaycasting(camera, objectsToRaycast);
 });
 });
@@ -423,6 +445,7 @@ loadModel('public/models/rocks/Comet.glb', scene, controls, camera, (AstroidObje
     // 
     characterControls.objectsToCollide.push(AstroidObject);
    // setupRaycasting(camera, objectsToRaycast);
+   onAssetLoaded();
 });
 
 
@@ -437,6 +460,7 @@ loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipOb
 
     characterControls.objectsToCollide.push(RocketshipObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 
 loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
@@ -449,6 +473,7 @@ loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
    
     characterControls.objectsToCollide.push(RuinObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 
 
@@ -479,7 +504,7 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
 
     // Set initial controls target
     controls.target.copy(astronaut.position);
-
+    onAssetLoaded();
 });
 
 loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
@@ -493,6 +518,7 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
     objectsToRaycast.push(catObject)
     //characterControls.objectsToCollide.push(object);
     setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 
     window.addEventListener('click', (event) => {

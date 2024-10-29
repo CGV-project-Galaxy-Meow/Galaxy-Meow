@@ -48,6 +48,15 @@ pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
 let pipActive = false;
 
 
+let assetsToLoad = 16; // Total number of assets to load
+let assetsLoaded = 0;  // Counter for loaded assets
+
+const loadingScreen = document.getElementById('loadingScreen');
+
+
+
+
+
 async function activatePiP() {
     try {
         
@@ -192,8 +201,19 @@ function checkOxygen(){
 document.getElementById('bagIcon').style.display = 'none';
 document.getElementById('startPiP').style.display = 'none';
 
+
+
+function onAssetLoaded() {
+    assetsLoaded++;
+    //console.log(assetsLoaded);
+    if (assetsLoaded === assetsToLoad) {
+        loadingScreen.style.display = 'none'; // Hide loading screen 
+        decreaseHealth();
+    }
+}
+
 export function startGame() {
-    decreaseHealth();
+    //decreaseHealth();
     document.getElementById('startPiP').style.display = 'block';
     document.getElementById('bagIcon').style.display = 'grid';
 
@@ -383,6 +403,7 @@ setInterval(createShootingStar, 300);
     
         // Set initial controls target
         controls.target.copy(astronaut.position);
+        onAssetLoaded();
     });
     
 
@@ -394,6 +415,7 @@ setInterval(createShootingStar, 300);
         scene.add(moonObject);
 
 
+
   // Load the American Flag Model
   loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
     flagObject.scale.set(1.7, 1.7, 1.7);
@@ -402,6 +424,7 @@ setInterval(createShootingStar, 300);
     scene.add(flagObject);
     objectsToRaycast.push(flagObject);
     setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 
 
@@ -413,6 +436,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(barrelObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
@@ -425,6 +449,7 @@ setInterval(createShootingStar, 300);
 
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         loadModel('models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
@@ -436,6 +461,7 @@ setInterval(createShootingStar, 300);
 
             //console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         
@@ -449,6 +475,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(BatteryObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
@@ -458,6 +485,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(CirctuitIObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
@@ -468,6 +496,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(ButtonObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
 
@@ -479,6 +508,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(CirctuitIObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
 
@@ -494,6 +524,7 @@ setInterval(createShootingStar, 300);
                          // Alternatively, store in child.userData if needed:
                          child.userData = { customId: 'antenna' };  // Set custom user data for the mesh
                     }
+                    
                  });
                 
                  scene.add(antennaObject);
@@ -502,6 +533,7 @@ setInterval(createShootingStar, 300);
     
     
                 setupRaycasting(camera, objectsToRaycast);
+                onAssetLoaded();
             });
 
         loadModel('public/models/console.glb', scene, controls, camera, (consoleObject) => {
@@ -523,6 +555,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(consoleObject);
 
            setupRaycasting(camera, objectsToRaycast);
+           onAssetLoaded();
        });
 
 
@@ -655,6 +688,7 @@ setInterval(createShootingStar, 300);
             // 
             characterControls.objectsToCollide.push(RubbleObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -669,6 +703,7 @@ setInterval(createShootingStar, 300);
             // 
             characterControls.objectsToCollide.push(AstroidObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
 
@@ -683,6 +718,7 @@ setInterval(createShootingStar, 300);
 
             characterControls.objectsToCollide.push(RocketshipObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
@@ -695,6 +731,7 @@ setInterval(createShootingStar, 300);
            
             characterControls.objectsToCollide.push(RuinObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
 
