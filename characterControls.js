@@ -164,9 +164,9 @@ export class CharacterControls {
                 const minX = Math.min(box.max.x - objectBox.min.x, objectBox.max.x - box.min.x);
                 const minY = Math.min(box.max.y - objectBox.min.y, objectBox.max.y - box.min.y);
                 const minZ = Math.min(box.max.z - objectBox.min.z, objectBox.max.z - box.min.z);
-                console.log("min X", minX);
-                console.log("min Y", minY);
-                console.log("min Z", minZ);
+                // console.log("min X", minX);
+                // console.log("min Y", minY);
+                // console.log("min Z", minZ);
                 // Determine the smallest overlap
                 const smallestOverlap = Math.min(minX, minY, minZ);
     

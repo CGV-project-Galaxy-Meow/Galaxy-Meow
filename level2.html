@@ -159,13 +159,32 @@
 <body>
     <!-- Three.js and game content will be rendered in the canvas attached to the body -->
 
+    <!-- <div id="background"></div>
+
+    <div id="gameCanvas"></div>
+    
+    <canvas id="pipCanvas" width="800" height="600" style="display:none;"></canvas>
+
+    <video id="pipVideo" controls>
+        <div id="pipControls" class="controls">
+            <button id="moveLeft">←</button>
+            <button id="moveRight">→</button>
+            <button id="moveUp">↑</button>
+            <button id="moveDown">↓</button>
+            <button id="rotateLeft">Rotate Left</button>
+            <button id="rotateRight">Rotate Right</button>
+        </div>
+    </video>
+
+    <button id="startPiP">PiP</button> -->
+
     <!-- Health Bar -->
     <div id="healthBar">Oxygen: 100/100</div>
 
         <!--Popup when clicking on cat-->
         <div id="myModal">
             <div id="modal-content">
-                <img id="catImage" src="/Graphics/SpaceCat.png" alt="cat_sprite">
+                <img id="catImage" src="public/Graphics/SpaceCat.png" alt="cat_sprite">
                 <p id="catConversation" style="color: aliceblue; font-size: large;"></p>
     
                 <div id="responses" style="display: none; flex-direction: column; margin-left: 30px;">
@@ -178,7 +197,7 @@
 
     <div id="myModal2">
         <div id="modal-content2">
-            <img id="catImage2" src="/Graphics/SpaceCat.png" alt="cat_sprite">
+            <img id="catImage2" src="public/Graphics/SpaceCat.png" alt="cat_sprite">
             <p id="catConversation2" style="color: aliceblue; font-size: large;"></p>
             <div id="responses2" style="display: none; flex-direction: column; margin-left: 30px;">
                 <button id="helpButton2">Add to inventory!</button>
@@ -188,7 +207,7 @@
     </div>
 
     <div class="inventory-icon" id="bagIcon">
-        <img src="images/bag.png" alt="Bag Icon">
+        <img src="public/images/bag.png" alt="Bag Icon">
     </div>
 
     <div class="inventory-grid" id="inventory" >
@@ -204,14 +223,34 @@
 
     <span id = "inventoryFull"></span>
 
+    <div id="exitMenu">
+        <h2>Are you sure?</h2>
+        <button id="mainMenuButton">Main Menu</button>
+        <button id="restartButton">Restart Level</button>
+    </div>
+
+    <!-- You Died Message -->
+    <div id="deathMessage">
+        <h2>You Suffocated!</h2>
+        <button id="mainMenuButtonDeath">Main Menu</button>
+        <button id="restartButtonDeath">Restart Level</button>
+    </div>
+
+
+
+
     <!-- Import Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
-
+     <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
     <!-- Import OrbitControls from Three.js examples (this must be served correctly from your project or CDN) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/examples/js/controls/OrbitControls.js"></script>
-
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/examples/js/controls/OrbitControls.js"></script> -->
+    <!-- <script src="https://unpkg.com/three@0.152.0/examples/js/controls/OrbitControls.js"></script> -->
+     <!-- Only import more stuff for development like orbital controls.... else take it out of your commit -->
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
+   
+   
 
     <!-- Import your custom JavaScript file -->
     <script type="module" src="/level2.js"></script>

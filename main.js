@@ -28,7 +28,7 @@ const closeModalBtn = document.getElementById('closeModal');
 const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
-const cat_model = 'models/TheCatGalaxyMeow4.glb';
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
@@ -363,7 +363,7 @@ setInterval(createShootingStar, 300);
 
     // Load the astronaut model and apply controls
     //let characterControls;
-    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
