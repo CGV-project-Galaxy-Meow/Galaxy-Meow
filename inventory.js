@@ -5,8 +5,6 @@ const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 8;
 
 export const items = {
-
-
     gems: { img: 'public/images/crystal.png', count: 0 },
     sword: { img: 'public/images/sword.png', count: 0 },
     potion: { img: 'public/images/potion.png', count: 0 },
@@ -15,11 +13,15 @@ export const items = {
     skull: { img: 'public/images/skull.png', count: 0 },
     flag: { img: 'public/images/flag.png', count: 0 },
     button: { img: 'public/images/button.png', count: 0 },
+    
     circuit: { img: 'public/images/circuit.png', count: 0 },
     antenna: { img: 'public/Graphics/anttena.png', count: 0 },
     console: { img: 'public/Graphics/teleporterHull.png', count: 0 }
-
-
+    chest: {img: 'public/Graphics/chest.png', count: 0},
+    redgem: {img: 'public/Graphics/redgem.png', count: 0},
+    redruby: {img: 'public/Graphics/redruby.jpg', count: 0},
+    diamant: {img: 'public/Graphics/quartz.png', count: 0},
+    jub: {img: 'public/Graphics/jub.jpg', count: 0}
 };
 
 function getNextAvailableSlot() {

@@ -3,6 +3,7 @@
 import * as THREE from './node_modules/three/build/three.module.min.js';;
 
 
+
 export class CharacterControls {
     constructor(model, mixer, animationsMap, orbitControl, camera, currentAction) {
         this.model = model;
@@ -14,10 +15,11 @@ export class CharacterControls {
 
         this.toggleRun = true;
         this.currentAction = currentAction;
-        this.speed = 10; // Adjust movement speed as needed
+        this.speed = 20; // Adjust movement speed as needed
+
 
         this.isJumping = false;
-        this.jumpHeight = 5; // Height of the jump
+        this.jumpHeight = 15; // Height of the jump
         this.jumpSpeed = 12; // Speed of the jump ascent
         this.gravity = 12; // Gravity affecting the character
         this.velocityY = 0; // Vertical velocity
@@ -153,7 +155,7 @@ export class CharacterControls {
         // Loop through all objects to check for collisions
         for (const object of this.objectsToCollide) {
             const objectBox = new THREE.Box3().setFromObject(object); // Bounding box of the object
-            
+    
             // Check for collision
             if (box.intersectsBox(objectBox)) {
                 collided = true;
@@ -163,35 +165,48 @@ export class CharacterControls {
                 const overlap = new THREE.Vector3();
                 box.getSize(overlap); // Get the size of the character's bounding box
     
-                // Check how much the boxes are overlapping
+                // Get the direction to push the character away
                 const minX = Math.min(box.max.x - objectBox.min.x, objectBox.max.x - box.min.x);
                 const minY = Math.min(box.max.y - objectBox.min.y, objectBox.max.y - box.min.y);
                 const minZ = Math.min(box.max.z - objectBox.min.z, objectBox.max.z - box.min.z);
-                
+                // console.log("min X", minX);
+                // console.log("min Y", minY);
+                // console.log("min Z", minZ);
+                // Determine the smallest overlap
                 const smallestOverlap = Math.min(minX, minY, minZ);
+    
+                // Correct the character's position based on the overlap direction
                 if (smallestOverlap === minX) {
-                    overlap.x = (box.max.x > objectBox.min.x) ? minX : -minX;
-                    overlap.y = 0; // No vertical overlap correction
-                    overlap.z = 0; // No depth overlap correction
-                 }
-                else if (smallestOverlap === minY) {
-                    overlap.x = 0; // No horizontal overlap correction
-                    overlap.y = 0  // No vertical overlap correction
-                    overlap.z = 0; // No depth overlap correction
+                    // Adjust based on the relative position to the object
+                    overlap.y = 0;
+                    //overlap.z = minZ*1.8;
+                    if (box.max.x > objectBox.min.x) {
+                        overlap.x = minX;
+                    } else {
+                        overlap.x = -minX;
+                    }
+                    console.log("min x is smallest", overlap.x);
+                } else if (smallestOverlap === minY) {
+                    // Handle Y overlap (if necessary)
+                    overlap.y = 0; // Keep y-axis correction if needed
+                    console.log("min y is smallest", overlap.y);
                 } else {
-                    overlap.x = 0; // No horizontal overlap correction
-                    overlap.y = 0; // No vertical overlap correction
-                    overlap.z = (box.max.z > objectBox.min.z) ? minZ : -minZ; // Push out in depth
+                    overlap.y = 0;
+                    //overlap.x = minX*1.8;
+                    if (box.max.z > objectBox.min.z) {
+                        overlap.z = minZ;
+                    } else {
+                        overlap.z = -minZ;
+                    }
+                    console.log("min z is smallest", overlap.z);
                 }
     
-                // Move the character away from the collision
-                this.model.position.add(overlap.normalize().multiplyScalar(0.1)); 
+                // Move the character away from the collision based on the overlap
+                this.model.position.add(overlap.normalize().multiplyScalar(0.1));
                 break; // Exit loop after handling one collision
             }
         }
-    
     }
- 
     
 
     handleJumping(delta, keysPressed) {

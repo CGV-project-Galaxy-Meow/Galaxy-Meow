@@ -4,8 +4,6 @@ import { GLTFLoader } from './node_modules/three/examples/jsm/loaders/GLTFLoader
 import { setupRaycasting } from './raycasting.js';
 import { CharacterControls } from './characterControls.js';
 
-
-
 export function loadModel(path, scene, controls, camera, onLoadCallback) {
     const loader = new GLTFLoader();
 

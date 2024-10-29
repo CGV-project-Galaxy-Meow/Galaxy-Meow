@@ -1,17 +1,19 @@
 // intro.js
-import { startGame} from './main.js';
+import {startGame} from './main.js';
 let playerName = '';
 let step = 0;
 
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    const loadingScreen = document.getElementById('loadingScreen');
     const introScreen = document.getElementById('introScreen');
     const dialogueText = document.getElementById('dialogueText');
     const nameInput = document.getElementById('nameInput');
     const nextButton = document.getElementById('nextButton');
 
     // Show the intro screen when the game starts
+    loadingScreen.style.display = 'none';
     introScreen.style.display = 'flex';
 
     // Handle dialogue progression
@@ -63,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (step === 3) {
             // Hide intro and start the game
             introScreen.style.display = 'none';
+            loadingScreen.style.display = 'flex';
             startGame(); // Function to start the game
         }
     });
