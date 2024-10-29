@@ -1,13 +1,14 @@
 import * as THREE from 'three';
-import WebGL from 'three/addons/capabilities/WebGL.js';
 //import { playerName } from './intro.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+//import { OrbitControls } from 'https://esm.sh/three@0.152.0/examples/jsm/controls/OrbitControls.js';
+
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
-
+import {showDeathMessage} from './levelMenus.js'
 
 let health = 100;
 let healthElement = document.getElementById('healthBar');
@@ -23,22 +24,28 @@ const closeModalBtn = document.getElementById('closeModal');
 const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
-const cat_model = 'models/TheCatGalaxyMeow4.glb';
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 
 let catObject;
 
 const clock = new THREE.Clock();
 let objectsToRaycast = []
 
-// Check if WebGL is supported
-// if (isWebGLAvailable()) {
-//     console.log('WebGL is supported');
-// } else {
-//     document.body.appendChild(getWebGLErrorMessage());
-// }
+let assetsToLoad = 14; // Total number of assets to load, adjust based on actual count
+let assetsLoaded = 0;  // Counter for loaded assets
 
+const loadingScreen = document.getElementById('loadingScreen');
 
-// Create the scene
+function onAssetLoaded() {
+    assetsLoaded++;
+    console.log(assetsLoaded);
+    if (assetsLoaded === assetsToLoad) {
+        loadingScreen.style.display = 'none'; // Hide loading screen 
+        decreaseHealth();
+    }
+}
+
+// ---------Create the scene--------------
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
 // Add lighting
@@ -58,7 +65,9 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
-// Orbit controls
+
+
+// -------Orbit controls----------
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
@@ -147,7 +156,19 @@ function checkOxygen(){
     }
 }
 
-decreaseHealth();
+
+
+export function startGame() {
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        if (exitMenu.style.display === 'none') {
+            exitMenu.style.display = 'block'; // Show menu
+        } else {
+            exitMenu.style.display = 'none'; // Hide menu
+        }
+    }
+});
+
 
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
@@ -164,6 +185,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
             // Apply the texture to the mesh material
             child.material.map = marsTexture;
             child.material.needsUpdate = true;  // Ensure the material updates with the new texture
+            onAssetLoaded();
         }
     });
     
@@ -187,6 +209,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
                 // Store additional custom data if needed
                 child.userData = { customId: 'power-crystal' }; // Set custom user data for the mesh
             }
+            onAssetLoaded();
         });
     
         scene.add(crystalObject); // Add crystal object to the scene
@@ -198,19 +221,20 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     });
     
 
-    loadModel('models/space_crytal.glb', scene, controls, camera, (skullObject) => {
-        skullObject.scale.set(0.2, 0.2, 0.2);  // Set size of skull
-        skullObject.position.set(-211.47354442104583,0, -330.745265951462);  // Position it relative to ground
+    loadModel('public/models/space_crytal.glb', scene, controls, camera, (skullObject) => {
+        skullObject.scale.set(0.2, 0.2, 0.2);  // Set size 
+        skullObject.position.set(-211.47354442104583,0, -330.745265951462);  
         skullObject.name = 'skeleton';         // Set a name for identification
-        scene.add(skullObject);                // Add skull to the scene
-        objectsToRaycast.push(skullObject);    // Add skull to raycasting array
+        scene.add(skullObject);               
+        objectsToRaycast.push(skullObject);    // Add  to raycasting array
 
        setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       onAssetLoaded();
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
 
-    loadModel('models/red_crystal.glb', scene, controls, camera, (skullObject) => {
+    loadModel('public/models/red_crystal.glb', scene, controls, camera, (skullObject) => {
         skullObject.scale.set(0.1, 0.1, 0.1);  // Set size of skull
         skullObject.position.set(-203.48028357285114, -3,52.6573197913732);  // Position it relative to ground
         skullObject.name = 'skeleton';         // Set a name for identification
@@ -218,11 +242,12 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         objectsToRaycast.push(skullObject);    // Add skull to raycasting array
 
        setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       onAssetLoaded();
     }, function (error) {
         console.error('Error loading skull model:', error);
     });
 
-    loadModel('models/GLB.glb', scene, controls, camera, (skullObject) => {
+    loadModel('public/models/GLB.glb', scene, controls, camera, (skullObject) => {
         skullObject.scale.set(50, 50, 50);  // Set size of skull
         skullObject.position.set(-5.927182022763221, 0, -136.58502827742493);
         const textureLoader = new THREE.TextureLoader();
@@ -235,6 +260,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
                 if (child.material) {
                     child.material.map = skullTexture; // Set the texture map
                     child.material.needsUpdate = true; // Flag material for update
+                    onAssetLoaded();
                 }
             }
         });
@@ -247,7 +273,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         console.error('Error loading skull model:', error);
     });
 
-    loadModel('models/chest.glb', scene, controls, camera, (skullObject) => {
+    loadModel('public/models/chest.glb', scene, controls, camera, (skullObject) => {
         skullObject.scale.set(0.4, 0.4, 0.4);  // Set size of skull
         skullObject.position.set(65, 0, 7);  // Position it relative to ground
         skullObject.name = 'skeleton';         // Set a name for identification
@@ -255,11 +281,13 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         objectsToRaycast.push(skullObject);    // Add skull to raycasting array
 
        setupRaycasting(camera, objectsToRaycast);  // Initialize raycasting with new objects
+       onAssetLoaded();
     }, function (error) {
         console.error('Error loading skull model:', error);
+
     });
 
-loadModel('models/model.glb', scene, controls, camera, (skullObject) => {
+loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
     skullObject.scale.set(1, 1, 1);  // Set size of skull
     skullObject.position.set(-17.359087005804316, -4,240.28950987634434);    // Position it relative to ground
 
@@ -271,6 +299,7 @@ loadModel('models/model.glb', scene, controls, camera, (skullObject) => {
                 child.material.map = texture;  // Apply texture to the material
                 child.material.needsUpdate = true;
             }
+            onAssetLoaded();
         });
     }, undefined, function (error) {
         console.error('Error loading texture:', error);
@@ -410,6 +439,7 @@ loadModel('public/models/rocks/Rubble_Rocks.glb', scene, controls, camera, (Rubb
 
     // 
     characterControls.objectsToCollide.push(RubbleObject);
+    onAssetLoaded();
     //setupRaycasting(camera, objectsToRaycast);
 });
 });
@@ -425,6 +455,7 @@ loadModel('public/models/rocks/Comet.glb', scene, controls, camera, (AstroidObje
     // 
     characterControls.objectsToCollide.push(AstroidObject);
    // setupRaycasting(camera, objectsToRaycast);
+   onAssetLoaded();
 });
 
 
@@ -439,6 +470,7 @@ loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipOb
 
     characterControls.objectsToCollide.push(RocketshipObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 
 loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
@@ -451,6 +483,7 @@ loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
    
     characterControls.objectsToCollide.push(RuinObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 
 
@@ -462,7 +495,7 @@ loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
 
 let astronaut;
 let characterControls;
-loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
     astronaut.scale.set(1.7, 1.7, 1.7);
     astronaut.position.set(50, 0, 5);
@@ -481,7 +514,7 @@ loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (objec
 
     // Set initial controls target
     controls.target.copy(astronaut.position);
-
+    onAssetLoaded();
 });
 
 loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
@@ -495,6 +528,7 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
     objectsToRaycast.push(catObject)
     //characterControls.objectsToCollide.push(object);
     setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 
     window.addEventListener('click', (event) => {
@@ -639,13 +673,9 @@ function animate() {
         characterControls.update(delta, keysPressed);
     }
 
-
-
-
-
     if (astronaut) {
         // Compute the offset between camera and controls.target
-        console.log("Astronaut position - X:", astronaut.position.x, "Y:", astronaut.position.y, "Z:", astronaut.position.z);
+        //console.log("Astronaut position - X:", astronaut.position.x, "Y:", astronaut.position.y, "Z:", astronaut.position.z);
         const cameraOffset = camera.position.clone().sub(controls.target);
 
         // Update controls target to astronaut's position
@@ -660,4 +690,52 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
+function restartLevel() {
+    clearInventory();
+    // Reset health
+    health = 100;
+    healthElement.innerHTML = `Oxygen: ${health}/100`;
+
+    // Hide death and exit menus
+    deathMessage.style.display = 'none';
+    exitMenu.style.display = 'none';
+
+    // Reset astronaut position and controls
+    if (astronaut) {
+        astronaut.position.set(50, 0, 5)
+        astronaut.rotation.set(0, 0, 0); 
+    }
+
+    // Stop the game over sound if it's playing
+    if (gameOverSound.isPlaying) {
+        gameOverSound.stop();
+    }
+
+    // Start the ambiance music if it's not playing
+    if (!ambianceSound.isPlaying) {
+        ambianceSound.play();
+    }
+
+    decreaseHealth();
+}
+
+
+
+// Event Listeners for buttons
+document.getElementById('restartButton').addEventListener('click', restartLevel);
+document.getElementById('restartButtonDeath').addEventListener('click', restartLevel);
+
+// Event Listener for Main Menu Button 
+document.getElementById('mainMenuButton').addEventListener('click', () => {
+    window.location.href = 'index.html'; 
+});
+document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
+    window.location.href = 'index.html'; 
+});
+
+
+
+
+
 animate();  // Start the animation loop
+}
