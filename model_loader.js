@@ -82,7 +82,7 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-
+//import { CharacterControls } from './characterControls';
 
 export function loadModel(path, scene, controls, camera, onLoadCallback) {
     const loader = new GLTFLoader();
