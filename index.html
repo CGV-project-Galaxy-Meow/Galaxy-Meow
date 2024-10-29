@@ -8,6 +8,7 @@
   
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
+
 </head>
 <body>
 
@@ -22,10 +23,10 @@
   </div>
 
   <!-- Settings Modal -->
-  <div class="modal" id="settingsModal">
+  <!-- <div class="modal" id="settingsModal">
     <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
     <p>Settings not implemented yet.</p>
-  </div>
+  </div> -->
 
   <!-- Controls Modal -->
   <div class="modal" id="controlsModal">
@@ -82,7 +83,7 @@ const sound = new THREE.Audio(listener);
 
 // Load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(false);
   sound.setVolume(0.5);

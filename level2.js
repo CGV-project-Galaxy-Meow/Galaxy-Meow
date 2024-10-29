@@ -1,8 +1,9 @@
-import * as THREE from 'three';
-//import { playerName } from './intro.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-//import { OrbitControls } from 'https://esm.sh/three@0.152.0/examples/jsm/controls/OrbitControls.js';
+//import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
+import * as THREE from './node_modules/three/build/three.module.min.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
 
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
@@ -89,7 +90,7 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
 // Load ambiance sound
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
     ambianceSound.setBuffer(buffer);
     ambianceSound.setLoop(true);
     ambianceSound.setVolume(0.5);
@@ -97,7 +98,7 @@ audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
 });
 
 // Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
+audioLoader.load('public/sound/game-over.mp3', function(buffer) {
     gameOverSound.setBuffer(buffer);
     gameOverSound.setLoop(false);
     gameOverSound.setVolume(0.5);
@@ -163,14 +164,14 @@ document.addEventListener('keydown', (event) => {
 
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
-const marsTexture = textureLoader.load('textures/mars.jpeg', function (texture) {
+const marsTexture = textureLoader.load('public/textures/mars.jpeg', function (texture) {
     console.log('Texture loaded successfully');
 }, undefined, function (err) {
     console.error('Error loading texture:', err);
 });
 
 // Function to load and apply texture to the moon model
-loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
+loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) => {
     marsObject.traverse((child) => {
         if (child.isMesh) {
             // Apply the texture to the mesh material
@@ -186,7 +187,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     console.log('Ground model loaded and added to the scene');
 
     
-    loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
+    loadModel('public/models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
         crystalObject.scale.set(0.2, 0.2, 0.2); // Set size of crystal
         crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
         
@@ -666,7 +667,6 @@ function animate() {
 
     if (astronaut) {
         // Compute the offset between camera and controls.target
-        //console.log("Astronaut position - X:", astronaut.position.x, "Y:", astronaut.position.y, "Z:", astronaut.position.z);
         const cameraOffset = camera.position.clone().sub(controls.target);
 
         // Update controls target to astronaut's position
