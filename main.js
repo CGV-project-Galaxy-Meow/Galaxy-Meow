@@ -140,20 +140,20 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
 // Load ambiance sound
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
+// audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+//     ambianceSound.setBuffer(buffer);
+//     ambianceSound.setLoop(true);
+//     ambianceSound.setVolume(0.5);
+//     ambianceSound.play();
+// });
 
-// Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
-});
+// // Load game over sound
+// audioLoader.load('/sound/game-over.mp3', function(buffer) {
+//     gameOverSound.setBuffer(buffer);
+//     gameOverSound.setLoop(false);
+//     gameOverSound.setVolume(0.5);
+//     //we'll play it when health reaches zero
+// });
 
 
 
@@ -248,6 +248,23 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
   sound.setVolume(0.5);
   sound.play();
 });
+audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+    ambianceSound.setBuffer(buffer);
+    ambianceSound.setLoop(true);
+    ambianceSound.setVolume(0.5);
+    ambianceSound.play();
+});
+
+// Load game over sound
+audioLoader.load('/sound/game-over.mp3', function(buffer) {
+    gameOverSound.setBuffer(buffer);
+    gameOverSound.setLoop(false);
+    gameOverSound.setVolume(0.5);
+    //we'll play it when health reaches zero
+});
+
+
+
 
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
