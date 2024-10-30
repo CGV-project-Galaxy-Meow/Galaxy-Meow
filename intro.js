@@ -3,6 +3,8 @@ import {startGame} from './main.js';
 let playerName = '';
 let step = 0;
 
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const loadingScreen = document.getElementById('loadingScreen');
     const introScreen = document.getElementById('introScreen');

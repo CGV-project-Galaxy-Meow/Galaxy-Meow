@@ -20,7 +20,9 @@ let assetsToLoad = 14;
 let assetsLoaded = 0;  // Counter for loaded assets
 
 
+
 // ---------------Create the scene--------------
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
 // Add lighting
