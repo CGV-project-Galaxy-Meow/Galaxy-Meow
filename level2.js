@@ -15,6 +15,7 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
+let isFirstPerson = false;  // Variable to track the camera view mode
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -656,6 +657,11 @@ helpButton.addEventListener('click', () => {
 
 const keysPressed = {};
 document.addEventListener('keydown', (event) => {
+    if (event.key === 'f') {
+        isFirstPerson = !isFirstPerson;  // Toggle between first-person and third-person view
+        updateCameraView();
+    }
+
     if (event.key === ' ' || event.code === 'Space') {
         event.preventDefault();
     }
