@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nextButton.textContent = 'Next';
             step++;
         } else if (step === 1) {
-                dialogueText.textContent = `Theres still away home....`;
+                dialogueText.textContent = `Find all the numbers to the code`;
                 nextButton.textContent = 'Next';
                 step++;
             
