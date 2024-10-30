@@ -1,5 +1,4 @@
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 //import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
 import * as THREE from './node_modules/three/build/three.module.min.js';
 import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
@@ -243,7 +242,7 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
         skullObject.scale.set(50, 50, 50);  // Set size of skull
         skullObject.position.set(-5.927182022763221, 0, -136.58502827742493);
         const textureLoader = new THREE.TextureLoader();
-        const skullTexture = textureLoader.load('textures/blue.jpg')
+        const skullTexture = textureLoader.load('public/textures/blue.jpg')
     
         // Traverse the object and apply the texture
         skullObject.traverse((child) => {
@@ -285,7 +284,7 @@ loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
 
     // Load texture
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('textures/red.png', (texture) => {
+    textureLoader.load('public/textures/red.png', (texture) => {
         skullObject.traverse((child) => {
             if (child.isMesh) {
                 child.material.map = texture;  // Apply texture to the material

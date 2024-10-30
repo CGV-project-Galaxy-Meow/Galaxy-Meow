@@ -8,13 +8,6 @@ import { CharacterControls } from './characterControls.js';
 const clock = new THREE.Clock();
 
 
-// Check if WebGL is supported
-// if (isWebGLAvailable()) {
-//     console.log('WebGL is supported');
-// } else {
-//     document.body.appendChild(getWebGLErrorMessage());
-// }
-
 // Create the scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility

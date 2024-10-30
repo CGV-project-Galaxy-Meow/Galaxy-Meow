@@ -1,4 +1,4 @@
-import { checkForWin, handleWin } from "./win_check";
+import { checkForWin, handleWin } from "./win_check.js";
 
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
@@ -16,7 +16,7 @@ export const items = {
     
     circuit: { img: 'public/images/circuit.png', count: 0 },
     antenna: { img: 'public/Graphics/anttena.png', count: 0 },
-    console: { img: 'public/Graphics/teleporterHull.png', count: 0 }
+    console: { img: 'public/Graphics/teleporterHull.png', count: 0 },
     chest: {img: 'public/Graphics/chest.png', count: 0},
     redgem: {img: 'public/Graphics/redgem.png', count: 0},
     redruby: {img: 'public/Graphics/redruby.jpg', count: 0},
