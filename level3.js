@@ -5,10 +5,24 @@ import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 //import { setupRaycasting } from './raycasting.js';
 
+
+import {showDeathMessage} from './levelMenus.js'
+
 const clock = new THREE.Clock();
+let health = 100;
+let healthElement = document.getElementById('healthBar');
+let exitMenu = document.getElementById('exitMenu');
+let deathMessage = document.getElementById('deathMessage');
+let healthInterval; // To control the health timer
+
+//for loading screen
+let assetsToLoad = 14; 
+let assetsLoaded = 0;  // Counter for loaded assets
 
 
-// Create the scene
+
+// ---------------Create the scene--------------
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
 // Add lighting
@@ -44,9 +58,59 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+
+
+
+
+// ----important functions
+function decreaseHealth() {
+    if (healthInterval) {
+        clearInterval(healthInterval); // Clear any previous interval
+    }
+    healthInterval = setInterval(() => {
+        if (health > 0) {
+            health -= 1;
+            healthElement.innerHTML = `Oxygen: ${health}/100`;
+            checkOxygen();
+        } else {
+            clearInterval(healthInterval); // Stop the timer when health reaches 0
+            showDeathMessage();
+
+            // Stop the ambiance music
+            if (ambianceSound.isPlaying) {
+                ambianceSound.stop();
+            }
+
+            // Play the game over sound
+            gameOverSound.play();
+        }
+    }, 4000); // Decrease health every 5 seconds
+}
+
+//cat warns you of the oxygen
+function checkOxygen(){
+    if(health == 30){
+        modal.style.display = 'flex';
+        catConversation.style.animation = 'none';
+        catConversation.textContent = `Be careful! Your oxygen is running low.`;
+    
+        void catConversation.offsetWidth; 
+        catConversation.style.animation = 'typing 3.5s steps(40, end)';
+    
+        // Keep the buttons hidden
+        responses.style.display = 'none'; 
+    }
+}
+
+
+
+
+//use this to start the game
+// export function startGame() {}
+
 // Load the texture
 
-// Function to load and apply texture to the moon modelwrwrwr
+// Function to load and apply texture to the moon model
 const numAsteroids = 100; // Number of asteroids to load
 const objectsToRaycast = [];
 
@@ -86,6 +150,22 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
 
     //setupRaycasting(camera, objectsToRaycast);
 });
+
+
+//loading screen!!!
+// const loadingScreen = document.getElementById('loadingScreen');
+
+// function onAssetLoaded() {
+//     assetsLoaded++;
+//     console.log(assetsLoaded);
+//     if (assetsLoaded === assetsToLoad) {
+//         loadingScreen.style.display = 'none'; // Hide loading screen 
+//         decreaseHealth();
+//     }
+// }
+
+
+
 
 // Load the sun model
 // loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
@@ -185,5 +265,52 @@ function animate() {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
+
+
+function restartLevel() {
+    clearInventory();
+    // Reset health
+    health = 100;
+    healthElement.innerHTML = `Oxygen: ${health}/100`;
+
+    // Hide death and exit menus
+    deathMessage.style.display = 'none';
+    exitMenu.style.display = 'none';
+
+    // Reset astronaut position and controls
+    if (astronaut) {
+        astronaut.position.set(50, 0, 5)
+        astronaut.rotation.set(0, 0, 0); 
+    }
+
+    // Stop the game over sound if it's playing
+    if (gameOverSound.isPlaying) {
+        gameOverSound.stop();
+    }
+
+    // Start the ambiance music if it's not playing
+    if (!ambianceSound.isPlaying) {
+        ambianceSound.play();
+    }
+
+    decreaseHealth();
+}
+
+
+
+// Event Listeners for buttons
+document.getElementById('restartButton').addEventListener('click', restartLevel);
+document.getElementById('restartButtonDeath').addEventListener('click', restartLevel);
+
+// Event Listener for Main Menu Button 
+document.getElementById('mainMenuButton').addEventListener('click', () => {
+    window.location.href = 'index.html'; 
+});
+document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
+    window.location.href = 'index.html'; 
+});
+
+
+
 
 animate();  // Start the animation loop

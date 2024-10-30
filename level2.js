@@ -15,6 +15,7 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
+let isFirstPerson = false;  // Variable to track the camera view mode
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -31,7 +32,7 @@ let catObject;
 const clock = new THREE.Clock();
 let objectsToRaycast = []
 
-let assetsToLoad = 14; // Total number of assets to load, adjust based on actual count
+let assetsToLoad = 14; 
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
@@ -69,6 +70,15 @@ document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to 
 
 // -------Orbit controls----------
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;        // Enable damping (inertia)
+controls.dampingFactor = 0.05;        // Damping inertia
+controls.enableZoom = true;          // Disable zoom if desired
+controls.enablePan = true;           // Disable pan if desired
+controls.mouseButtons = {
+    LEFT: null,
+    MIDDLE: null,
+    RIGHT: THREE.MOUSE.ROTATE
+};
 
 // Handle window resize events
 window.addEventListener('resize', () => {
@@ -137,7 +147,7 @@ function checkOxygen(){
     if(health == 30){
         modal.style.display = 'flex';
         catConversation.style.animation = 'none';
-        catConversation.textContent = `Be careful, ${playerName}! Your oxygen is running low.`;
+        catConversation.textContent = `Be careful! Your oxygen is running low.`;
     
         void catConversation.offsetWidth; 
         catConversation.style.animation = 'typing 3.5s steps(40, end)';
@@ -647,6 +657,11 @@ helpButton.addEventListener('click', () => {
 
 const keysPressed = {};
 document.addEventListener('keydown', (event) => {
+    if (event.key === 'f') {
+        isFirstPerson = !isFirstPerson;  // Toggle between first-person and third-person view
+        updateCameraView();
+    }
+
     if (event.key === ' ' || event.code === 'Space') {
         event.preventDefault();
     }

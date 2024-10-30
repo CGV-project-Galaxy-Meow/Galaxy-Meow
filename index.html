@@ -22,11 +22,18 @@
     </div>
   </div>
 
+
   <!-- Settings Modal -->
-  <!-- <div class="modal" id="settingsModal">
-    <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
-    <p>Settings not implemented yet.</p>
-  </div> -->
+
+<div class="modal" id="settingsModal">
+  <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
+  
+  <label for="volumeControl">Music Volume:</label>
+  <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+  
+</div>
+
+
 
   <!-- Controls Modal -->
   <div class="modal" id="controlsModal">
@@ -80,15 +87,27 @@ const listener = new THREE.AudioListener();
 
 // Create a global audio source
 const sound = new THREE.Audio(listener);
+const audioLoader = new THREE.AudioLoader();
 
 // Load a sound and set it as the Audio object's buffer
-const audioLoader = new THREE.AudioLoader();
+// Load sound and play as before
 audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
+
   sound.setBuffer(buffer);
   sound.setLoop(false);
   sound.setVolume(0.5);
   sound.play();
 });
+
+// Get the volume control element
+const volumeControl = document.getElementById('volumeControl');
+
+// Update volume based on slider input
+volumeControl.addEventListener('input', function () {
+  const volume = volumeControl.value;
+  sound.setVolume(volume);
+});
+
 
 
     // Start button 
