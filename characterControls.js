@@ -180,11 +180,11 @@ export class CharacterControls {
                     } else {
                         overlap.x = -minX;
                     }
-                    console.log("min x is smallest", overlap.x);
+                    //console.log("min x is smallest", overlap.x);
                 } else if (smallestOverlap === minY) {
                     // Handle Y overlap (if necessary)
                     overlap.y = 0; // Keep y-axis correction if needed
-                    console.log("min y is smallest", overlap.y);
+                   // console.log("min y is smallest", overlap.y);
                 } else {
                     overlap.y = 0;
                     //overlap.x = minX*1.8;
@@ -193,7 +193,7 @@ export class CharacterControls {
                     } else {
                         overlap.z = -minZ;
                     }
-                    console.log("min z is smallest", overlap.z);
+                    //console.log("min z is smallest", overlap.z);
                 }
     
                 // Move the character away from the collision based on the overlap

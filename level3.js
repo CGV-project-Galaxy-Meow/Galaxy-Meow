@@ -201,6 +201,77 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
 // });
 
 
+//paper objects for this level
+// loadModel('public/models/Debris_Papers.glb', scene, controls, camera, (DebrisObject) => {
+//     DebrisObject.scale.set(1, 1, 1);  
+//     DebrisObject.position.set(0, 0.1,0);  
+//     DebrisObject.name = 'Debris paper';        
+//     scene.add(DebrisObject);               
+//     objectsToRaycast.push(DebrisObject);   
+
+//    setupRaycasting(camera, objectsToRaycast);  
+//    //onAssetLoaded();
+// }, function (error) {
+//     console.error('Error loading skull model:', error);
+// });
+
+// loadModel('public/models/Manila_Envelope.glb', scene, controls, camera, (ManilaObject) => {
+//     ManilaObject.scale.set(1, 1, 1);  
+//     ManilaObject.position.set(0, 0.1,0);  
+//     ManilaObject.name = 'Manila envelope';        
+//     scene.add(ManilaObject);               
+//     objectsToRaycast.push(ManilaObject);   
+
+//    setupRaycasting(camera, objectsToRaycast);  
+//    //onAssetLoaded();
+// }, function (error) {
+//     console.error('Error loading skull model:', error);
+// });
+
+// loadModel('public/models/Paper_airplane.glb', scene, controls, camera, (PaperAirplaneObject) => {
+//     PaperAirplaneObject.scale.set(1, 1, 1);  
+//     PaperAirplaneObject.position.set(0, 0.1,0);  
+//     PaperAirplaneObject.name = 'Paper airplane';        
+//     scene.add(PaperAirplaneObject);               
+//     objectsToRaycast.push(PaperAirplaneObject);   
+
+//    setupRaycasting(camera, objectsToRaycast);  
+//    //onAssetLoaded();
+// }, function (error) {
+//     console.error('Error loading skull model:', error);
+// });
+
+// loadModel('public/models/Paper.glb', scene, controls, camera, (PaperObject) => {
+//     PaperObject.scale.set(1, 1, 1);  
+//     PaperObject.position.set(0, 0.1,0);  
+//     PaperObject.name = 'Paper';        
+//     scene.add(PaperObject);               
+//     objectsToRaycast.push(PaperObject);   
+
+//    setupRaycasting(camera, objectsToRaycast);  
+//    //onAssetLoaded();
+// }, function (error) {
+//     console.error('Error loading skull model:', error);
+// });
+
+
+// loadModel('public/models/Small_Stack_of_Paper.glb', scene, controls, camera, (StackPaperObject) => {
+//     StackPaperObject.scale.set(1, 1, 1);  
+//     StackPaperObject.position.set(0, 0.1,0);  
+//     StackPaperObject.name = 'Stack of paper';        
+//     scene.add(StackPaperObject);               
+//     objectsToRaycast.push(StackPaperObject);   
+
+//    setupRaycasting(camera, objectsToRaycast);  
+//    //onAssetLoaded();
+// }, function (error) {
+//     console.error('Error loading skull model:', error);
+// });
+
+
+
+
+
 let astronaut;
 let characterControls;
 loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {

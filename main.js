@@ -48,7 +48,7 @@ pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
 let pipActive = false;
 
 
-let assetsToLoad = 16; // Total number of assets to load
+let assetsToLoad = 203;
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
@@ -205,7 +205,6 @@ document.getElementById('startPiP').style.display = 'none';
 
 function onAssetLoaded() {
     assetsLoaded++;
-    //console.log(assetsLoaded);
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
         decreaseHealth();
@@ -591,6 +590,7 @@ setInterval(createShootingStar, 300);
                 objectsToRaycast.push(RocksObject);
                 characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
                 setupRaycasting(camera, objectsToRaycast);
+                onAssetLoaded();
             });
         });
 
@@ -609,6 +609,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(RockQObject);
             characterControls.objectsToCollide.push(RockQObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
         });
     
@@ -629,6 +630,7 @@ setInterval(createShootingStar, 300);
             //  
             characterControls.objectsToCollide.push(GoldRockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -646,6 +648,7 @@ setInterval(createShootingStar, 300);
             // 
             characterControls.objectsToCollide.push(BasicRockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -666,6 +669,7 @@ setInterval(createShootingStar, 300);
 
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -685,6 +689,7 @@ setInterval(createShootingStar, 300);
 
         characterControls.objectsToCollide.push(spaceRockObject);
         setupRaycasting(camera, objectsToRaycast);
+        onAssetLoaded();
     });
 });
 
