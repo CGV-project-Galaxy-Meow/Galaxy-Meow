@@ -31,7 +31,7 @@ let catObject;
 const clock = new THREE.Clock();
 let objectsToRaycast = []
 
-let assetsToLoad = 14; // Total number of assets to load, adjust based on actual count
+let assetsToLoad = 14; 
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
@@ -146,7 +146,7 @@ function checkOxygen(){
     if(health == 30){
         modal.style.display = 'flex';
         catConversation.style.animation = 'none';
-        catConversation.textContent = `Be careful, ${playerName}! Your oxygen is running low.`;
+        catConversation.textContent = `Be careful! Your oxygen is running low.`;
     
         void catConversation.offsetWidth; 
         catConversation.style.animation = 'typing 3.5s steps(40, end)';
