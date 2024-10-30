@@ -31,14 +31,13 @@ let catObject;
 const clock = new THREE.Clock();
 let objectsToRaycast = []
 
-let assetsToLoad = 14; 
+let assetsToLoad = 207;
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
 
 function onAssetLoaded() {
     assetsLoaded++;
-    console.log(assetsLoaded);
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
         decreaseHealth();
@@ -202,7 +201,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
 
     
     loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
-        crystalObject.scale.set(0.2, 0.2, 0.2); // Set size of crystal
+        crystalObject.scale.set(0.3, 0.3, 0.3); // Set size of crystal
         crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
         
         // Traverse the object to set custom properties
@@ -332,6 +331,7 @@ positions.forEach((position) => {
         //objectsToRaycast.push(RocksObject);
         characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
         //setupRaycasting(camera, objectsToRaycast);
+        onAssetLoaded();
     });
 });
 
@@ -350,6 +350,7 @@ loadModel('public/models/rocks/RockQ.glb', scene, controls, camera, (RockQObject
     //objectsToRaycast.push(RockQObject);
     characterControls.objectsToCollide.push(RockQObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 });
 
@@ -370,6 +371,7 @@ loadModel('public/models/rocks/Gold_Rocks.glb', scene, controls, camera, (GoldRo
     //  
     characterControls.objectsToCollide.push(GoldRockObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 });
 
@@ -387,6 +389,7 @@ loadModel('public/models/rocks/basic_stone_3.glb', scene, controls, camera, (Bas
     // 
     characterControls.objectsToCollide.push(BasicRockObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 });
 
@@ -407,6 +410,7 @@ loadModel('public/models/rocks/Rock.glb', scene, controls, camera, (RockObject) 
 
     characterControls.objectsToCollide.push(RockObject);
    // setupRaycasting(camera, objectsToRaycast);
+   onAssetLoaded();
 });
 });
 
@@ -426,6 +430,7 @@ scene.add(spaceRockObject);
 
 characterControls.objectsToCollide.push(spaceRockObject);
 //setupRaycasting(camera, objectsToRaycast);
+onAssetLoaded();
 });
 });
 
@@ -465,8 +470,8 @@ loadModel('public/models/rocks/Comet.glb', scene, controls, camera, (AstroidObje
 });
 
 
-loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipObject) => {
-    RocketshipObject.scale.set(3, 3, 3);
+loadModel('public/models/Flying_saucer.glb', scene, controls, camera, (RocketshipObject) => {
+    RocketshipObject.scale.set(0.1, 0.1, 0.1);
     RocketshipObject.position.set(-180, 12, 60);
     RocketshipObject.rotation.x += Math.PI / 3;
     RocketshipObject.rotation.z += 3*Math.PI / 4;
@@ -479,9 +484,16 @@ loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipOb
     onAssetLoaded();
 });
 
+const positionRuin = [
+    new THREE.Vector3(280, 0, -78),
+    new THREE.Vector3(302, 0, -109),
+    new THREE.Vector3(-292, 0, -10)
+    ];
+positionRuin.forEach((position) => {
 loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
     RuinObject.scale.set(8, 8, 8);
-    RuinObject.position.set(280, 0, -78);
+    //RuinObject.position.set(280, 0, -78);
+    RuinObject.position.copy(position);
     RuinObject.name = 'Rubble Rock2'
     scene.add(RuinObject);
     //objectsToRaycast.push(RuinObject);
@@ -490,6 +502,7 @@ loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
     characterControls.objectsToCollide.push(RuinObject);
     //setupRaycasting(camera, objectsToRaycast);
     onAssetLoaded();
+});
 });
 
 
