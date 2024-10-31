@@ -7,6 +7,7 @@ import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -81,7 +82,7 @@ scene.add(space);
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
-camera.position.set(50, 10, 2);   // Set an initial camera position
+camera.position.set(50, -10, 5);   // Set an initial camera position
 
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
@@ -89,6 +90,11 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
 
+const controlsFirstPerson = new PointerLockControls(camera, renderer.domElement);
+let isFirstPerson = false; // Starts in third-person view
+
+
+// -------Orbit controls----------
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
@@ -100,12 +106,35 @@ controls.mouseButtons = {
     RIGHT: THREE.MOUSE.ROTATE
 };
 
+
 // Handle window resize events
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+
+// Audio listener
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Audio loader
+const audioLoader = new THREE.AudioLoader();
+
+// separate audio sources for during game and game over
+const ambianceSound = new THREE.Audio(listener);
+const gameOverSound = new THREE.Audio(listener);
+const timerWarningSound= new THREE.Audio(listener);
+
+audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+    timerWarningSound.setBuffer(buffer);
+    timerWarningSound.setLoop(false);
+    timerWarningSound.setVolume(0.5);
+
+});
+
+
 
 
 //----important functions-----
@@ -148,21 +177,53 @@ function checkOxygen(){
     }
 }
 
+function toggleView() {
+    isFirstPerson = !isFirstPerson;
+  
+    if (isFirstPerson) {
+        // Ensure astronaut is loaded before trying to hide it
+        if (astronaut) astronaut.visible = false;
 
+        controls.enabled = false; // Disable OrbitControls
+        controlsFirstPerson.enabled = true;
+        controlsFirstPerson.lock(); // Lock pointer for first-person controls
+  
+        // Position the camera at the astronaut's head position
+        if (astronaut) {
+            camera.position.copy(astronaut.position);
+            camera.position.y += 6; // Adjust for astronaut's eye height
+        }
+    } else {
+        // Switch to third-person view
+        controlsFirstPerson.unlock();
+        controlsFirstPerson.enabled = false;
+        controls.enabled = true;
 
-const listener = new THREE.AudioListener();
-camera.add(listener);
+        // Show the astronaut model again
+        if (astronaut) astronaut.visible = true;
 
-// Audio loader
-const audioLoader = new THREE.AudioLoader();
+        // Position the camera behind the astronaut
+        const offset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        if (astronaut) {
+            camera.position.copy(astronaut.position).add(offset);
+        }
 
-// separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
+        // Update controls target
+        if (astronaut) controls.target.copy(astronaut.position);
+    }
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyV') { // Press 'V' to toggle views
+      toggleView();
+    }
+  });
+  
+  
 
 
 export function startGame() {
 
+   
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             if (exitMenu.style.display === 'none') {
@@ -172,7 +233,41 @@ export function startGame() {
             }
         }
     });
-
+    
+    const volumeControl = document.getElementById('volumeControl');
+    volumeControl.addEventListener('input', function () {
+        const volume = parseFloat(volumeControl.value);
+        ambianceSound.setVolume(volume);
+        gameOverSound.setVolume(volume);
+        timerWarningSound.setVolume(volume);
+        console.log("Volume set to: ", volume);  // Debug: confirm volume change
+    });
+    
+    
+    //sound 
+    // Load ambiance sound
+    audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+        ambianceSound.setBuffer(buffer);
+        ambianceSound.setLoop(true);
+        ambianceSound.setVolume(0.5);
+        ambianceSound.play();
+    });
+    
+    // Load game over sound
+    audioLoader.load('/sound/game-over.mp3', function(buffer) {
+        gameOverSound.setBuffer(buffer);
+        gameOverSound.setLoop(false);
+        gameOverSound.setVolume(0.5);
+        //we'll play it when health reaches zero
+    });
+    
+    audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+        timerWarningSound.setBuffer(buffer);
+        timerWarningSound.setLoop(false);
+        timerWarningSound.setVolume(0.5);
+    
+    });
+    
 
 
 //Function to load and apply texture to the moon model
@@ -701,26 +796,36 @@ document.addEventListener('keyup', (event) => {
 function animate() {
     let delta = clock.getDelta();
     if (characterControls) {
-        characterControls.update(delta, keysPressed);
+      characterControls.update(delta, keysPressed, isFirstPerson);
     }
-
-
+  
     if (astronaut) {
-        // Compute the offset between camera and controls.target
+      if (isFirstPerson) {
+        // In first-person view, camera follows astronaut's position
+        camera.position.copy(astronaut.position);
+        camera.position.y += 1.7; // Adjust for astronaut's eye height
+      } else {
+        // Third-person view
         const cameraOffset = camera.position.clone().sub(controls.target);
-
+  
         // Update controls target to astronaut's position
         controls.target.copy(astronaut.position);
-
+  
         // Update camera's position to maintain the offset
         camera.position.copy(astronaut.position).add(cameraOffset);
+      }
     }
-
-    controls.update();
+  
+    if (isFirstPerson) {
+  
+      controlsFirstPerson.update();
+    } else {
+      controls.update();
+    }
+  
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-}
-
+  }
 
 function restartLevel() {
     clearInventory();
