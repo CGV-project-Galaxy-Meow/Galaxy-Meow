@@ -57,7 +57,7 @@ scene.add(directionalLight);
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
-camera.position.set(50, 10, 2);   // Set an initial camera position
+camera.position.set(50, -10, 5);   // Set an initial camera position
 
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
