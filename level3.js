@@ -20,6 +20,18 @@ export const objectsToRaycast = [];
 let assetsToLoad = 144; 
 let assetsLoaded = 0;  // Counter for loaded assets
 
+//loading screen!!!
+const loadingScreen = document.getElementById('loadingScreen');
+
+function onAssetLoaded() {
+    assetsLoaded++;
+    
+    if (assetsLoaded === assetsToLoad) {
+        loadingScreen.style.display = 'none'; // Hide loading screen 
+        decreaseHealth();
+    }
+}
+
 
 // ---------------Create the scene--------------
 const scene = new THREE.Scene();
@@ -169,18 +181,6 @@ const audioLoader = new THREE.AudioLoader();
 const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
-
-//loading screen!!!
-const loadingScreen = document.getElementById('loadingScreen');
-
-function onAssetLoaded() {
-    assetsLoaded++;
-    
-    if (assetsLoaded === assetsToLoad) {
-        loadingScreen.style.display = 'none'; // Hide loading screen 
-        decreaseHealth();
-    }
-}
 
 // const numAsteroids = 100; // Number of asteroids to load
 // for (let i = 0; i < numAsteroids; i++) {
