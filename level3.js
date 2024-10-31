@@ -29,10 +29,25 @@ scene.background = new THREE.Color(0x000000);  // Set a background color for vis
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // Soft white light
 scene.add(ambientLight);
 
-/*const directionalLight = new THREE.DirectionalLight(0x999793, 25);
-    directionalLight.position.set(0, 50, -50).normalize();
-    scene.add(directionalLight);
-    createSun(scene);*/
+const spotLight = new THREE.SpotLight(0xb900ff, 80); // Red light with intensity 80
+spotLight.position.set(0, 0,0); // Positioning the light above the ground
+
+// Set the spotlight to shine directly downwards
+spotLight.angle = Math.PI / 2; // Angle of the spotlight's cone (adjust if needed)
+spotLight.penumbra = 0.1; // Soft edges of the spotlight
+spotLight.decay = 2; // How quickly the light diminishes
+spotLight.distance = 50; // The distance the light reaches
+
+// Enable shadows if needed
+spotLight.castShadow = true;
+
+// Point the light directly downwards
+spotLight.target.position.set(50, 0, 8); // Set the target to the ground (where the torch is pointing)
+spotLight.target.updateMatrixWorld(); // Update the target matrix
+
+// Add the spotlight to the scene
+scene.add(spotLight);
+scene.add(spotLight.target); // Add the target to the scene
 
 const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
