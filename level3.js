@@ -6,6 +6,7 @@ import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, po
 import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
+import { clearInventory, items } from './inventory.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -17,19 +18,34 @@ const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let catObject; 
-
+let astronaut;
 const clock = new THREE.Clock();
+
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
+
 export let objectsToRaycast = [];
 
 //for loading screen
-let assetsToLoad = 124; 
+let assetsToLoad = 144; 
 let assetsLoaded = 0;  // Counter for loaded assets
 
+//loading screen!!!
+const loadingScreen = document.getElementById('loadingScreen');
+
+function onAssetLoaded() {
+    assetsLoaded++;
+    
+    if (assetsLoaded === assetsToLoad) {
+        loadingScreen.style.display = 'none'; // Hide loading screen 
+        decreaseHealth();
+    }
+}
+
+console.log("second one",document.body.querySelectorAll("canvas").length);
 
 // ---------------Create the scene--------------
 const scene = new THREE.Scene();
@@ -58,7 +74,7 @@ spotLight.target.updateMatrixWorld(); // Update the target matrix
 scene.add(spotLight);
 scene.add(spotLight.target); // Add the target to the scene
 
-const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
 const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
 const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
@@ -74,15 +90,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
 
-
-// Handle window resize events
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
@@ -93,6 +100,13 @@ controls.mouseButtons = {
     MIDDLE: null,
     RIGHT: THREE.MOUSE.ROTATE
 };
+
+// Handle window resize events
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 
 //----important functions-----
@@ -196,18 +210,6 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
 
-//loading screen!!!
-const loadingScreen = document.getElementById('loadingScreen');
-
-function onAssetLoaded() {
-    assetsLoaded++;
-    console.log(assetsLoaded);
-    //if (assetsLoaded === assetsToLoad) {
-        loadingScreen.style.display = 'none'; // Hide loading screen 
-        decreaseHealth();
-    //}
-}
-
 // const numAsteroids = 100; // Number of asteroids to load
 // for (let i = 0; i < numAsteroids; i++) {
 //     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
@@ -236,13 +238,19 @@ function onAssetLoaded() {
 
 export function startGame() {
 
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (exitMenu.style.display === 'none') {
+                exitMenu.style.display = 'block'; // Show menu
+            } else {
+                exitMenu.style.display = 'none'; // Hide menu
+            }
+        }
+    });
 
 
-// Load the texture
 
 //Function to load and apply texture to the moon model
-
-
 loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(10, 10, 10);
     astroObject.position.set(-850, 100, 4);
@@ -369,7 +377,7 @@ loadModel('public/models/paper/Toilet_paper.glb', scene, controls, camera, (Toil
     objectsToRaycast.push(ToiletPaperObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
     console.error('Error loading toilet paper model:', error);
 });
@@ -384,7 +392,7 @@ loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camer
     objectsToRaycast.push(StackPaperObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
     console.error('Error loading skull model:', error);
 });
@@ -408,7 +416,7 @@ loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObje
         objectsToRaycast.push(CarpetObject);   
     
        setupRaycasting(camera, objectsToRaycast);  
-       //onAssetLoaded();
+       onAssetLoaded();
     }, function (error) {
         console.error('Error loading carpet model:', error);
     });
@@ -583,11 +591,6 @@ loadModel('public/models/rocks/Stalactites_&_gems.glb', scene, controls, camera,
 
 
 
-
-
-
-
-let astronaut;
 let characterControls;
 loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
@@ -769,15 +772,13 @@ document.addEventListener('keyup', (event) => {
     keysPressed[event.key.toLowerCase()] = false;
 }, false);
 
+
 // Render loop
 function animate() {
     let delta = clock.getDelta();
     if (characterControls) {
         characterControls.update(delta, keysPressed);
     }
-
-
-
 
 
     if (astronaut) {
