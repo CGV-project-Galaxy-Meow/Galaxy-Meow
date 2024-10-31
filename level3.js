@@ -392,7 +392,18 @@ loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camer
 loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObject) => {
         CarpetObject.scale.set(1.5, 1.5, 1.5);  
         CarpetObject.position.set(0, 0.1,0);
-        CarpetObject.name = 'Magic Carpet';        
+        CarpetObject.traverse((child) => {
+            if (child.isMesh) {
+                // Assign custom name or userData to ensure we're modifying the correct mesh
+                child.name = 'magic-carpet'; // Set a specific name for this child object
+                child.customId = 'magic-carpet'; // Alternatively, assign a custom ID
+                
+                // Store additional custom data if needed
+                child.userData = { customId: 'magic-carpet' }; // Set custom user data for the mesh
+            }
+            onAssetLoaded();
+        });
+         
         scene.add(CarpetObject);               
         objectsToRaycast.push(CarpetObject);   
     
