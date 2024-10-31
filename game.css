@@ -180,6 +180,7 @@ body { margin: 0; overflow: hidden; }
     overflow: hidden;
     white-space: nowrap;
     animation: typing 3.5s steps(60, end), blink-caret 0.75s step-end infinite;
+
 }
 
 .controls {
@@ -206,12 +207,14 @@ body { margin: 0; overflow: hidden; }
 }
 
 
+
 #pipControls {
     display: none; /* Initially hidden */
     position: fixed;
     bottom: 10px; /* Adjust as needed */
     left: 10px; /* Adjust as needed */
     z-index: 9999; /* Ensure it's above other elements */
+
 }
 
 

@@ -1,12 +1,11 @@
-import * as THREE from 'three';
-//import { playerName } from './intro.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createSun } from './background.js';
+import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
+//import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
+import * as THREE from './node_modules/three/build/three.module.min.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 
 
-
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
@@ -111,10 +110,27 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 const timerWarningSound= new THREE.Audio(listener);
 
-audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+
+audioLoader.load('public/sound/beep-warning-6387.mp3', function(buffer) {
     timerWarningSound.setBuffer(buffer);
     timerWarningSound.setLoop(false);
     timerWarningSound.setVolume(0.5);
+
+
+// Load ambiance sound
+audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
+    ambianceSound.setBuffer(buffer);
+    ambianceSound.setLoop(true);
+    ambianceSound.setVolume(0.5);
+    ambianceSound.play();
+});
+
+// Load game over sound
+audioLoader.load('public/sound/game-over.mp3', function(buffer) {
+    gameOverSound.setBuffer(buffer);
+    gameOverSound.setLoop(false);
+    gameOverSound.setVolume(0.5);
+    //we'll play it when health reaches zero
 
 });
 
@@ -255,14 +271,14 @@ export function startGame() {
     
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
-const marsTexture = textureLoader.load('textures/mars.jpeg', function (texture) {
+const marsTexture = textureLoader.load('public/textures/mars.jpeg', function (texture) {
     console.log('Texture loaded successfully');
 }, undefined, function (err) {
     console.error('Error loading texture:', err);
 });
 
 // Function to load and apply texture to the moon model
-loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
+loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) => {
     marsObject.traverse((child) => {
         if (child.isMesh) {
             // Apply the texture to the mesh material
@@ -278,7 +294,8 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     //console.log('Ground model loaded and added to the scene');
 
     
-    loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
+
+    loadModel('public/models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
         crystalObject.scale.set(0.3, 0.3, 0.3); // Set size of crystal
         crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
         
@@ -334,7 +351,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         skullObject.scale.set(50, 50, 50);  // Set size of skull
         skullObject.position.set(-5.927182022763221, 0, -136.58502827742493);
         const textureLoader = new THREE.TextureLoader();
-        const skullTexture = textureLoader.load('textures/blue.jpg')
+        const skullTexture = textureLoader.load('public/textures/blue.jpg')
     
         // Traverse the object and apply the texture
         skullObject.traverse((child) => {
@@ -377,7 +394,7 @@ loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
 
     // Load texture
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('textures/red.png', (texture) => {
+    textureLoader.load('public/textures/red.png', (texture) => {
         skullObject.traverse((child) => {
             if (child.isMesh) {
                 child.material.map = texture;  // Apply texture to the material
@@ -784,12 +801,14 @@ function animate() {
     }
   
     if (astronaut) {
+
       if (isFirstPerson) {
         // In first-person view, camera follows astronaut's position
         camera.position.copy(astronaut.position);
         camera.position.y += 1.7; // Adjust for astronaut's eye height
       } else {
         // Third-person view
+
         const cameraOffset = camera.position.clone().sub(controls.target);
   
         // Update controls target to astronaut's position

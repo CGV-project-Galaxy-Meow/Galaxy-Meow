@@ -1,18 +1,20 @@
-import {items} from "./inventory";
-import { showWinningModal, showWinningModal_l2 } from "./modal";
-import * as THREE from 'three';
+
+import {items} from "./inventory.js";
+import { showWinningModal, showWinningModal_l2 } from "./modal.js";
+import * as THREE from './node_modules/three/build/three.module.min.js';
 
 const listener = new THREE.AudioListener();
 const winSound=new THREE.Audio(listener);
 const audioLoader = new THREE.AudioLoader();
 
 
-audioLoader.load('/sound/triumph-83761.mp3', function(buffer) {
+audioLoader.load('public/sound/triumph-83761.mp3', function(buffer) {
     winSound.setBuffer(buffer);
     winSound.setLoop(false);
     winSound.setVolume(0.5);
 
 });
+
 
 // List of items required to win
 const requiredItems = ['circuit', 'battery','antenna','console', 'button'];

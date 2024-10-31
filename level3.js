@@ -46,7 +46,9 @@ function onAssetLoaded() {
 
 console.log("second one",document.body.querySelectorAll("canvas").length);
 
+
 // ---------------Create the scene--------------
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
 // Add lighting
