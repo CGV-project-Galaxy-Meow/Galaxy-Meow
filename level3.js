@@ -7,6 +7,7 @@ import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -32,7 +33,7 @@ let healthInterval; // To control the health timer
 export let objectsToRaycast = [];
 
 //for loading screen
-let assetsToLoad = 144; 
+let assetsToLoad = 164; 
 let assetsLoaded = 0;  // Counter for loaded assets
 
 //loading screen!!!
@@ -40,7 +41,6 @@ const loadingScreen = document.getElementById('loadingScreen');
 
 function onAssetLoaded() {
     assetsLoaded++;
-    
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
         decreaseHealth();
@@ -84,7 +84,7 @@ scene.add(space);
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
-camera.position.set(50, 10, 2);   // Set an initial camera position
+camera.position.set(50, -10, 5);   // Set an initial camera position
 
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
@@ -92,6 +92,11 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
 
+const controlsFirstPerson = new PointerLockControls(camera, renderer.domElement);
+let isFirstPerson = false; // Starts in third-person view
+
+
+// -------Orbit controls----------
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
@@ -103,12 +108,35 @@ controls.mouseButtons = {
     RIGHT: THREE.MOUSE.ROTATE
 };
 
+
 // Handle window resize events
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+
+// Audio listener
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Audio loader
+const audioLoader = new THREE.AudioLoader();
+
+// separate audio sources for during game and game over
+const ambianceSound = new THREE.Audio(listener);
+const gameOverSound = new THREE.Audio(listener);
+const timerWarningSound= new THREE.Audio(listener);
+
+audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+    timerWarningSound.setBuffer(buffer);
+    timerWarningSound.setLoop(false);
+    timerWarningSound.setVolume(0.5);
+
+});
+
+
 
 
 //----important functions-----
@@ -149,113 +177,53 @@ function checkOxygen(){
     }
 }
 
-function lore(){
-    if(health == 99){
-        meow.play();
-        modal.style.display = 'flex';
-        catConversation.textContent = `Luckily for you, Ms Fitzgerald has left her successors clues on how to return to Earth.`;
+function toggleView() {
+    isFirstPerson = !isFirstPerson;
+  
+    if (isFirstPerson) {
+        // Ensure astronaut is loaded before trying to hide it
+        if (astronaut) astronaut.visible = false;
 
-        setTimeout(() => { 
-            conversationText = '';
-            document.getElementById('catConversation').innerHTML = conversationText; 
-            
-            conversationText = 'Use this chance wisely so that no more lives will be forsaken.';
-            document.getElementById('catConversation').innerHTML = conversationText; 
+        controls.enabled = false; // Disable OrbitControls
+        controlsFirstPerson.enabled = true;
+        controlsFirstPerson.lock(); // Lock pointer for first-person controls
+  
+        // Position the camera at the astronaut's head position
+        if (astronaut) {
+            camera.position.copy(astronaut.position);
+            camera.position.y += 6; // Adjust for astronaut's eye height
+        }
+    } else {
+        // Switch to third-person view
+        controlsFirstPerson.unlock();
+        controlsFirstPerson.enabled = false;
+        controls.enabled = true;
 
-        }, 3000); 
-    
-        // Keep the buttons hidden
-        responses.style.display = 'none'; 
+        // Show the astronaut model again
+        if (astronaut) astronaut.visible = true;
+
+        // Position the camera behind the astronaut
+        const offset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        if (astronaut) {
+            camera.position.copy(astronaut.position).add(offset);
+        }
+
+        // Update controls target
+        if (astronaut) controls.target.copy(astronaut.position);
     }
 }
+document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyV') { // Press 'V' to toggle views
+      toggleView();
+    }
+  });
+  
+  
 
-
-//use this to start the game
-// export function startGame() {}
-
-// Load the texture
-
-// Function to load and apply texture to the moon model
-// const numAsteroids = 100; // Number of asteroids to load
-// const objectsToRaycast = [];
-
-// for (let i = 0; i < numAsteroids; i++) {
-//     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
-//         // Randomize position
-//         const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
-//         const randomY = Math.random() * 20;       // Random value between 0 and 20
-//         const randomZ = Math.random() * 100 - 500; // Random value between -50 and 50
-
-//         // Randomize rotation
-//         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
-//         const randomRotationY = Math.random() * Math.PI * 2;
-//         const randomRotationZ = Math.random() * Math.PI * 2;
-
-//         // Randomize scale
-//         const randomScale = 0.05 + Math.random() * 0.1; // Random scale between 0.05 and 0.15
-
-//         astroObject.scale.set(randomScale, randomScale, randomScale);
-//         astroObject.position.set(randomX, randomY, randomZ);
-//         astroObject.rotation.set(randomRotationX, randomRotationY, randomRotationZ);
-//         astroObject.name = 'asteroids_' + i;
-
-//         scene.add(astroObject);
-//         objectsToRaycast.push(astroObject);
-//     });
-// }
-
-// loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
-//     astroObject.scale.set(50, 50, 50);
-//     astroObject.position.set(-300, 100, 4);
-//     astroObject.name = 'asteroids';
-//     scene.add(astroObject);
-//     objectsToRaycast.push(astroObject);
-
-
-
-//     //setupRaycasting(camera, objectsToRaycast);
-// });
-
-
-const listener = new THREE.AudioListener();
-camera.add(listener);
-
-// Audio loader
-const audioLoader = new THREE.AudioLoader();
-
-// separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
-
-
-// const numAsteroids = 100; // Number of asteroids to load
-// for (let i = 0; i < numAsteroids; i++) {
-//     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
-//         // Randomize position
-//         const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
-//         const randomY = Math.random() * 20;       // Random value between 0 and 20
-//         const randomZ = Math.random() * 100 - 500; // Random value between -50 and 50
-
-//         // Randomize rotation
-//         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
-//         const randomRotationY = Math.random() * Math.PI * 2;
-//         const randomRotationZ = Math.random() * Math.PI * 2;
-
-//         // Randomize scale
-//         const randomScale = 0.05 + Math.random() * 0.1; // Random scale between 0.05 and 0.15
-
-//         astroObject.scale.set(randomScale, randomScale, randomScale);
-//         astroObject.position.set(randomX, randomY, randomZ);
-//         astroObject.rotation.set(randomRotationX, randomRotationY, randomRotationZ);
-//         astroObject.name = 'asteroids_' + i;
-
-//         scene.add(astroObject);
-//         objectsToRaycast.push(astroObject);
-//     });
-// }
 
 export function startGame() {
 
+   
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             if (exitMenu.style.display === 'none') {
@@ -265,7 +233,41 @@ export function startGame() {
             }
         }
     });
-
+    
+    const volumeControl = document.getElementById('volumeControl');
+    volumeControl.addEventListener('input', function () {
+        const volume = parseFloat(volumeControl.value);
+        ambianceSound.setVolume(volume);
+        gameOverSound.setVolume(volume);
+        timerWarningSound.setVolume(volume);
+        console.log("Volume set to: ", volume);  // Debug: confirm volume change
+    });
+    
+    
+    //sound 
+    // Load ambiance sound
+    audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+        ambianceSound.setBuffer(buffer);
+        ambianceSound.setLoop(true);
+        ambianceSound.setVolume(0.5);
+        ambianceSound.play();
+    });
+    
+    // Load game over sound
+    audioLoader.load('/sound/game-over.mp3', function(buffer) {
+        gameOverSound.setBuffer(buffer);
+        gameOverSound.setLoop(false);
+        gameOverSound.setVolume(0.5);
+        //we'll play it when health reaches zero
+    });
+    
+    audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+        timerWarningSound.setBuffer(buffer);
+        timerWarningSound.setLoop(false);
+        timerWarningSound.setVolume(0.5);
+    
+    });
+    
 
 
 //Function to load and apply texture to the moon model
@@ -337,16 +339,15 @@ audioLoader.load('public/sound/game-over.mp3', function(buffer) {
 
 
 loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundObject) => {
-    asteroid_groundObject.scale.set(50, 1, 50);  // Scale it large enough to simulate an infinite ground
-    asteroid_groundObject.position.set(0, -1.5, 0);  // Place the plane below the astronaut
-    //moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
+    asteroid_groundObject.scale.set(50, 1, 50);  
+    asteroid_groundObject.position.set(0, -1.5, 0);  
     scene.add(asteroid_groundObject);
 
 
     //paper objects for this level
     loadModel('public/models/paper/Paper.glb', scene, controls, camera, (PaperObject) => {
     PaperObject.scale.set(0.05, 0.05, 0.05);  
-    PaperObject.position.set(9, -0.5,149);  //0, 1.5, 150
+    PaperObject.position.set(-1, -0.5,187);  
     PaperObject.name = 'Paper';        
     scene.add(PaperObject);               
     objectsToRaycast.push(PaperObject);   
@@ -379,9 +380,9 @@ loadModel('public/models/paper/Manila_Envelope.glb', scene, controls, camera, (M
     objectsToRaycast.push(ManilaObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
-    console.error('Error loading skull model:', error);
+    console.error('Error loading envelope model:', error);
 });
 
 
@@ -844,26 +845,36 @@ document.addEventListener('keyup', (event) => {
 function animate() {
     let delta = clock.getDelta();
     if (characterControls) {
-        characterControls.update(delta, keysPressed);
+      characterControls.update(delta, keysPressed, isFirstPerson);
     }
-
-
+  
     if (astronaut) {
-        // Compute the offset between camera and controls.target
+      if (isFirstPerson) {
+        // In first-person view, camera follows astronaut's position
+        camera.position.copy(astronaut.position);
+        camera.position.y += 1.7; // Adjust for astronaut's eye height
+      } else {
+        // Third-person view
         const cameraOffset = camera.position.clone().sub(controls.target);
-
+  
         // Update controls target to astronaut's position
         controls.target.copy(astronaut.position);
-
+  
         // Update camera's position to maintain the offset
         camera.position.copy(astronaut.position).add(cameraOffset);
+      }
     }
-
-    controls.update();
+  
+    if (isFirstPerson) {
+  
+      controlsFirstPerson.update();
+    } else {
+      controls.update();
+    }
+  
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-}
-
+  }
 
 function restartLevel() {
     clearInventory();
