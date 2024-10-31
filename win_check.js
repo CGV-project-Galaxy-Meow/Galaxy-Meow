@@ -2,7 +2,9 @@ import {items} from "./inventory";
 import { showWinningModal } from "./modal";
 import * as THREE from 'three';
 
+const listener = new THREE.AudioListener();
 const winSound=new THREE.Audio(listener);
+const audioLoader = new THREE.AudioLoader();
 
 
 audioLoader.load('/sound/triumph-83761.mp3', function(buffer) {
@@ -14,6 +16,7 @@ audioLoader.load('/sound/triumph-83761.mp3', function(buffer) {
 
 // List of items required to win
 const requiredItems = ['circuit', 'battery','antenna','console', 'button'];
+const requiredItems_l2=['jub','diamant','redruby','redgem','gems']
 // const requiredItems = ['circuit', 'battery', 'button'];
 // Function to check if the player has won
 export function checkForWin() {
@@ -25,6 +28,16 @@ export function checkForWin() {
     winSound.play();
     return true; // All required items collected
 }
+
+export function checkForWin_l2() {
+    for (let itemName of requiredItems_l2) {
+        if (!items[itemName] || items[itemName].count === 0) {
+            return false; // Player hasn't collected all required items
+        }
+    }
+    winSound.play();
+    return true; // All required items collected
+} 
 
 // Function to handle winning logic
 export function handleWin() {

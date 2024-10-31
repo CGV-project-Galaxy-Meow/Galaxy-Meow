@@ -1,27 +1,27 @@
-import { checkForWin, handleWin } from "./win_check";
+import { checkForWin, handleWin, checkForWin_l2 } from "./win_check";
 
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 8;
 
 export const items = {
-    gems: { img: 'images/crystal.png', count: 0 },
+    gems: { img: 'images/crystal.png', count: 1 },
     sword: { img: 'images/sword.png', count: 0 },
     potion: { img: 'images/potion.png', count: 0 },
     crudeOil: { img: 'images/crude_oil.png', count: 0 },
-    battery: { img: 'images/bat.png', count: 1 },
+    battery: { img: 'images/bat.png', count: 0 },
     skull: { img: 'images/skull.png', count: 0 },
     flag: { img: 'images/flag.png', count: 0 },
-    button: { img: 'images/button.png', count: 1 },
+    button: { img: 'images/button.png', count: 0 },
 
     circuit: { img: 'images/circuit.png', count: 0},
     antenna: { img: 'Graphics/anttena.png', count: 0 },
     console: { img: 'Graphics/teleporterHull.png', count: 0},
     chest: {img: 'Graphics/chest.png', count: 0},
-    redgem: {img: 'Graphics/redgem.png', count: 0},
-    redruby: {img: 'Graphics/redruby.jpg', count: 0},
-    diamant: {img: 'Graphics/quartz.png', count: 0},
-    jub: {img: 'Graphics/jub.jpg', count: 0}
+    redgem: {img: 'Graphics/redgem.png', count: 1},
+    redruby: {img: 'Graphics/redruby.jpg', count: 1},
+    diamant: {img: 'Graphics/quartz.png', count: 1},
+    jub: {img: 'Graphics/jub.jpg', count: 1}
 
 };
 
@@ -108,7 +108,7 @@ export function addItem(itemName) {
         items[itemName].hasItem = true;
         clearInventoryFullMessage(); 
 
-        if(checkForWin()){
+        if(checkForWin() || checkForWin_l2()){
             handleWin();
         }
     } else {
