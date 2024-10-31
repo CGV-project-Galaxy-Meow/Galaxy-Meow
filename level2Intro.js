@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle dialogue progression
     nextButton.addEventListener('click', () => {
         if (step === 0) {
-            // Ask for the player's name
+            dialogueText.textContent = `We are on mars now.... so you will need more fuel`;
             nextButton.textContent = 'Next';
             step++;
         } else if (step === 1) {
-                dialogueText.textContent = `We are on mars now.... so you will need more fuel`;
+                dialogueText.textContent = `Find the energy crystals around the map`;
                 nextButton.textContent = 'Next';
                 step++;
             
@@ -40,9 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li>Oxygen Meter - You get 100 units of oxygen</li>
                         <li>If you need help - Click The Cat</li>
                         <li>Esc - Restart/Leave game</li>
-                        <li>Shift - Opens inventory</li>
+                        <li>Shift - Sprint</li>
+                        <li>Cntrl - Opens inventory</li>
                         <li>Left mouse click - To select objects</li>
                         <li>Right mouse click and drag - Look around the map</li>
+                        <li>V - Change prespective</li>
                     </ul>
                 </div>
                 <p>Good luck!</p>

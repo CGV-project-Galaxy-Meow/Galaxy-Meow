@@ -5,6 +5,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createSun } from './background.js';
 
 
+
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import { setupRaycasting } from './raycasting.js';
@@ -16,7 +19,7 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
-let isFirstPerson = false;
+
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const modal = document.getElementById('myModal');
@@ -26,7 +29,7 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
-
+let astronaut;
 let catObject;
 
 const clock = new THREE.Clock();
@@ -57,6 +60,12 @@ scene.add(ambientLight);
     scene.add(directionalLight);
     createSun(scene);
 
+const spaceTexture = new THREE.TextureLoader().load('public/textures/test2.webp');
+const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
+const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
+const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
+scene.add(space);
+
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
 camera.position.set(50, -10, 5);   // Set an initial camera position
@@ -66,6 +75,9 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
+
+const controlsFirstPerson = new PointerLockControls(camera, renderer.domElement);
+let isFirstPerson = false; // Starts in third-person view
 
 
 // -------Orbit controls----------
@@ -142,7 +154,50 @@ function checkOxygen(){
     }
 }
 
+function toggleView() {
+    isFirstPerson = !isFirstPerson;
+  
+    if (isFirstPerson) {
+        // Ensure astronaut is loaded before trying to hide it
+        if (astronaut) astronaut.visible = false;
 
+        controls.enabled = false; // Disable OrbitControls
+        controlsFirstPerson.enabled = true;
+        controlsFirstPerson.lock(); // Lock pointer for first-person controls
+  
+        // Position the camera at the astronaut's head position
+        if (astronaut) {
+            camera.position.copy(astronaut.position);
+            camera.position.y += 6; // Adjust for astronaut's eye height
+        }
+    } else {
+        // Switch to third-person view
+        controlsFirstPerson.unlock();
+        controlsFirstPerson.enabled = false;
+        controls.enabled = true;
+
+        // Show the astronaut model again
+        if (astronaut) astronaut.visible = true;
+
+        // Position the camera behind the astronaut
+        const offset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        if (astronaut) {
+            camera.position.copy(astronaut.position).add(offset);
+        }
+
+        // Update controls target
+        if (astronaut) controls.target.copy(astronaut.position);
+    }
+}
+
+
+  document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyV') { // Press 'V' to toggle views
+      toggleView();
+    }
+  });
+  
+  
 
 export function startGame() {
 document.addEventListener('keydown', (event) => {
@@ -199,7 +254,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     marsObject.scale.set(1000, 1, 500);  // Scale it large enough to simulate an infinite ground
     marsObject.position.set(100, 0, 0);  // Place the ground in the scene
     scene.add(marsObject);
-    console.log('Ground model loaded and added to the scene');
+    //console.log('Ground model loaded and added to the scene');
 
     
     loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
@@ -293,6 +348,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         console.error('Error loading skull model:', error);
 
     });
+
 
 loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
     skullObject.scale.set(1, 1, 1);  // Set size of skull
@@ -477,7 +533,7 @@ loadModel('public/models/Flying_saucer.glb', scene, controls, camera, (Rocketshi
     RocketshipObject.position.set(-180, 12, 60);
     RocketshipObject.rotation.x += Math.PI / 3;
     RocketshipObject.rotation.z += 3*Math.PI / 4;
-    RocketshipObject.name = 'Basic Rock'
+    RocketshipObject.name = 'UFO'
     scene.add(RocketshipObject);
     //objectsToRaycast.push(RocketshipObject);
 
@@ -514,7 +570,7 @@ loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
 
 
 
-let astronaut;
+
 let characterControls;
 loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
@@ -572,7 +628,7 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
                 catConversation.style.animation = 'none'; 
                 setTimeout(() => {
                     responses.style.display = 'flex'; 
-                }, 4000);
+                }, 3000);
             }
         }
     });
@@ -691,26 +747,37 @@ document.addEventListener('keyup', (event) => {
 function animate() {
     let delta = clock.getDelta();
     if (characterControls) {
-        characterControls.update(delta, keysPressed);
+      characterControls.update(delta, keysPressed, isFirstPerson);
     }
-
+  
     if (astronaut) {
-        // Compute the offset between camera and controls.target
-        //console.log("Astronaut position - X:", astronaut.position.x, "Y:", astronaut.position.y, "Z:", astronaut.position.z);
+      if (isFirstPerson) {
+        // In first-person view, camera follows astronaut's position
+        camera.position.copy(astronaut.position);
+        camera.position.y += 1.7; // Adjust for astronaut's eye height
+      } else {
+        // Third-person view
         const cameraOffset = camera.position.clone().sub(controls.target);
-
+  
         // Update controls target to astronaut's position
         controls.target.copy(astronaut.position);
-
+  
         // Update camera's position to maintain the offset
         camera.position.copy(astronaut.position).add(cameraOffset);
+      }
     }
-
-    controls.update();
+  
+    if (isFirstPerson) {
+  
+      controlsFirstPerson.update();
+    } else {
+      controls.update();
+    }
+  
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-}
-
+  }
+  
 function restartLevel() {
     clearInventory();
     // Reset health
