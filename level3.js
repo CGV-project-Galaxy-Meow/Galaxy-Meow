@@ -16,7 +16,7 @@ let healthInterval; // To control the health timer
 export const objectsToRaycast = [];
 
 //for loading screen
-let assetsToLoad = 124; 
+let assetsToLoad = 144; 
 let assetsLoaded = 0;  // Counter for loaded assets
 
 
@@ -174,11 +174,11 @@ const loadingScreen = document.getElementById('loadingScreen');
 
 function onAssetLoaded() {
     assetsLoaded++;
-    console.log(assetsLoaded);
-    //if (assetsLoaded === assetsToLoad) {
+    
+    if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
         decreaseHealth();
-    //}
+    }
 }
 
 // const numAsteroids = 100; // Number of asteroids to load
