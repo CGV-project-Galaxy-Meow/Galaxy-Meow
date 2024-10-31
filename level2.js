@@ -109,6 +109,15 @@ const audioLoader = new THREE.AudioLoader();
 // separate audio sources for during game and game over
 const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
+const timerWarningSound= new THREE.Audio(listener);
+
+
+audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+    timerWarningSound.setBuffer(buffer);
+    timerWarningSound.setLoop(false);
+    timerWarningSound.setVolume(0.5);
+
+});
 
 
 
@@ -145,7 +154,7 @@ function checkOxygen(){
         modal.style.display = 'flex';
         catConversation.style.animation = 'none';
         catConversation.textContent = `Be careful! Your oxygen is running low.`;
-    
+        timerWarningSound.play();
         void catConversation.offsetWidth; 
         catConversation.style.animation = 'typing 3.5s steps(40, end)';
     
