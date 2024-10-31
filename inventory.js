@@ -50,7 +50,7 @@ function isInventoryFull() {
             itemCount++;
         }
     }
-    console.log(itemCount)
+    // console.log(itemCount);
     return itemCount >= MAX_ITEMS;
 }
 
@@ -161,7 +161,7 @@ export function clearInventory() {
         items[itemName].hasItem = false;
     }
 
-    console.log('Inventory cleared.');
+    // console.log('Inventory cleared.');
 }
 
 // Function to create and show the "Remove?" prompt

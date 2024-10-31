@@ -6,7 +6,6 @@ import { PointerLockControls } from './node_modules/three/examples/jsm/controls/
 import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 
 
-
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
 import './intro.js';
@@ -56,7 +55,7 @@ let pipActive = false;
 
 
 
-let assetsToLoad = 203;
+let assetsToLoad = 202;
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
@@ -153,28 +152,12 @@ const audioLoader = new THREE.AudioLoader();
 const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 const timerWarningSound= new THREE.Audio(listener);
-// Load ambiance sound
 
-// audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-//     ambianceSound.setBuffer(buffer);
-//     ambianceSound.setLoop(true);
-//     ambianceSound.setVolume(0.5);
-//     ambianceSound.play();
-// });
-
-// // Load game over sound
-// audioLoader.load('/sound/game-over.mp3', function(buffer) {
-//     gameOverSound.setBuffer(buffer);
-//     gameOverSound.setLoop(false);
-//     gameOverSound.setVolume(0.5);
-//     //we'll play it when health reaches zero
-// });
 
 audioLoader.load('public/sound/beep-warning-6387.mp3', function(buffer) {
     timerWarningSound.setBuffer(buffer);
     timerWarningSound.setLoop(false);
     timerWarningSound.setVolume(0.5);
-
 
 });
 
@@ -316,7 +299,7 @@ const sound = new THREE.Audio(listener);
 // Load a sound and set it as the Audio object's buffer
 
 
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
     ambianceSound.setBuffer(buffer);
     ambianceSound.setLoop(true);
     ambianceSound.setVolume(0.5);
@@ -324,7 +307,7 @@ audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
 });
 
 // Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
+audioLoader.load('public/sound/game-over.mp3', function(buffer) {
     gameOverSound.setBuffer(buffer);
     gameOverSound.setLoop(false);
     gameOverSound.setVolume(0.5);

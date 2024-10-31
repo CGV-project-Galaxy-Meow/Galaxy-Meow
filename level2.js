@@ -115,7 +115,7 @@ audioLoader.load('public/sound/beep-warning-6387.mp3', function(buffer) {
     timerWarningSound.setBuffer(buffer);
     timerWarningSound.setLoop(false);
     timerWarningSound.setVolume(0.5);
-
+});
 
 // Load ambiance sound
 audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
@@ -240,13 +240,13 @@ export function startGame() {
         ambianceSound.setVolume(volume);
         gameOverSound.setVolume(volume);
         timerWarningSound.setVolume(volume);
-        console.log("Volume set to: ", volume);  // Debug: confirm volume change
+        // console.log("Volume set to: ", volume);  // Debug: confirm volume change
     });
     
     
     //sound 
     // Load ambiance sound
-    audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+    audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
         ambianceSound.setBuffer(buffer);
         ambianceSound.setLoop(true);
         ambianceSound.setVolume(0.5);
@@ -254,14 +254,14 @@ export function startGame() {
     });
     
     // Load game over sound
-    audioLoader.load('/sound/game-over.mp3', function(buffer) {
+    audioLoader.load('public/sound/game-over.mp3', function(buffer) {
         gameOverSound.setBuffer(buffer);
         gameOverSound.setLoop(false);
         gameOverSound.setVolume(0.5);
         //we'll play it when health reaches zero
     });
     
-    audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+    audioLoader.load('public/sound/beep-warning-6387.mp3', function(buffer) {
         timerWarningSound.setBuffer(buffer);
         timerWarningSound.setLoop(false);
         timerWarningSound.setVolume(0.5);
@@ -272,7 +272,7 @@ export function startGame() {
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
 const marsTexture = textureLoader.load('public/textures/mars.jpeg', function (texture) {
-    console.log('Texture loaded successfully');
+    // console.log('Texture loaded successfully');
 }, undefined, function (err) {
     console.error('Error loading texture:', err);
 });
@@ -632,10 +632,10 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
     onAssetLoaded();
 });
 
-const meow = new Audio('sound/meow.wav');
+const meow = new Audio('public/sound/meow.wav');
 
 loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
-    console.log('Static model loaded:', object);
+    // console.log('Static model loaded:', object);
     object.scale.set(1, 1, 1);
     object.position.set(-10, 0, -10);
     object.rotation.y =  Math.PI / 2;
@@ -659,7 +659,7 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
             const intersects = raycaster.intersectObject(catObject, true); 
 
             if (intersects.length > 0) {
-                console.log('Model clicked:', catObject);
+                // console.log('Model clicked:', catObject);
 
                 modal.style.display = 'flex';
                 responses.style.display = 'none'; 
@@ -877,4 +877,4 @@ document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
 
 
 animate();  // Start the animation loop
-}
+};
