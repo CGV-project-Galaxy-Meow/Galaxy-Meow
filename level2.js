@@ -570,7 +570,7 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
                 catConversation.style.animation = 'none'; 
                 setTimeout(() => {
                     responses.style.display = 'flex'; 
-                }, 4000);
+                }, 3000);
             }
         }
     });
