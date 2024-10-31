@@ -7,7 +7,6 @@ import {showDeathMessage} from './levelMenus.js'
 import { setupRaycasting } from './raycasting.js';
 
 
-
 const clock = new THREE.Clock();
 let health = 100;
 let healthElement = document.getElementById('healthBar');
