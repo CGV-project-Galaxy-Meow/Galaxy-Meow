@@ -594,6 +594,8 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
     onAssetLoaded();
 });
 
+const meow = new Audio('sound/meow.wav');
+
 loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
     console.log('Static model loaded:', object);
     object.scale.set(1, 1, 1);
@@ -624,6 +626,10 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
                 modal.style.display = 'flex';
                 responses.style.display = 'none'; 
                 catConversation.textContent = `Ah, I see that you continue to require assisstance.`;
+
+                setTimeout(() => {
+                    meow.play(); 
+                }, 1000);
             
                 catConversation.style.animation = 'none'; 
                 setTimeout(() => {
@@ -656,6 +662,7 @@ helpButton.addEventListener('click', () => {
         catConversation.textContent = conversationText;
 
         setTimeout(() => {
+            meow.play(); 
             conversationText = '';
             document.getElementById('catConversation').innerHTML = conversationText; 
             
@@ -672,6 +679,7 @@ helpButton.addEventListener('click', () => {
         catConversation.textContent = conversationText;
 
         setTimeout(() => {
+            meow.play(); 
             conversationText = '';
             document.getElementById('catConversation').innerHTML = conversationText; 
             
@@ -687,6 +695,7 @@ helpButton.addEventListener('click', () => {
         catConversation.textContent = conversationText;
 
         setTimeout(() => {
+            meow.play(); 
             conversationText = '';
             document.getElementById('catConversation').innerHTML = conversationText; 
             
@@ -697,18 +706,21 @@ helpButton.addEventListener('click', () => {
     }
 
     else if(!isItemInInventory('redgem')){
+        meow.play(); 
         conversationText = `Drift rightward. My right, that is.. and you may find something worth looking for.`;             
         document.getElementById('catConversation').innerHTML = conversationText;
         catConversation.textContent = conversationText; 
     }
 
     else if(!isItemInInventory('diamant')){
+        meow.play(); 
         conversationText = `What about searching to the left this time?`;             
         document.getElementById('catConversation').innerHTML = conversationText;
         catConversation.textContent = conversationText;
     }
 
     else{
+        meow.play(); 
         conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
         document.getElementById('catConversation').innerHTML = conversationText;
         catConversation.textContent = conversationText;
