@@ -8,6 +8,7 @@ import { setupRaycasting } from './raycasting.js';
 
 
 const clock = new THREE.Clock();
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
@@ -584,6 +585,21 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keyup', (event) => {
     keysPressed[event.key.toLowerCase()] = false;
 }, false);
+
+
+loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
+    console.log('Static model loaded:', object);
+    object.scale.set(1, 1, 1);
+    object.position.set(-10, 0, -10);
+    object.rotation.y =  Math.PI / 2;
+
+    catObject = object;
+    scene.add(object);
+    objectsToRaycast.push(catObject)
+    //characterControls.objectsToCollide.push(object);
+    setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
+});
 
 // Render loop
 function animate() {
