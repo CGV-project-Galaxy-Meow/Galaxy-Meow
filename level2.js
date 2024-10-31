@@ -111,14 +111,12 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 const timerWarningSound= new THREE.Audio(listener);
 
-
 audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
     timerWarningSound.setBuffer(buffer);
     timerWarningSound.setLoop(false);
     timerWarningSound.setVolume(0.5);
 
 });
-
 
 
 
@@ -208,39 +206,53 @@ function toggleView() {
   
   
 
-export function startGame() {
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        if (exitMenu.style.display === 'none') {
-            exitMenu.style.display = 'block'; // Show menu
-        } else {
-            exitMenu.style.display = 'none'; // Hide menu
+export function startGame() { 
+    
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (exitMenu.style.display === 'none') {
+                exitMenu.style.display = 'block'; // Show menu
+            } else {
+                exitMenu.style.display = 'none'; // Hide menu
+            }
         }
-    }
-});
-
-
-//sound 
-// Load ambiance sound
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
-
-// Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
-});
-
-
-
-
-
+    });
+    
+    const volumeControl = document.getElementById('volumeControl');
+    volumeControl.addEventListener('input', function () {
+        const volume = parseFloat(volumeControl.value);
+        ambianceSound.setVolume(volume);
+        gameOverSound.setVolume(volume);
+        timerWarningSound.setVolume(volume);
+        console.log("Volume set to: ", volume);  // Debug: confirm volume change
+    });
+    
+    
+    //sound 
+    // Load ambiance sound
+    audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+        ambianceSound.setBuffer(buffer);
+        ambianceSound.setLoop(true);
+        ambianceSound.setVolume(0.5);
+        ambianceSound.play();
+    });
+    
+    // Load game over sound
+    audioLoader.load('/sound/game-over.mp3', function(buffer) {
+        gameOverSound.setBuffer(buffer);
+        gameOverSound.setLoop(false);
+        gameOverSound.setVolume(0.5);
+        //we'll play it when health reaches zero
+    });
+    
+    audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+        timerWarningSound.setBuffer(buffer);
+        timerWarningSound.setLoop(false);
+        timerWarningSound.setVolume(0.5);
+    
+    });
+    
+    
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
 const marsTexture = textureLoader.load('textures/mars.jpeg', function (texture) {
@@ -827,7 +839,6 @@ function restartLevel() {
 
     decreaseHealth();
 }
-
 
 
 // Event Listeners for buttons
