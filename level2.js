@@ -53,7 +53,7 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Bright whi
 directionalLight.position.set(0, 10, 10).normalize();  // Position the light
 scene.add(directionalLight);
 
-const spaceTexture = new THREE.TextureLoader().load('textures/test1.png');
+const spaceTexture = new THREE.TextureLoader().load('public/textures/test2.webp');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
 const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
 const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
