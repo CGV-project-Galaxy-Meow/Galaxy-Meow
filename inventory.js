@@ -21,7 +21,8 @@ export const items = {
     redgem: {img: 'Graphics/redgem.png', count: 0},
     redruby: {img: 'Graphics/redruby.jpg', count: 0},
     diamant: {img: 'Graphics/quartz.png', count: 0},
-    jub: {img: 'Graphics/jub.jpg', count: 0}
+    jub: {img: 'Graphics/jub.jpg', count: 0},
+    mat: {img: 'Graphics/map.png', count: 0}
 
 };
 
