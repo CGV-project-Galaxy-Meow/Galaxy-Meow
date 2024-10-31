@@ -177,6 +177,26 @@ function checkOxygen(){
     }
 }
 
+function lore(){
+    if(health == 99){
+        meow.play();
+        modal.style.display = 'flex';
+        catConversation.textContent = `Luckily for you, Ms Fitzgerald has left her successors clues on how to return to Earth.`;
+
+        setTimeout(() => { 
+            conversationText = '';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+            
+            conversationText = 'Use this chance wisely so that no more lives will be forsaken.';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+
+        }, 3000); 
+    
+        // Keep the buttons hidden
+        responses.style.display = 'none'; 
+    }
+}
+
 function toggleView() {
     isFirstPerson = !isFirstPerson;
   
@@ -460,10 +480,11 @@ loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObje
         }
  })
 
+ const container = document.getElementById("codeInputContainer");
+
  function handleMagicCarpetClick() {
     // Show the input container when the carpet is clicked
-    const container = document.getElementById("codeInputContainer");
-    container.style.display = 'flex'; // Use 'flex' if you want to keep the alignment styles
+    container.style.display = 'flex'; 
 
     // Focus on the input field
     const inputField = document.getElementById("codeInput");
@@ -482,10 +503,19 @@ loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObje
             // Trigger level win logic here
             container.style.display = 'none'; // Optionally hide the input container after winning
         } else {
-            alert("Incorrect code, try again.");
+            modal.style.display = 'flex';
+            meow.play();
+            conversationText = `That's not right. Try again, little astronaut.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
         }
     };
 }
+
+const close = document.getElementById('close');
+close.addEventListener('click', () =>{
+    container.style.display = 'none';
+})
 
 // To ensure focus when clicking on the input
 const inputField = document.getElementById("codeInput");
