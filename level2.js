@@ -69,7 +69,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
-// After initializing the camera
+
 const controlsFirstPerson = new PointerLockControls(camera, renderer.domElement);
 let isFirstPerson = false; // Starts in third-person view
 
