@@ -219,7 +219,7 @@ export function startGame() {
 
 loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(10, 10, 10);
-    astroObject.position.set(-800, 100, 4);
+    astroObject.position.set(-850, 100, 4);
     astroObject.name = 'asteroids';
     scene.add(astroObject);
     objectsToRaycast.push(astroObject);
@@ -255,7 +255,7 @@ loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
 
 loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(25, 25, 25);
-    astroObject.position.set(-900, 10, 4);
+    astroObject.position.set(-950, 10, 4);
     astroObject.name = 'asteroids';
     scene.add(astroObject);
     objectsToRaycast.push(astroObject);
