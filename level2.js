@@ -117,8 +117,9 @@ audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
     timerWarningSound.setLoop(false);
     timerWarningSound.setVolume(0.5);
 
-
 });
+
+
 
 
 //----functions----
@@ -219,17 +220,6 @@ document.addEventListener('keydown', (event) => {
 });
 
 
-
-const volumeControl = document.getElementById('volumeControl');
-volumeControl.addEventListener('input', function () {
-    const volume = parseFloat(volumeControl.value);
-    ambianceSound.setVolume(volume);
-    gameOverSound.setVolume(volume);
-    timerWarningSound.setVolume(volume);
-    console.log("Volume set to: ", volume);  // Debug: confirm volume change
-});
-
-
 //sound 
 // Load ambiance sound
 audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
@@ -245,13 +235,6 @@ audioLoader.load('/sound/game-over.mp3', function(buffer) {
     gameOverSound.setLoop(false);
     gameOverSound.setVolume(0.5);
     //we'll play it when health reaches zero
-});
-
-audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
-    timerWarningSound.setBuffer(buffer);
-    timerWarningSound.setLoop(false);
-    timerWarningSound.setVolume(0.5);
-
 });
 
 
