@@ -179,8 +179,6 @@ body { margin: 0; overflow: hidden; }
 #catConversation{
     overflow: hidden;
     white-space: nowrap;
-    animation: typing 3.5s steps(60, end), blink-caret 0.75s step-end infinite;
-
 }
 
 .controls {
