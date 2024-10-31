@@ -63,3 +63,10 @@ export function showWinningModal() {
     const winningModal = document.getElementById('winningModal');
     winningModal.style.display = 'flex'; // Show the modal
 }
+
+export function showWinningModal_l2() {
+    const winningModal = document.getElementById('winningModal_l2');
+    winningModal.style.display = 'flex'; // Show the modal
+
+    console.log('showWinningModall2')
+}

@@ -4,6 +4,7 @@ import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster,positionsRocks2, positionsQ2,positionsStones2} from './modelLocations.js';
 import {showDeathMessage} from './levelMenus.js'
+import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 
 
@@ -12,9 +13,9 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
-let catObject;
-let astronaut;
-export const objectsToRaycast = [];
+
+export let objectsToRaycast = [];
+
 
 const clock = new THREE.Clock();
 const mouse = new THREE.Vector2();
@@ -50,9 +51,25 @@ scene.background = new THREE.Color(0x000000);  // Set a background color for vis
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // Soft white light
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Bright white light
-directionalLight.position.set(0, 10, 10).normalize();  // Position the light
-scene.add(directionalLight);
+const spotLight = new THREE.SpotLight(0xb900ff, 80); // Red light with intensity 80
+spotLight.position.set(0, 0,0); // Positioning the light above the ground
+
+// Set the spotlight to shine directly downwards
+spotLight.angle = Math.PI / 2; // Angle of the spotlight's cone (adjust if needed)
+spotLight.penumbra = 0.1; // Soft edges of the spotlight
+spotLight.decay = 2; // How quickly the light diminishes
+spotLight.distance = 50; // The distance the light reaches
+
+// Enable shadows if needed
+spotLight.castShadow = true;
+
+// Point the light directly downwards
+spotLight.target.position.set(50, 0, 8); // Set the target to the ground (where the torch is pointing)
+spotLight.target.updateMatrixWorld(); // Update the target matrix
+
+// Add the spotlight to the scene
+scene.add(spotLight);
+scene.add(spotLight.target); // Add the target to the scene
 
 const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
@@ -254,7 +271,7 @@ loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
     objectsToRaycast.push(astroObject);
 
     // Create a directional light to simulate sunlight
-    const sunlight = new THREE.DirectionalLight(0xffffff, 1); // White light, intensity 1
+    const sunlight = new THREE.DirectionalLight(0x999793, 25); // White light, intensity 1
     sunlight.position.set(300, 100, 4); // Same position as the sun
     sunlight.target.position.set(0, 0, 0); // Target to illuminate towards the origin or another object
     scene.add(sunlight);
@@ -379,7 +396,7 @@ loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camer
 
 loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObject) => {
         CarpetObject.scale.set(1.5, 1.5, 1.5);  
-        CarpetObject.position.set(0, 0.1,0);  //200, -4, 300
+        CarpetObject.position.set(0, 0.1,0);
         CarpetObject.name = 'Magic Carpet';        
         scene.add(CarpetObject);               
         objectsToRaycast.push(CarpetObject);   
@@ -541,7 +558,7 @@ loadModel('public/models/japanese_maple_tree.glb', scene, controls, camera, (tre
     scene.add(treeObject);
     //objectsToRaycast.push(RocketshipObject);
     characterControls.objectsToCollide.push(treeObject);
-    //setupRaycasting(camera, objectsToRaycast);
+    setupRaycasting(camera, objectsToRaycast);
     onAssetLoaded();
 });
 loadModel('public/models/rocks/Stalactites_&_gems.glb', scene, controls, camera, (StalactitesObject) => {
@@ -551,7 +568,7 @@ loadModel('public/models/rocks/Stalactites_&_gems.glb', scene, controls, camera,
     scene.add(StalactitesObject);
     //objectsToRaycast.push(RocketshipObject);
     characterControls.objectsToCollide.push(StalactitesObject);
-    //setupRaycasting(camera, objectsToRaycast);
+    setupRaycasting(camera, objectsToRaycast);
     onAssetLoaded();
 });
 
