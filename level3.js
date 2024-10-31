@@ -7,7 +7,6 @@ import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
-import { clearInventory, items } from './inventory.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -143,7 +142,7 @@ function checkOxygen(){
     if(health == 30){
         meow.play();
         modal.style.display = 'flex';
-        catConversation.textContent = `Be careful! Your oxygen is running low.`;
+        catConversation.textContent = `You are almost home. Don't dawdle.`;
         //timerWarningSound.play();
         // Keep the buttons hidden
         responses.style.display = 'none'; 
@@ -416,20 +415,82 @@ loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camer
     console.error('Error loading skull model:', error);
 });
 
+let carpet;
+
 loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObject) => {
-        CarpetObject.scale.set(1.5, 1.5, 1.5);  
-        CarpetObject.position.set(0, 0.1,0);
-        CarpetObject.name = 'Magic Carpet';        
-        scene.add(CarpetObject);               
-        objectsToRaycast.push(CarpetObject);   
-    
-       setupRaycasting(camera, objectsToRaycast);  
-       onAssetLoaded();
-    }, function (error) {
-        console.error('Error loading carpet model:', error);
+    CarpetObject.scale.set(1.5, 1.5, 1.5);  
+    CarpetObject.position.set(0, 0.1,0);
+    CarpetObject.traverse((child) => {
+        if (child.isMesh) {
+            // Assign custom name or userData to ensure we're modifying the correct mesh
+            child.name = 'magic-carpet'; // Set a specific name for this child object
+            child.customId = 'magic-carpet'; // Alternatively, assign a custom ID
+            
+            // Store additional custom data if needed
+            child.userData = { customId: 'magic-carpet' }; // Set custom user data for the mesh
+        }
+        onAssetLoaded();
     });
+    
+    carpet = CarpetObject;
+    scene.add(CarpetObject);               
+    objectsToRaycast.push(CarpetObject);   
 
+   setupRaycasting(camera, objectsToRaycast);  
+   onAssetLoaded();
+}, function (error) {
+    console.error('Error loading carpet model:', error);
+    });
 
+    window.addEventListener('click', (event) => {
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // Update the raycaster with the camera and mouse position
+        raycaster.setFromCamera(mouse, camera);
+
+        if(carpet){
+        const intersects = raycaster.intersectObjects(carpet.children, true);
+
+        if (intersects.length > 0) {
+                handleMagicCarpetClick();
+            }
+        }
+ })
+
+ function handleMagicCarpetClick() {
+    // Show the input container when the carpet is clicked
+    const container = document.getElementById("codeInputContainer");
+    container.style.display = 'flex'; // Use 'flex' if you want to keep the alignment styles
+
+    // Focus on the input field
+    const inputField = document.getElementById("codeInput");
+    inputField.focus();
+
+    const correctCode = "19402";
+    const button = document.getElementById("winCheck");
+
+    // Button click event handler
+    button.onclick = function() {
+        const userCode = inputField.value; // Get the user's input when the button is clicked
+        console.log(userCode); // Log user input for debugging
+
+        if (userCode === correctCode) {
+            alert("Congratulations! You've won the level!");
+            // Trigger level win logic here
+            container.style.display = 'none'; // Optionally hide the input container after winning
+        } else {
+            alert("Incorrect code, try again.");
+        }
+    };
+}
+
+// To ensure focus when clicking on the input
+const inputField = document.getElementById("codeInput");
+inputField.addEventListener('click', () => {
+    inputField.focus();
+});
 
 
 // Load the model for each position in the array
