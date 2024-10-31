@@ -86,14 +86,41 @@ canvas {
             z-index: 5;
         }
 
+        #codeInputContainer{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px outset #7229a3;
+            border-radius: 5px;
+            box-shadow: 10px 5px 5px #7229a3;
+            background-color: black;
+        }
+
+        #codeInput{
+            margin: 15px;
+            border: 1px solid #7229a3;
+            border-radius: 10px;
+            font-size: 15px;
+            padding: 5px;
+        }
+
+        #winCheck, #exit{
+            width: 100px;
+            margin-bottom: 5px;
+            background-color: #ad42f5;
+            border: 2px solid #7229a3;
+            margin: 10px;
+            border-radius: 10px;
+            padding: 3px;
+            font-size: 15px;
+        }
+
         #closeModal2 {
             cursor: pointer;
             color: red;
             font-size: 20px;
             margin: 10px;
         }
-
-
 
         #catConversation {
     overflow: hidden;
@@ -135,6 +162,11 @@ canvas {
           font-size: 13px;
           border-radius: 5px;
         }
+
+        @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
 
     </style>
 </head>
@@ -222,9 +254,21 @@ canvas {
     </div>
 
 <!-- Loading screen -->
-<div id="loadingScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); color: white; z-index: 20; display: flex; justify-content: center; align-items: center;">
+<div id="loadingScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); color: white; z-index: 20; display: flex; justify-content: center; align-items: center; flex-direction: column;">
     <p>Loading assets, please wait...</p>
+    <div id="loadingSpinner" style="width: 40px; height: 40px; border: 5px solid #444; border-top: 5px solid #ba03fc; border-radius: 50%; margin-top: 10px; animation: spin 3s linear infinite;"></div>
 </div>
+
+<!-- For Code Input -->
+<div id="codeInputContainer" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: black; padding: 20px; border: 3px solid #ad42f5; border-radius: 5px;">
+    <button id="close" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: white; font-size: 24px; cursor: pointer;">&times;</button>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <input type="text" id="codeInput" placeholder="Enter Code" />
+        <button id="winCheck">Check</button>
+    </div>
+</div>
+
+
 
 
 <div id="introScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: black; color: white; z-index: 10; display: flex; justify-content: center; align-items: center;">

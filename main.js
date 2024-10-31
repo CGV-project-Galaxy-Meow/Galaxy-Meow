@@ -30,6 +30,7 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
+const meow = new Audio('sound/meow.wav');
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
@@ -199,12 +200,10 @@ function decreaseHealth() {
 //cat warns you of the oxygen
 function checkOxygen(){
     if(health == 30){
+        meow.play();
         modal.style.display = 'flex';
-        catConversation.style.animation = 'none';
         catConversation.textContent = `Be careful, ${playerName}! Your oxygen is running low.`;
         timerWarningSound.play();
-        void catConversation.offsetWidth; 
-        catConversation.style.animation = 'typing 3.5s steps(40, end)';
     
         // Keep the buttons hidden
         responses.style.display = 'none'; 
@@ -809,8 +808,6 @@ setInterval(createShootingStar, 300);
 
 
     });
-
-    const meow = new Audio('sound/meow.wav');
    
     
     // Load the static model
