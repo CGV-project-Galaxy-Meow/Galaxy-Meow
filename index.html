@@ -21,11 +21,16 @@
     </div>
   </div>
 
+
   <!-- Settings Modal -->
-  <div class="modal" id="settingsModal">
-    <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
-    <p>Settings not implemented yet.</p>
-  </div>
+<div class="modal" id="settingsModal">
+  <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
+  
+  <label for="volumeControl">Music Volume:</label>
+  <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+  
+</div>
+
 
   <!-- Controls Modal -->
   <div class="modal" id="controlsModal">
@@ -40,9 +45,11 @@
       <li>Oxygen Meter - You get 100 units of oxygen</li>
       <li>If you need help - Click The Cat</li>
       <li>Esc - Restart/Leave game</li>
-      <li>Shift - Opens inventory</li>
+      <li>Shift - Sprint</li>
+      <li>Cntrl - Opens inventory</li>
       <li>Left mouse click - To select objects</li>
       <li>Right mouse click and drag - Look around the map</li>
+      <li>V - Change prespective</li>
     </ul>
   </div>
 
@@ -58,8 +65,11 @@
       <br>Dineo
       <br>Busisiwe
     </p>
-
+    <p>All our music and sound effects are royalty-free from [PixaBay](https://pixabay.com)</p>
     <p>Imported Models:
+      <br>Astronaut model: https://poly.pizza/m/0oBRDJ9Zl9, https://poly.pizza/m/dLHpzNdygsg
+      <br>The barrel model by by `TextureCan.com` under the Creative Commons CC0 1.0 Universe License Available at: https://www.texturecan.com/models/details/528/#google_vignette
+      <br>The skull model by `martinjario` on Sketchlab CC BY 4.0. Available at: https://skfb.ly/JrST
       <br>Rock by Danni Bittman [CC-BY] via Poly Pizza
       <br>Rocks by Quaternius
       <br>Rock by Quaternius renamed as RockQ
@@ -69,7 +79,17 @@
       <br>Ruin by nha pham [CC-BY] via Poly Pizza
       <br>Space rock by 11.10melons on Sketchfab
       <br>Comet by Poly by Google [CC-BY] via Poly Pizza
+      <br>Space Rock by bmead92 on Sketchfab  - pink crystal renamed as space_crystal
+      <br>Debris Papers by Quaternius - renamed Debris Papers
+      <br>Small Stack of Paper by Jarlan Perez [CC-BY] via Poly Pizza - renamed as Small_Stack_of_Paper
+      <br>Paper by Poly by Google [CC-BY] via Poly Pizza
+      <br>Manila Envelope by Jarlan Perez [CC-BY] via Poly Pizza - renamed as Manila_Envelope
+      <br>Toilet paper by Poly by Google [CC-BY] via Poly Pizza renamed as Toilet_paper
+      <br>Rock Forms 3 by S. Paul Michael [CC-BY] via Poly Pizza
+      <br>Flying saucer by Poly by Google [CC-BY] via Poly Pizza renamed as Flying_saucer
     </p>
+
+
   </div>
 
   <script>
@@ -79,15 +99,25 @@ const listener = new THREE.AudioListener();
 
 // Create a global audio source
 const sound = new THREE.Audio(listener);
-
-// Load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
+// Load a sound and set it as the Audio object's buffer
+// Load sound and play as before
 audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(false);
   sound.setVolume(0.5);
   sound.play();
 });
+
+// Get the volume control element
+const volumeControl = document.getElementById('volumeControl');
+
+// Update volume based on slider input
+volumeControl.addEventListener('input', function () {
+  const volume = volumeControl.value;
+  sound.setVolume(volume);
+});
+
 
 
     // Start button 

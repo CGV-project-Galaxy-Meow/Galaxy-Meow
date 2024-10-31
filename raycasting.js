@@ -95,6 +95,49 @@ const itemDataMapping = {
         additionalInfo: 'Did Margie ever see this ?',
         imgSrc: items['console'].img,
         itemName: 'console'
+    },
+    'polySurface67_group1':{
+
+        title: 'Chest of Gold',
+        description: 'Gold could be used as an energy source',
+        additionalInfo: 'You might need the whole chest out here.',
+        imgSrc: items['chest'].img,
+        itemName: 'chest'
+
+    },
+    'object_0':{
+
+        title: 'Lava Obsidian',
+        description: 'A gem reminiscent of heat.',
+        additionalInfo: 'One might say heat is necessary in all reactions.',
+        imgSrc: items['redgem'].img,
+        itemName: 'redgem'
+
+    },
+    'NGon001':{
+
+        title: 'Red Ruby',
+        description: 'Red Ruby is a known SPO energy source.',
+        additionalInfo: 'Obviously pick this one up.',
+        imgSrc: items['redruby'].img,
+        itemName: 'redruby'
+
+    },
+    'Dimant':{
+
+        title: 'Diamant',
+        description: 'In 1932, many countries powered their ships with this.',
+        additionalInfo: 'Well there is no ocean on Mars.',
+        imgSrc: items['diamant'].img,
+        itemName: 'diamant'
+
+    },
+    'Cube_0': {
+        title: 'Jubilee Gem',
+        description: 'A delicate gem crafted by the the JuJu extraterrestrial population.',
+        additionalInfo: 'Its power is unknown.',
+        imgSrc: items['jub'].img,
+        itemName: 'jub'
     }
 };
 export function setupRaycasting(camera, objectsToRaycast) {

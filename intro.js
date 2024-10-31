@@ -1,15 +1,17 @@
 // intro.js
-import { startGame} from './main.js';
+import {startGame} from './main.js';
 let playerName = '';
 let step = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
+    const loadingScreen = document.getElementById('loadingScreen');
     const introScreen = document.getElementById('introScreen');
     const dialogueText = document.getElementById('dialogueText');
     const nameInput = document.getElementById('nameInput');
     const nextButton = document.getElementById('nextButton');
 
     // Show the intro screen when the game starts
+    loadingScreen.style.display = 'none';
     introScreen.style.display = 'flex';
 
     // Handle dialogue progression
@@ -47,9 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li>Oxygen Meter - You get 100 units of oxygen</li>
                         <li>If you need help - Click The Cat</li>
                         <li>Esc - Restart/Leave game</li>
-                        <li>Shift - Opens inventory</li>
+                        <li>Shift - Sprint</li>
+                        <li>Cntrl - Opens inventory</li>
                         <li>Left mouse click - To select objects</li>
                         <li>Right mouse click and drag - Look around the map</li>
+                        <li>V - Change prespective</li>
                     </ul>
                 </div>
                 <p>Good luck, ${playerName}!</p>
@@ -61,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (step === 3) {
             // Hide intro and start the game
             introScreen.style.display = 'none';
+            loadingScreen.style.display = 'flex';
             startGame(); // Function to start the game
         }
     });

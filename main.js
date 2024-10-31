@@ -28,7 +28,7 @@ const closeModalBtn = document.getElementById('closeModal');
 const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
-const cat_model = 'models/TheCatGalaxyMeow4.glb';
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
@@ -46,6 +46,15 @@ const pipRenderer = new THREE.WebGLRenderer({ canvas: pipCanvas, alpha: true });
 pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
 
 let pipActive = false;
+
+
+let assetsToLoad = 203;
+let assetsLoaded = 0;  // Counter for loaded assets
+
+const loadingScreen = document.getElementById('loadingScreen');
+
+
+
 
 
 async function activatePiP() {
@@ -110,8 +119,8 @@ document.getElementById('gameCanvas').appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
-controls.enableZoom = false;          // Disable zoom if desired
-controls.enablePan = false;           // Disable pan if desired
+controls.enableZoom = true;          // Disable zoom if desired
+controls.enablePan = true;           // Disable pan if desired
 controls.mouseButtons = {
     LEFT: null,
     MIDDLE: null,
@@ -131,20 +140,20 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 const timerWarningSound= new THREE.Audio(listener);
 // Load ambiance sound
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
+// audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+//     ambianceSound.setBuffer(buffer);
+//     ambianceSound.setLoop(true);
+//     ambianceSound.setVolume(0.5);
+//     ambianceSound.play();
+// });
 
-// Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
-});
+// // Load game over sound
+// audioLoader.load('/sound/game-over.mp3', function(buffer) {
+//     gameOverSound.setBuffer(buffer);
+//     gameOverSound.setLoop(false);
+//     gameOverSound.setVolume(0.5);
+//     //we'll play it when health reaches zero
+// });
 
 audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
     timerWarningSound.setBuffer(buffer);
@@ -200,8 +209,18 @@ function checkOxygen(){
 document.getElementById('bagIcon').style.display = 'none';
 document.getElementById('startPiP').style.display = 'none';
 
+
+
+function onAssetLoaded() {
+    assetsLoaded++;
+    if (assetsLoaded === assetsToLoad) {
+        loadingScreen.style.display = 'none'; // Hide loading screen 
+        decreaseHealth();
+    }
+}
+
 export function startGame() {
-    decreaseHealth();
+    //decreaseHealth();
     document.getElementById('startPiP').style.display = 'block';
     document.getElementById('bagIcon').style.display = 'grid';
 
@@ -236,6 +255,23 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
   sound.setVolume(0.5);
   sound.play();
 });
+audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+    ambianceSound.setBuffer(buffer);
+    ambianceSound.setLoop(true);
+    ambianceSound.setVolume(0.5);
+    ambianceSound.play();
+});
+
+// Load game over sound
+audioLoader.load('/sound/game-over.mp3', function(buffer) {
+    gameOverSound.setBuffer(buffer);
+    gameOverSound.setLoop(false);
+    gameOverSound.setVolume(0.5);
+    //we'll play it when health reaches zero
+});
+
+
+
 
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
@@ -371,7 +407,7 @@ setInterval(createShootingStar, 300);
 
     // Load the astronaut model and apply controls
     //let characterControls;
-    loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+    loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
         astronaut = object;
         astronaut.scale.set(1.7, 1.7, 1.7);
         initialAstronautPosition.copy(astronaut.position);
@@ -391,6 +427,7 @@ setInterval(createShootingStar, 300);
     
         // Set initial controls target
         controls.target.copy(astronaut.position);
+        onAssetLoaded();
     });
     
 
@@ -402,6 +439,7 @@ setInterval(createShootingStar, 300);
         scene.add(moonObject);
 
 
+
   // Load the American Flag Model
   loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
     flagObject.scale.set(1.7, 1.7, 1.7);
@@ -410,6 +448,7 @@ setInterval(createShootingStar, 300);
     scene.add(flagObject);
     objectsToRaycast.push(flagObject);
     setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 
 
@@ -421,6 +460,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(barrelObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
@@ -433,6 +473,7 @@ setInterval(createShootingStar, 300);
 
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         loadModel('models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
@@ -444,6 +485,7 @@ setInterval(createShootingStar, 300);
 
             //console.log(objectsToRaycast)
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         
@@ -457,6 +499,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(BatteryObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
         loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
@@ -466,6 +509,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(CirctuitIObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
@@ -476,6 +520,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(ButtonObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
 
@@ -487,6 +532,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(CirctuitIObject);
 
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
 
@@ -502,6 +548,7 @@ setInterval(createShootingStar, 300);
                          // Alternatively, store in child.userData if needed:
                          child.userData = { customId: 'antenna' };  // Set custom user data for the mesh
                     }
+                    
                  });
                 
                  scene.add(antennaObject);
@@ -510,6 +557,7 @@ setInterval(createShootingStar, 300);
     
     
                 setupRaycasting(camera, objectsToRaycast);
+                onAssetLoaded();
             });
 
         loadModel('public/models/console.glb', scene, controls, camera, (consoleObject) => {
@@ -531,6 +579,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(consoleObject);
 
            setupRaycasting(camera, objectsToRaycast);
+           onAssetLoaded();
        });
 
 
@@ -549,6 +598,7 @@ setInterval(createShootingStar, 300);
                 objectsToRaycast.push(RocksObject);
                 characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
                 setupRaycasting(camera, objectsToRaycast);
+                onAssetLoaded();
             });
         });
 
@@ -567,6 +617,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(RockQObject);
             characterControls.objectsToCollide.push(RockQObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
         });
     
@@ -587,6 +638,7 @@ setInterval(createShootingStar, 300);
             //  
             characterControls.objectsToCollide.push(GoldRockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -604,6 +656,7 @@ setInterval(createShootingStar, 300);
             // 
             characterControls.objectsToCollide.push(BasicRockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -624,6 +677,7 @@ setInterval(createShootingStar, 300);
 
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -643,6 +697,7 @@ setInterval(createShootingStar, 300);
 
         characterControls.objectsToCollide.push(spaceRockObject);
         setupRaycasting(camera, objectsToRaycast);
+        onAssetLoaded();
     });
 });
 
@@ -663,6 +718,7 @@ setInterval(createShootingStar, 300);
             // 
             characterControls.objectsToCollide.push(RubbleObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -677,6 +733,7 @@ setInterval(createShootingStar, 300);
             // 
             characterControls.objectsToCollide.push(AstroidObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
 
@@ -691,6 +748,7 @@ setInterval(createShootingStar, 300);
 
             characterControls.objectsToCollide.push(RocketshipObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
         loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
@@ -703,10 +761,13 @@ setInterval(createShootingStar, 300);
            
             characterControls.objectsToCollide.push(RuinObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
 
 
     });
+
+    const meow = new Audio('sound/meow.wav');
    
     
     // Load the static model
@@ -739,6 +800,9 @@ setInterval(createShootingStar, 300);
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
                     catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
+                    setTimeout(() => {
+                        meow.play(); 
+                    }, 1000);
                 
                     catConversation.style.animation = 'none'; 
                     setTimeout(() => {

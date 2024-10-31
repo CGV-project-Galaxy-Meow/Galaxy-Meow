@@ -14,9 +14,14 @@ export const items = {
     flag: { img: 'images/flag.png', count: 0 },
     button: { img: 'images/button.png', count: 1 },
 
-    circuit: { img: 'images/circuit.png', count: 1},
-    antenna: { img: 'Graphics/anttena.png', count: 1 },
-    console: { img: 'Graphics/teleporterHull.png', count: 1}
+    circuit: { img: 'images/circuit.png', count: 0},
+    antenna: { img: 'Graphics/anttena.png', count: 0 },
+    console: { img: 'Graphics/teleporterHull.png', count: 0},
+    chest: {img: 'Graphics/chest.png', count: 0},
+    redgem: {img: 'Graphics/redgem.png', count: 0},
+    redruby: {img: 'Graphics/redruby.jpg', count: 0},
+    diamant: {img: 'Graphics/quartz.png', count: 0},
+    jub: {img: 'Graphics/jub.jpg', count: 0}
 
 };
 
@@ -197,7 +202,7 @@ function toggleInventory() {
 
 // Listen for the "keydown" event to detect the "Shift" key
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'Shift') {
+    if (event.key === 'Control') {
         toggleInventory();  // Toggle inventory when Shift is pressed
     }
 });
