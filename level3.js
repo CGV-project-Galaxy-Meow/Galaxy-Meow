@@ -8,12 +8,19 @@ import { setupRaycasting } from './raycasting.js';
 
 
 const clock = new THREE.Clock();
+const modal = document.getElementById('myModal');
+const responses = document.getElementById('responses');
+const closeModalBtn = document.getElementById('closeModal');
+const helpButton = document.getElementById('helpButton');
+const dontHelpButton = document.getElementById('dontHelpButton');
+const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
+let catObject;
 export const objectsToRaycast = [];
 
 //for loading screen
