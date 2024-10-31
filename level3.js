@@ -48,8 +48,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
-// Orbit controls
-const controls = new OrbitControls(camera, renderer.domElement);
+
 
 // Handle window resize events
 window.addEventListener('resize', () => {
@@ -59,7 +58,16 @@ window.addEventListener('resize', () => {
 });
 
 
-
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;        // Enable damping (inertia)
+controls.dampingFactor = 0.05;        // Damping inertia
+controls.enableZoom = true;          // Disable zoom if desired
+controls.enablePan = true;           // Disable pan if desired
+controls.mouseButtons = {
+    LEFT: null,
+    MIDDLE: null,
+    RIGHT: THREE.MOUSE.ROTATE
+};
 
 
 //----important functions-----
@@ -152,6 +160,15 @@ function checkOxygen(){
 // });
 
 
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Audio loader
+const audioLoader = new THREE.AudioLoader();
+
+// separate audio sources for during game and game over
+const ambianceSound = new THREE.Audio(listener);
+const gameOverSound = new THREE.Audio(listener);
 
 
 //loading screen!!!
@@ -206,8 +223,29 @@ export function startGame() {
 //     //setupRaycasting(camera, objectsToRaycast);
 // });
 
+//sound 
+// Load ambiance sound
+audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
+    ambianceSound.setBuffer(buffer);
+    ambianceSound.setLoop(true);
+    ambianceSound.setVolume(0.5);
+    ambianceSound.play();
+});
 
-loadModel('models/ground.glb', scene, controls, camera, (asteroid_groundObject) => {
+// Load game over sound
+audioLoader.load('public/sound/game-over.mp3', function(buffer) {
+    gameOverSound.setBuffer(buffer);
+    gameOverSound.setLoop(false);
+    gameOverSound.setVolume(0.5);
+    //we'll play it when health reaches zero
+});
+
+
+
+
+
+
+loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundObject) => {
     asteroid_groundObject.scale.set(30, 1, 30);  // Scale it large enough to simulate an infinite ground
     asteroid_groundObject.position.set(0, -1.5, 0);  // Place the plane below the astronaut
     //moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
