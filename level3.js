@@ -7,7 +7,17 @@ import {showDeathMessage} from './levelMenus.js'
 import { setupRaycasting } from './raycasting.js';
 
 
+let health = 100;
+let healthElement = document.getElementById('healthBar');
+let exitMenu = document.getElementById('exitMenu');
+let deathMessage = document.getElementById('deathMessage');
+let healthInterval; // To control the health timer
+let catObject;
+let astronaut;
+export const objectsToRaycast = [];
+
 const clock = new THREE.Clock();
+const mouse = new THREE.Vector2();
 const modal = document.getElementById('myModal');
 const responses = document.getElementById('responses');
 const closeModalBtn = document.getElementById('closeModal');
@@ -15,13 +25,6 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
-let health = 100;
-let healthElement = document.getElementById('healthBar');
-let exitMenu = document.getElementById('exitMenu');
-let deathMessage = document.getElementById('deathMessage');
-let healthInterval; // To control the health timer
-let catObject;
-export const objectsToRaycast = [];
 
 //for loading screen
 let assetsToLoad = 144; 
@@ -51,7 +54,7 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Bright whi
 directionalLight.position.set(0, 10, 10).normalize();  // Position the light
 scene.add(directionalLight);
 
-const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
 const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
 const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
@@ -67,15 +70,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
 
-
-// Handle window resize events
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
@@ -86,6 +80,13 @@ controls.mouseButtons = {
     MIDDLE: null,
     RIGHT: THREE.MOUSE.ROTATE
 };
+
+// Handle window resize events
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 
 //----important functions-----
@@ -217,13 +218,19 @@ const gameOverSound = new THREE.Audio(listener);
 
 export function startGame() {
 
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (exitMenu.style.display === 'none') {
+                exitMenu.style.display = 'block'; // Show menu
+            } else {
+                exitMenu.style.display = 'none'; // Hide menu
+            }
+        }
+    });
 
 
-// Load the texture
 
 //Function to load and apply texture to the moon model
-
-
 loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(10, 10, 10);
     astroObject.position.set(-850, 100, 4);
@@ -553,11 +560,6 @@ loadModel('public/models/rocks/Stalactites_&_gems.glb', scene, controls, camera,
 
 
 
-
-
-
-
-let astronaut;
 let characterControls;
 loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
