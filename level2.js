@@ -247,7 +247,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     marsObject.scale.set(1000, 1, 500);  // Scale it large enough to simulate an infinite ground
     marsObject.position.set(100, 0, 0);  // Place the ground in the scene
     scene.add(marsObject);
-    console.log('Ground model loaded and added to the scene');
+    //console.log('Ground model loaded and added to the scene');
 
     
     loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {

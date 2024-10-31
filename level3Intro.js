@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingScreen = document.getElementById('loadingScreen');
     const introScreen = document.getElementById('introScreen');
     const dialogueText = document.getElementById('dialogueText');
-    //const nameInput = document.getElementById('nameInput');
     const nextButton = document.getElementById('nextButton');
 
     // Show the intro screen when the game starts
