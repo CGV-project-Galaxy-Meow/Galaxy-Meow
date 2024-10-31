@@ -2,7 +2,7 @@ import * as THREE from 'three';
 //import { playerName } from './intro.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-//import { OrbitControls } from 'https://esm.sh/three@0.152.0/examples/jsm/controls/OrbitControls.js';
+
 
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
@@ -15,8 +15,7 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
-let isFirstPerson = false;  // Variable to track the camera view mode
-
+let isFirstPerson = false;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const modal = document.getElementById('myModal');
@@ -32,14 +31,13 @@ let catObject;
 const clock = new THREE.Clock();
 let objectsToRaycast = []
 
-let assetsToLoad = 14; 
+let assetsToLoad = 207;
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
 
 function onAssetLoaded() {
     assetsLoaded++;
-    console.log(assetsLoaded);
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
         decreaseHealth();
@@ -98,21 +96,6 @@ const audioLoader = new THREE.AudioLoader();
 const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
-// Load ambiance sound
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
-
-// Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
-});
 
 
 
@@ -171,6 +154,27 @@ document.addEventListener('keydown', (event) => {
 });
 
 
+//sound 
+// Load ambiance sound
+audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+    ambianceSound.setBuffer(buffer);
+    ambianceSound.setLoop(true);
+    ambianceSound.setVolume(0.5);
+    ambianceSound.play();
+});
+
+// Load game over sound
+audioLoader.load('/sound/game-over.mp3', function(buffer) {
+    gameOverSound.setBuffer(buffer);
+    gameOverSound.setLoop(false);
+    gameOverSound.setVolume(0.5);
+    //we'll play it when health reaches zero
+});
+
+
+
+
+
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
 const marsTexture = textureLoader.load('textures/mars.jpeg', function (texture) {
@@ -197,7 +201,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
 
     
     loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
-        crystalObject.scale.set(0.2, 0.2, 0.2); // Set size of crystal
+        crystalObject.scale.set(0.3, 0.3, 0.3); // Set size of crystal
         crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
         
         // Traverse the object to set custom properties
@@ -327,6 +331,7 @@ positions.forEach((position) => {
         //objectsToRaycast.push(RocksObject);
         characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
         //setupRaycasting(camera, objectsToRaycast);
+        onAssetLoaded();
     });
 });
 
@@ -345,6 +350,7 @@ loadModel('public/models/rocks/RockQ.glb', scene, controls, camera, (RockQObject
     //objectsToRaycast.push(RockQObject);
     characterControls.objectsToCollide.push(RockQObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 });
 
@@ -365,6 +371,7 @@ loadModel('public/models/rocks/Gold_Rocks.glb', scene, controls, camera, (GoldRo
     //  
     characterControls.objectsToCollide.push(GoldRockObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 });
 
@@ -382,6 +389,7 @@ loadModel('public/models/rocks/basic_stone_3.glb', scene, controls, camera, (Bas
     // 
     characterControls.objectsToCollide.push(BasicRockObject);
     //setupRaycasting(camera, objectsToRaycast);
+    onAssetLoaded();
 });
 });
 
@@ -402,6 +410,7 @@ loadModel('public/models/rocks/Rock.glb', scene, controls, camera, (RockObject) 
 
     characterControls.objectsToCollide.push(RockObject);
    // setupRaycasting(camera, objectsToRaycast);
+   onAssetLoaded();
 });
 });
 
@@ -421,6 +430,7 @@ scene.add(spaceRockObject);
 
 characterControls.objectsToCollide.push(spaceRockObject);
 //setupRaycasting(camera, objectsToRaycast);
+onAssetLoaded();
 });
 });
 
@@ -460,8 +470,8 @@ loadModel('public/models/rocks/Comet.glb', scene, controls, camera, (AstroidObje
 });
 
 
-loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipObject) => {
-    RocketshipObject.scale.set(3, 3, 3);
+loadModel('public/models/Flying_saucer.glb', scene, controls, camera, (RocketshipObject) => {
+    RocketshipObject.scale.set(0.1, 0.1, 0.1);
     RocketshipObject.position.set(-180, 12, 60);
     RocketshipObject.rotation.x += Math.PI / 3;
     RocketshipObject.rotation.z += 3*Math.PI / 4;
@@ -474,9 +484,16 @@ loadModel('public/models/Rocketship.glb', scene, controls, camera, (RocketshipOb
     onAssetLoaded();
 });
 
+const positionRuin = [
+    new THREE.Vector3(280, 0, -78),
+    new THREE.Vector3(302, 0, -109),
+    new THREE.Vector3(-292, 0, -10)
+    ];
+positionRuin.forEach((position) => {
 loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
     RuinObject.scale.set(8, 8, 8);
-    RuinObject.position.set(280, 0, -78);
+    //RuinObject.position.set(280, 0, -78);
+    RuinObject.position.copy(position);
     RuinObject.name = 'Rubble Rock2'
     scene.add(RuinObject);
     //objectsToRaycast.push(RuinObject);
@@ -485,6 +502,7 @@ loadModel('public/models/Ruin.glb', scene, controls, camera, (RuinObject) => {
     characterControls.objectsToCollide.push(RuinObject);
     //setupRaycasting(camera, objectsToRaycast);
     onAssetLoaded();
+});
 });
 
 
@@ -657,11 +675,6 @@ helpButton.addEventListener('click', () => {
 
 const keysPressed = {};
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'f') {
-        isFirstPerson = !isFirstPerson;  // Toggle between first-person and third-person view
-        updateCameraView();
-    }
-
     if (event.key === ' ' || event.code === 'Space') {
         event.preventDefault();
     }

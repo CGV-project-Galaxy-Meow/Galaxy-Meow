@@ -48,7 +48,7 @@ pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
 let pipActive = false;
 
 
-let assetsToLoad = 16; // Total number of assets to load
+let assetsToLoad = 203;
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
@@ -140,20 +140,20 @@ const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
 // Load ambiance sound
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
+// audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+//     ambianceSound.setBuffer(buffer);
+//     ambianceSound.setLoop(true);
+//     ambianceSound.setVolume(0.5);
+//     ambianceSound.play();
+// });
 
-// Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
-});
+// // Load game over sound
+// audioLoader.load('/sound/game-over.mp3', function(buffer) {
+//     gameOverSound.setBuffer(buffer);
+//     gameOverSound.setLoop(false);
+//     gameOverSound.setVolume(0.5);
+//     //we'll play it when health reaches zero
+// });
 
 
 
@@ -205,7 +205,6 @@ document.getElementById('startPiP').style.display = 'none';
 
 function onAssetLoaded() {
     assetsLoaded++;
-    //console.log(assetsLoaded);
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
         decreaseHealth();
@@ -248,6 +247,23 @@ audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
   sound.setVolume(0.5);
   sound.play();
 });
+audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+    ambianceSound.setBuffer(buffer);
+    ambianceSound.setLoop(true);
+    ambianceSound.setVolume(0.5);
+    ambianceSound.play();
+});
+
+// Load game over sound
+audioLoader.load('/sound/game-over.mp3', function(buffer) {
+    gameOverSound.setBuffer(buffer);
+    gameOverSound.setLoop(false);
+    gameOverSound.setVolume(0.5);
+    //we'll play it when health reaches zero
+});
+
+
+
 
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
@@ -574,6 +590,7 @@ setInterval(createShootingStar, 300);
                 objectsToRaycast.push(RocksObject);
                 characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
                 setupRaycasting(camera, objectsToRaycast);
+                onAssetLoaded();
             });
         });
 
@@ -592,6 +609,7 @@ setInterval(createShootingStar, 300);
             objectsToRaycast.push(RockQObject);
             characterControls.objectsToCollide.push(RockQObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
         });
     
@@ -612,6 +630,7 @@ setInterval(createShootingStar, 300);
             //  
             characterControls.objectsToCollide.push(GoldRockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -629,6 +648,7 @@ setInterval(createShootingStar, 300);
             // 
             characterControls.objectsToCollide.push(BasicRockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -649,6 +669,7 @@ setInterval(createShootingStar, 300);
 
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -668,6 +689,7 @@ setInterval(createShootingStar, 300);
 
         characterControls.objectsToCollide.push(spaceRockObject);
         setupRaycasting(camera, objectsToRaycast);
+        onAssetLoaded();
     });
 });
 
