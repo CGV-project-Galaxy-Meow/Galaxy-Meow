@@ -758,6 +758,8 @@ setInterval(createShootingStar, 300);
 
 
     });
+
+    const meow = new Audio('sound/meow.wav');
    
     
     // Load the static model
@@ -790,6 +792,9 @@ setInterval(createShootingStar, 300);
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
                     catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
+                    setTimeout(() => {
+                        meow.play(); 
+                    }, 1000);
                 
                     catConversation.style.animation = 'none'; 
                     setTimeout(() => {
