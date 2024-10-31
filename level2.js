@@ -2,7 +2,12 @@ import * as THREE from 'three';
 //import { playerName } from './intro.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { createSun } from './background.js';
+
+
+
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import { setupRaycasting } from './raycasting.js';
@@ -50,9 +55,10 @@ scene.background = new THREE.Color(0x000000);  // Set a background color for vis
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // Soft white light
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Bright white light
-directionalLight.position.set(0, 10, 10).normalize();  // Position the light
-scene.add(directionalLight);
+    const directionalLight = new THREE.DirectionalLight(0x999793, 25);
+    directionalLight.position.set(0, 50, -50).normalize();
+    scene.add(directionalLight);
+    createSun(scene);
 
 const spaceTexture = new THREE.TextureLoader().load('public/textures/test2.webp');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
@@ -103,6 +109,15 @@ const audioLoader = new THREE.AudioLoader();
 // separate audio sources for during game and game over
 const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
+const timerWarningSound= new THREE.Audio(listener);
+
+
+audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+    timerWarningSound.setBuffer(buffer);
+    timerWarningSound.setLoop(false);
+    timerWarningSound.setVolume(0.5);
+
+});
 
 
 
@@ -139,7 +154,7 @@ function checkOxygen(){
         modal.style.display = 'flex';
         catConversation.style.animation = 'none';
         catConversation.textContent = `Be careful! Your oxygen is running low.`;
-    
+        timerWarningSound.play();
         void catConversation.offsetWidth; 
         catConversation.style.animation = 'typing 3.5s steps(40, end)';
     
@@ -588,6 +603,8 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
     onAssetLoaded();
 });
 
+const meow = new Audio('sound/meow.wav');
+
 loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
     console.log('Static model loaded:', object);
     object.scale.set(1, 1, 1);
@@ -618,6 +635,10 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
                 modal.style.display = 'flex';
                 responses.style.display = 'none'; 
                 catConversation.textContent = `Ah, I see that you continue to require assisstance.`;
+
+                setTimeout(() => {
+                    meow.play(); 
+                }, 1000);
             
                 catConversation.style.animation = 'none'; 
                 setTimeout(() => {
@@ -650,6 +671,7 @@ helpButton.addEventListener('click', () => {
         catConversation.textContent = conversationText;
 
         setTimeout(() => {
+            meow.play(); 
             conversationText = '';
             document.getElementById('catConversation').innerHTML = conversationText; 
             
@@ -666,6 +688,7 @@ helpButton.addEventListener('click', () => {
         catConversation.textContent = conversationText;
 
         setTimeout(() => {
+            meow.play(); 
             conversationText = '';
             document.getElementById('catConversation').innerHTML = conversationText; 
             
@@ -681,6 +704,7 @@ helpButton.addEventListener('click', () => {
         catConversation.textContent = conversationText;
 
         setTimeout(() => {
+            meow.play(); 
             conversationText = '';
             document.getElementById('catConversation').innerHTML = conversationText; 
             
@@ -691,18 +715,21 @@ helpButton.addEventListener('click', () => {
     }
 
     else if(!isItemInInventory('redgem')){
+        meow.play(); 
         conversationText = `Drift rightward. My right, that is.. and you may find something worth looking for.`;             
         document.getElementById('catConversation').innerHTML = conversationText;
         catConversation.textContent = conversationText; 
     }
 
     else if(!isItemInInventory('diamant')){
+        meow.play(); 
         conversationText = `What about searching to the left this time?`;             
         document.getElementById('catConversation').innerHTML = conversationText;
         catConversation.textContent = conversationText;
     }
 
     else{
+        meow.play(); 
         conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
         document.getElementById('catConversation').innerHTML = conversationText;
         catConversation.textContent = conversationText;
