@@ -1,5 +1,5 @@
 import {items} from "./inventory";
-import { showWinningModal } from "./modal";
+import { showWinningModal, showWinningModal_l2 } from "./modal";
 import * as THREE from 'three';
 
 const listener = new THREE.AudioListener();
@@ -35,13 +35,21 @@ export function checkForWin_l2() {
             return false; // Player hasn't collected all required items
         }
     }
-    winSound.play();
+    // winSound.play();
     return true; // All required items collected
 } 
 
 // Function to handle winning logic
 export function handleWin() {
+    winSound.play();
     showWinningModal();
+    
+    //proceedToNextLevel();
+}
+
+export function handleWin_l2() {
+    winSound.play();
+    showWinningModal_l2();
     
     //proceedToNextLevel();
 }
