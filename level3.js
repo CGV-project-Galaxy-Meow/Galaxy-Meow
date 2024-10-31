@@ -3,11 +3,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster,positionsRocks2, positionsQ2,positionsStones2} from './modelLocations.js';
-
+import {showDeathMessage} from './levelMenus.js'
 import { setupRaycasting } from './raycasting.js';
 
 
-import {showDeathMessage} from './levelMenus.js'
 
 const clock = new THREE.Clock();
 let health = 100;
@@ -116,9 +115,9 @@ function checkOxygen(){
 //use this to start the game
 // export function startGame() {}
 
-//Load the texture
+// Load the texture
 
-//Function to load and apply texture to the moon model
+// Function to load and apply texture to the moon model
 // const numAsteroids = 100; // Number of asteroids to load
 // const objectsToRaycast = [];
 
@@ -183,45 +182,88 @@ function onAssetLoaded() {
     //}
 }
 
+// const numAsteroids = 100; // Number of asteroids to load
+// for (let i = 0; i < numAsteroids; i++) {
+//     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
+//         // Randomize position
+//         const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
+//         const randomY = Math.random() * 20;       // Random value between 0 and 20
+//         const randomZ = Math.random() * 100 - 500; // Random value between -50 and 50
 
+//         // Randomize rotation
+//         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
+//         const randomRotationY = Math.random() * Math.PI * 2;
+//         const randomRotationZ = Math.random() * Math.PI * 2;
+
+//         // Randomize scale
+//         const randomScale = 0.05 + Math.random() * 0.1; // Random scale between 0.05 and 0.15
+
+//         astroObject.scale.set(randomScale, randomScale, randomScale);
+//         astroObject.position.set(randomX, randomY, randomZ);
+//         astroObject.rotation.set(randomRotationX, randomRotationY, randomRotationZ);
+//         astroObject.name = 'asteroids_' + i;
+
+//         scene.add(astroObject);
+//         objectsToRaycast.push(astroObject);
+//     });
+// }
 
 export function startGame() {
 
 
+
+// Load the texture
+
+//Function to load and apply texture to the moon model
+
+
+loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
+    astroObject.scale.set(10, 10, 10);
+    astroObject.position.set(-800, 100, 4);
+    astroObject.name = 'asteroids';
+    scene.add(astroObject);
+    objectsToRaycast.push(astroObject);
+
+
+
+    //setupRaycasting(camera, objectsToRaycast);
+});
+  
+    
 //Load the sun model
-// loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
-//     // Scale and position the sun
-//     astroObject.scale.set(50, 50, 50);
-//     astroObject.position.set(300, 100, 4);
-//     astroObject.name = 'sun';
-//     scene.add(astroObject);
-//     objectsToRaycast.push(astroObject);
+loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
+    // Scale and position the sun
+    astroObject.scale.set(50, 50, 50);
+    astroObject.position.set(1000, 100, 4);
+    astroObject.name = 'sun';
+    scene.add(astroObject);
+    objectsToRaycast.push(astroObject);
 
-//     // Create a directional light to simulate sunlight
-//     const sunlight = new THREE.DirectionalLight(0xffffff, 1); // White light, intensity 1
-//     sunlight.position.set(300, 100, 4); // Same position as the sun
-//     sunlight.target.position.set(0, 0, 0); // Target to illuminate towards the origin or another object
-//     scene.add(sunlight);
-//     scene.add(sunlight.target); // Ensure target is part of the scene to get directional lighting working
+    // Create a directional light to simulate sunlight
+    const sunlight = new THREE.DirectionalLight(0xffffff, 1); // White light, intensity 1
+    sunlight.position.set(300, 100, 4); // Same position as the sun
+    sunlight.target.position.set(0, 0, 0); // Target to illuminate towards the origin or another object
+    scene.add(sunlight);
+    scene.add(sunlight.target); // Ensure target is part of the scene to get directional lighting working
 
-//     // Optionally, you can add a slight light effect on the sun itself (not required for realism)
-//     const sunLightGlow = new THREE.PointLight(0xffcc33, 2, 500); // Orange-ish glow, intensity 2, range 500
-//     sunLightGlow.position.set(300, 100, 4); // Same position as the sun
-//     scene.add(sunLightGlow);
-// });
-
-
-// loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
-//     astroObject.scale.set(50, 50, 50);
-//     astroObject.position.set(4, 10, -300);
-//     astroObject.name = 'asteroids';
-//     scene.add(astroObject);
-//     objectsToRaycast.push(astroObject);
+    // Optionally, you can add a slight light effect on the sun itself (not required for realism)
+    const sunLightGlow = new THREE.PointLight(0xffcc33, 2, 500); // Orange-ish glow, intensity 2, range 500
+    sunLightGlow.position.set(300, 100, 4); // Same position as the sun
+    scene.add(sunLightGlow);
+});
 
 
+loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
+    astroObject.scale.set(25, 25, 25);
+    astroObject.position.set(-900, 10, 4);
+    astroObject.name = 'asteroids';
+    scene.add(astroObject);
+    objectsToRaycast.push(astroObject);
 
-//     //setupRaycasting(camera, objectsToRaycast);
-// });
+
+
+    //setupRaycasting(camera, objectsToRaycast);
+});
 
 //sound 
 // Load ambiance sound
@@ -242,11 +284,8 @@ audioLoader.load('public/sound/game-over.mp3', function(buffer) {
 
 
 
-
-
-
 loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundObject) => {
-    asteroid_groundObject.scale.set(30, 1, 30);  // Scale it large enough to simulate an infinite ground
+    asteroid_groundObject.scale.set(50, 1, 50);  // Scale it large enough to simulate an infinite ground
     asteroid_groundObject.position.set(0, -1.5, 0);  // Place the plane below the astronaut
     //moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
     scene.add(asteroid_groundObject);
