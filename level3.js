@@ -30,7 +30,7 @@ let healthInterval; // To control the health timer
 export let objectsToRaycast = [];
 
 //for loading screen
-let assetsToLoad = 144; 
+let assetsToLoad = 164; 
 let assetsLoaded = 0;  // Counter for loaded assets
 
 //loading screen!!!
@@ -38,7 +38,6 @@ const loadingScreen = document.getElementById('loadingScreen');
 
 function onAssetLoaded() {
     assetsLoaded++;
-    
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
         decreaseHealth();
@@ -151,54 +150,6 @@ function checkOxygen(){
 
 
 
-
-//use this to start the game
-// export function startGame() {}
-
-// Load the texture
-
-// Function to load and apply texture to the moon model
-// const numAsteroids = 100; // Number of asteroids to load
-// const objectsToRaycast = [];
-
-// for (let i = 0; i < numAsteroids; i++) {
-//     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
-//         // Randomize position
-//         const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
-//         const randomY = Math.random() * 20;       // Random value between 0 and 20
-//         const randomZ = Math.random() * 100 - 500; // Random value between -50 and 50
-
-//         // Randomize rotation
-//         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
-//         const randomRotationY = Math.random() * Math.PI * 2;
-//         const randomRotationZ = Math.random() * Math.PI * 2;
-
-//         // Randomize scale
-//         const randomScale = 0.05 + Math.random() * 0.1; // Random scale between 0.05 and 0.15
-
-//         astroObject.scale.set(randomScale, randomScale, randomScale);
-//         astroObject.position.set(randomX, randomY, randomZ);
-//         astroObject.rotation.set(randomRotationX, randomRotationY, randomRotationZ);
-//         astroObject.name = 'asteroids_' + i;
-
-//         scene.add(astroObject);
-//         objectsToRaycast.push(astroObject);
-//     });
-// }
-
-// loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
-//     astroObject.scale.set(50, 50, 50);
-//     astroObject.position.set(-300, 100, 4);
-//     astroObject.name = 'asteroids';
-//     scene.add(astroObject);
-//     objectsToRaycast.push(astroObject);
-
-
-
-//     //setupRaycasting(camera, objectsToRaycast);
-// });
-
-
 const listener = new THREE.AudioListener();
 camera.add(listener);
 
@@ -209,32 +160,6 @@ const audioLoader = new THREE.AudioLoader();
 const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
 
-
-// const numAsteroids = 100; // Number of asteroids to load
-// for (let i = 0; i < numAsteroids; i++) {
-//     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
-//         // Randomize position
-//         const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
-//         const randomY = Math.random() * 20;       // Random value between 0 and 20
-//         const randomZ = Math.random() * 100 - 500; // Random value between -50 and 50
-
-//         // Randomize rotation
-//         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
-//         const randomRotationY = Math.random() * Math.PI * 2;
-//         const randomRotationZ = Math.random() * Math.PI * 2;
-
-//         // Randomize scale
-//         const randomScale = 0.05 + Math.random() * 0.1; // Random scale between 0.05 and 0.15
-
-//         astroObject.scale.set(randomScale, randomScale, randomScale);
-//         astroObject.position.set(randomX, randomY, randomZ);
-//         astroObject.rotation.set(randomRotationX, randomRotationY, randomRotationZ);
-//         astroObject.name = 'asteroids_' + i;
-
-//         scene.add(astroObject);
-//         objectsToRaycast.push(astroObject);
-//     });
-// }
 
 export function startGame() {
 
@@ -319,16 +244,15 @@ audioLoader.load('public/sound/game-over.mp3', function(buffer) {
 
 
 loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundObject) => {
-    asteroid_groundObject.scale.set(50, 1, 50);  // Scale it large enough to simulate an infinite ground
-    asteroid_groundObject.position.set(0, -1.5, 0);  // Place the plane below the astronaut
-    //moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
+    asteroid_groundObject.scale.set(50, 1, 50);  
+    asteroid_groundObject.position.set(0, -1.5, 0);  
     scene.add(asteroid_groundObject);
 
 
     //paper objects for this level
     loadModel('public/models/paper/Paper.glb', scene, controls, camera, (PaperObject) => {
     PaperObject.scale.set(0.05, 0.05, 0.05);  
-    PaperObject.position.set(9, -0.5,149);  //0, 1.5, 150
+    PaperObject.position.set(-1, -0.5,187);  
     PaperObject.name = 'Paper';        
     scene.add(PaperObject);               
     objectsToRaycast.push(PaperObject);   
@@ -361,9 +285,9 @@ loadModel('public/models/paper/Manila_Envelope.glb', scene, controls, camera, (M
     objectsToRaycast.push(ManilaObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
-    console.error('Error loading skull model:', error);
+    console.error('Error loading envelope model:', error);
 });
 
 
