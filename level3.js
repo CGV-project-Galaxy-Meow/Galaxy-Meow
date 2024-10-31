@@ -6,7 +6,7 @@ import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, po
 import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
-
+import { clearInventory, items } from './inventory.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -18,7 +18,7 @@ const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let catObject; 
-
+let astronaut;
 const clock = new THREE.Clock();
 
 let health = 100;
@@ -28,17 +28,6 @@ let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
 
 export let objectsToRaycast = [];
-
-
-// const clock = new THREE.Clock();
-// const mouse = new THREE.Vector2();
-// const modal = document.getElementById('myModal');
-// const responses = document.getElementById('responses');
-// const closeModalBtn = document.getElementById('closeModal');
-// const helpButton = document.getElementById('helpButton');
-// const dontHelpButton = document.getElementById('dontHelpButton');
-// const catConversation = document.getElementById('catConversation')
-// const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 
 //for loading screen
 let assetsToLoad = 144; 
@@ -56,6 +45,7 @@ function onAssetLoaded() {
     }
 }
 
+console.log("second one",document.body.querySelectorAll("canvas").length);
 
 // ---------------Create the scene--------------
 const scene = new THREE.Scene();
@@ -387,7 +377,7 @@ loadModel('public/models/paper/Toilet_paper.glb', scene, controls, camera, (Toil
     objectsToRaycast.push(ToiletPaperObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
     console.error('Error loading toilet paper model:', error);
 });
@@ -402,7 +392,7 @@ loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camer
     objectsToRaycast.push(StackPaperObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
     console.error('Error loading skull model:', error);
 });
@@ -415,7 +405,7 @@ loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObje
         objectsToRaycast.push(CarpetObject);   
     
        setupRaycasting(camera, objectsToRaycast);  
-       //onAssetLoaded();
+       onAssetLoaded();
     }, function (error) {
         console.error('Error loading carpet model:', error);
     });
@@ -772,29 +762,12 @@ document.addEventListener('keyup', (event) => {
 }, false);
 
 
-loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
-    console.log('Static model loaded:', object);
-    object.scale.set(1, 1, 1);
-    object.position.set(-10, 0, -10);
-    object.rotation.y =  Math.PI / 2;
-
-    catObject = object;
-    scene.add(object);
-    objectsToRaycast.push(catObject)
-    //characterControls.objectsToCollide.push(object);
-    setupRaycasting(camera, objectsToRaycast);
-    onAssetLoaded();
-});
-
 // Render loop
 function animate() {
     let delta = clock.getDelta();
     if (characterControls) {
         characterControls.update(delta, keysPressed);
     }
-
-
-
 
 
     if (astronaut) {
