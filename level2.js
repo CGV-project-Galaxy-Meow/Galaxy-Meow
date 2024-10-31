@@ -14,6 +14,7 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
+
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const modal = document.getElementById('myModal');
@@ -53,7 +54,7 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Bright whi
 directionalLight.position.set(0, 10, 10).normalize();  // Position the light
 scene.add(directionalLight);
 
-const spaceTexture = new THREE.TextureLoader().load('textures/test1.png');
+const spaceTexture = new THREE.TextureLoader().load('public/textures/test2.webp');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
 const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
 const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
@@ -247,7 +248,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     marsObject.scale.set(1000, 1, 500);  // Scale it large enough to simulate an infinite ground
     marsObject.position.set(100, 0, 0);  // Place the ground in the scene
     scene.add(marsObject);
-    console.log('Ground model loaded and added to the scene');
+    //console.log('Ground model loaded and added to the scene');
 
     
     loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
@@ -341,6 +342,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
         console.error('Error loading skull model:', error);
 
     });
+
 
 loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
     skullObject.scale.set(1, 1, 1);  // Set size of skull
@@ -525,7 +527,7 @@ loadModel('public/models/Flying_saucer.glb', scene, controls, camera, (Rocketshi
     RocketshipObject.position.set(-180, 12, 60);
     RocketshipObject.rotation.x += Math.PI / 3;
     RocketshipObject.rotation.z += 3*Math.PI / 4;
-    RocketshipObject.name = 'Basic Rock'
+    RocketshipObject.name = 'UFO'
     scene.add(RocketshipObject);
     //objectsToRaycast.push(RocketshipObject);
 
