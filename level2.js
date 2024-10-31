@@ -292,6 +292,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
 
     });
 
+
 loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
     skullObject.scale.set(1, 1, 1);  // Set size of skull
     skullObject.position.set(-17.359087005804316, -4,240.28950987634434);    // Position it relative to ground
@@ -475,7 +476,7 @@ loadModel('public/models/Flying_saucer.glb', scene, controls, camera, (Rocketshi
     RocketshipObject.position.set(-180, 12, 60);
     RocketshipObject.rotation.x += Math.PI / 3;
     RocketshipObject.rotation.z += 3*Math.PI / 4;
-    RocketshipObject.name = 'Basic Rock'
+    RocketshipObject.name = 'UFO'
     scene.add(RocketshipObject);
     //objectsToRaycast.push(RocketshipObject);
 

@@ -1,5 +1,5 @@
-// intro for level 2.js
-//import {startGame} from './level2.js';
+// intro for level 3.js
+import {startGame} from './level3.js';
 let step = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,10 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     nextButton.addEventListener('click', () => {
         if (step === 0) {
             // Ask for the player's name
+            dialogueText.textContent = `Find all the numbers to the code`;
             nextButton.textContent = 'Next';
             step++;
         } else if (step === 1) {
-                dialogueText.textContent = `Find all the numbers to the code`;
+                dialogueText.textContent = `Input them on the magic carpet`;
                 nextButton.textContent = 'Next';
                 step++;
             

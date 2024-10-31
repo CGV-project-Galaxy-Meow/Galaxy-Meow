@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle dialogue progression
     nextButton.addEventListener('click', () => {
         if (step === 0) {
-            // Ask for the player's name
+            dialogueText.textContent = `We are on mars now.... so you will need more fuel`;
             nextButton.textContent = 'Next';
             step++;
         } else if (step === 1) {
-                dialogueText.textContent = `We are on mars now.... so you will need more fuel`;
+                dialogueText.textContent = `Find the energy crystals around the map`;
                 nextButton.textContent = 'Next';
                 step++;
             
