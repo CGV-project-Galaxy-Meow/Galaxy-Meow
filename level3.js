@@ -7,7 +7,16 @@ import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 
-
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const modal = document.getElementById('myModal');
+const responses = document.getElementById('responses');
+const closeModalBtn = document.getElementById('closeModal');
+const helpButton = document.getElementById('helpButton');
+const dontHelpButton = document.getElementById('dontHelpButton');
+const catConversation = document.getElementById('catConversation')
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
+let catObject; 
 
 const clock = new THREE.Clock();
 let health = 100;
@@ -589,6 +598,152 @@ loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (objec
     // Set initial controls target
     controls.target.copy(astronaut.position);
 });
+
+const meow = new Audio('sound/meow.wav');
+   
+    
+    // Load the static model
+    loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
+        console.log('Static model loaded:', object);
+        object.scale.set(1, 1, 1);
+        object.position.set(-10, 0, -10);
+        object.rotation.y =  Math.PI / 2;
+
+        catObject = object;
+        scene.add(object);
+        objectsToRaycast.push(catObject)
+        //characterControls.objectsToCollide.push(object);
+        setupRaycasting(camera, objectsToRaycast);
+    });
+    
+        window.addEventListener('click', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    
+            raycaster.setFromCamera(mouse, camera);
+    
+            // Check if the object is intersected by the ray
+            if (catObject) { 
+                const intersects = raycaster.intersectObject(catObject, true); 
+    
+                if (intersects.length > 0) {
+                    console.log('Model clicked:', catObject);
+
+                    modal.style.display = 'flex';
+                    responses.style.display = 'none'; 
+                    catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
+                    setTimeout(() => {
+                        meow.play(); 
+                    }, 1000);
+                
+                    catConversation.style.animation = 'none'; 
+                    setTimeout(() => {
+                        responses.style.display = 'flex'; 
+                    }, 4000);
+                }
+            }
+        });
+
+// Event listener for 'Don't Help' button
+dontHelpButton.addEventListener('click', () => {
+    catConversation.style.animation = 'none';
+    catConversation.textContent = `As you wish.`;
+
+    // Keep the buttons hidden
+    responses.style.display = 'none'; 
+});
+
+function isItemInInventory(itemName) {
+    return items[itemName] && items[itemName].count > 0;
+}
+
+    // Event listener for 'Help' button
+    helpButton.addEventListener('click', () => {
+        let conversationText;
+    
+        if (!isItemInInventory('battery')) {
+            conversationText = `Very well. The battery can be found near the vehicle you arrived here with.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+    
+            setTimeout(() => {
+                meow.play(); 
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 3000); 
+        }
+
+        else if(!isItemInInventory('button')){
+            conversationText = `Perhaps you can ask Mr Neil Armstrong on the whereabouts of the button.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+    
+            setTimeout(() => {
+                meow.play();
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'By the way, who was it that sent you here?';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 3000); 
+        }
+
+        else if(!isItemInInventory('circuit')){
+            conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            meow.play();
+        }
+
+        else if(!isItemInInventory('console')){
+            conversationText = `Ruins on the moon... How did they get here?`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText; 
+            meow.play();
+        }
+
+        else if(!isItemInInventory('antenna')){
+            conversationText = `Here comes the sun...`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+    
+            setTimeout(() => {
+                meow.play();
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'Be careful, though. Humans are fragile.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 3000); 
+        }
+
+        else{
+            conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+        }
+
+        responses.style.display = 'none';
+
+        health -= 10;
+    });
+
+        // Close modal on button click
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = 'none'; // Hide the modal
+        });
+    
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none'; // Hide the modal when clicking outside
+            }
+        });  
 
 
 const keysPressed = {};

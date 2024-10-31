@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nextButton.addEventListener('click', () => {
         if (step === 0) {
             // Ask for the player's name
-            dialogueText.textContent = `Find all the numbers to the code`;
+            dialogueText.textContent = `Find all the numbers to the code.`;
             nextButton.textContent = 'Next';
             step++;
         } else if (step === 1) {

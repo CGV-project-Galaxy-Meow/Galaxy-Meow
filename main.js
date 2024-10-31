@@ -884,13 +884,14 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play(); 
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else if(!isItemInInventory('button')){
@@ -899,25 +900,28 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play();
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'By the way, who was it that sent you here?';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else if(!isItemInInventory('circuit')){
             conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
+            meow.play();
         }
 
         else if(!isItemInInventory('console')){
             conversationText = `Ruins on the moon... How did they get here?`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText; 
+            meow.play();
         }
 
         else if(!isItemInInventory('antenna')){
@@ -926,13 +930,14 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play();
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'Be careful, though. Humans are fragile.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else{
