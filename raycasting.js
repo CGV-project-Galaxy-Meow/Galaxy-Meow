@@ -147,30 +147,30 @@ const itemDataMapping = {
         itemName: 'mat'
     },
     'Cube_Cube001':{
-        title: 'Something I cant see',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
+        title: 'Clue',
+        description: 'Enter info',
+        additionalInfo: 'Info',
         imgSrc: items['mat'].img,
         itemName: 'mat'
     },
     'Debris_Papers_2':{
-        title: 'Something I cant see',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
+        title: 'Clue',
+        description: 'Enter info',
+        additionalInfo: 'Enter ifnfo',
         imgSrc: items['mat'].img,
         itemName: 'mat'
     },
     'Node-Mesh':{
-        title: 'Something I cant see',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
+        title: 'Clue',
+        description: 'Enter info',
+        additionalInfo: 'Enter info',
         imgSrc: items['mat'].img,
         itemName: 'mat'
     },
     'Box003':{
-        title: 'Something I cant see',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
+        title: 'Clue',
+        description: 'Enter info',
+        additionalInfo: 'Enter info',
         imgSrc: items['mat'].img,
         itemName: 'mat'
     }
