@@ -23,11 +23,11 @@ export const items = {
     diamant: {img: 'Graphics/quartz.png', count: 0},
     jub: {img: 'Graphics/jub.jpg', count: 0},
     mat: {img: 'Graphics/map.png', count: 0},
-    Clue1: {img: 'Graphics/map.png', count: 0},
-    Clue2: {img: 'Graphics/map.png', count: 0},
-    Clue3: {img: 'Graphics/map.png', count: 0},
-    Clue4: {img: 'Graphics/map.png', count: 0},
-    Clue5: {img: 'Graphics/map.png', count: 0}
+    Clue1: {img: 'Graphics/firstDigit.png', count: 0},
+    Clue2: {img: 'Graphics/secondDigit.png', count: 0},
+    Clue3: {img: 'Graphics/thirdDigit.png', count: 0},
+    Clue4: {img: 'Graphics/fourthDigit.png', count: 0},
+    Clue5: {img: 'Graphics/FithDigit.png', count: 0}
 
 };
 
