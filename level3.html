@@ -7,14 +7,20 @@
     <link rel="stylesheet" href="game.css">
     <title>Level 3</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;  /* Prevent scrollbars */
-        }
+       body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Prevent scrollbars */
+}
 
-        canvas {
-            display: block;  /* Ensure the canvas takes full space */
-        }
+canvas {
+    display: block;   /* Ensures canvas takes full available space */
+    width: 100vw;
+    height: 100vh;
+}
+
 
         /* Modal popup style */
         #myModal {
