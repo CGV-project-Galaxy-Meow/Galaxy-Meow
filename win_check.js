@@ -42,16 +42,16 @@ export function checkForWin_l2() {
 // Function to handle winning logic
 export function handleWin() {
     winSound.play();
-    showWinningModal();
-    
-    //proceedToNextLevel();
+    setTimeout(() => {
+        showWinningModal();
+    }, 500); // Adjust delay as needed
 }
 
 export function handleWin_l2() {
     winSound.play();
-    showWinningModal_l2();
-    
-    //proceedToNextLevel();
+    setTimeout(() => {
+        showWinningModal_l2();
+    }, 500); // Adjust delay as needed
 }
 
 // placeholder Function to proceed to the next level
