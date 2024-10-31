@@ -108,6 +108,28 @@ window.addEventListener('resize', () => {
 });
 
 
+// Audio listener
+const listener = new THREE.AudioListener();
+camera.add(listener);
+
+// Audio loader
+const audioLoader = new THREE.AudioLoader();
+
+// separate audio sources for during game and game over
+const ambianceSound = new THREE.Audio(listener);
+const gameOverSound = new THREE.Audio(listener);
+const timerWarningSound= new THREE.Audio(listener);
+
+audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+    timerWarningSound.setBuffer(buffer);
+    timerWarningSound.setLoop(false);
+    timerWarningSound.setVolume(0.5);
+
+});
+
+
+
+
 //----important functions-----
 function decreaseHealth() {
     if (healthInterval) {
@@ -150,19 +172,10 @@ function checkOxygen(){
 
 
 
-const listener = new THREE.AudioListener();
-camera.add(listener);
-
-// Audio loader
-const audioLoader = new THREE.AudioLoader();
-
-// separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
-
 
 export function startGame() {
 
+   
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             if (exitMenu.style.display === 'none') {
@@ -172,7 +185,41 @@ export function startGame() {
             }
         }
     });
-
+    
+    const volumeControl = document.getElementById('volumeControl');
+    volumeControl.addEventListener('input', function () {
+        const volume = parseFloat(volumeControl.value);
+        ambianceSound.setVolume(volume);
+        gameOverSound.setVolume(volume);
+        timerWarningSound.setVolume(volume);
+        console.log("Volume set to: ", volume);  // Debug: confirm volume change
+    });
+    
+    
+    //sound 
+    // Load ambiance sound
+    audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+        ambianceSound.setBuffer(buffer);
+        ambianceSound.setLoop(true);
+        ambianceSound.setVolume(0.5);
+        ambianceSound.play();
+    });
+    
+    // Load game over sound
+    audioLoader.load('/sound/game-over.mp3', function(buffer) {
+        gameOverSound.setBuffer(buffer);
+        gameOverSound.setLoop(false);
+        gameOverSound.setVolume(0.5);
+        //we'll play it when health reaches zero
+    });
+    
+    audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
+        timerWarningSound.setBuffer(buffer);
+        timerWarningSound.setLoop(false);
+        timerWarningSound.setVolume(0.5);
+    
+    });
+    
 
 
 //Function to load and apply texture to the moon model
