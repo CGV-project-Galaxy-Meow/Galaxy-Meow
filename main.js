@@ -1,13 +1,10 @@
-
-
+import * as THREE from './node_modules/three/build/three.module.min.js';
 //import WebGL from 'three/addons/capabilities/WebGL.js';
 import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
 //import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
-// okay so probably refrence write links and specific file for three
 // node_modules/three/build/three.module.min.js
-import * as THREE from './node_modules/three/build/three.module.min.js';
 import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
 
 
 import { loadModel } from './model_loader.js';  // Import model loader
@@ -58,7 +55,8 @@ pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
 let pipActive = false;
 
 
-let assetsToLoad = 15; // Total number of assets to load
+
+let assetsToLoad = 203;
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
@@ -126,17 +124,21 @@ camera.position.set(50, 10, 2);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('gameCanvas').appendChild(renderer.domElement);
 
+const controlsFirstPerson = new PointerLockControls(camera, renderer.domElement);
+let isFirstPerson = false; // Starts in third-person view
+
+
+// -------Orbit controls----------
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
-controls.enableZoom = false;          // Disable zoom if desired
-controls.enablePan = false;           // Disable pan if desired
+controls.enableZoom = true;          // Disable zoom if desired
+controls.enablePan = true;           // Disable pan if desired
 controls.mouseButtons = {
     LEFT: null,
     MIDDLE: null,
     RIGHT: THREE.MOUSE.ROTATE
 };
-
 
 
 // Audio listener
@@ -150,21 +152,30 @@ const audioLoader = new THREE.AudioLoader();
 // separate audio sources for during game and game over
 const ambianceSound = new THREE.Audio(listener);
 const gameOverSound = new THREE.Audio(listener);
-
+const timerWarningSound= new THREE.Audio(listener);
 // Load ambiance sound
-audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
 
-// Load game over sound
-audioLoader.load('public/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
+// audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+//     ambianceSound.setBuffer(buffer);
+//     ambianceSound.setLoop(true);
+//     ambianceSound.setVolume(0.5);
+//     ambianceSound.play();
+// });
+
+// // Load game over sound
+// audioLoader.load('/sound/game-over.mp3', function(buffer) {
+//     gameOverSound.setBuffer(buffer);
+//     gameOverSound.setLoop(false);
+//     gameOverSound.setVolume(0.5);
+//     //we'll play it when health reaches zero
+// });
+
+audioLoader.load('public/sound/beep-warning-6387.mp3', function(buffer) {
+    timerWarningSound.setBuffer(buffer);
+    timerWarningSound.setLoop(false);
+    timerWarningSound.setVolume(0.5);
+
+
 });
 
 
@@ -204,7 +215,7 @@ function checkOxygen(){
         modal.style.display = 'flex';
         catConversation.style.animation = 'none';
         catConversation.textContent = `Be careful, ${playerName}! Your oxygen is running low.`;
-    
+        timerWarningSound.play();
         void catConversation.offsetWidth; 
         catConversation.style.animation = 'typing 3.5s steps(40, end)';
     
@@ -220,12 +231,55 @@ document.getElementById('startPiP').style.display = 'none';
 
 function onAssetLoaded() {
     assetsLoaded++;
-    //console.log(assetsLoaded);
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
         decreaseHealth();
     }
 }
+
+function toggleView() {
+    isFirstPerson = !isFirstPerson;
+  
+    if (isFirstPerson) {
+        // Ensure astronaut is loaded before trying to hide it
+        if (astronaut) astronaut.visible = false;
+
+        controls.enabled = false; // Disable OrbitControls
+        controlsFirstPerson.enabled = true;
+        controlsFirstPerson.lock(); // Lock pointer for first-person controls
+  
+        // Position the camera at the astronaut's head position
+        if (astronaut) {
+            camera.position.copy(astronaut.position);
+            camera.position.y += 6; // Adjust for astronaut's eye height
+        }
+    } else {
+        // Switch to third-person view
+        controlsFirstPerson.unlock();
+        controlsFirstPerson.enabled = false;
+        controls.enabled = true;
+
+        // Show the astronaut model again
+        if (astronaut) astronaut.visible = true;
+
+        // Position the camera behind the astronaut
+        const offset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        if (astronaut) {
+            camera.position.copy(astronaut.position).add(offset);
+        }
+
+        // Update controls target
+        if (astronaut) controls.target.copy(astronaut.position);
+    }
+}
+
+document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyV') { // Press 'V' to toggle views
+      toggleView();
+    }
+  });
+  
+
 
 export function startGame() {
 
@@ -260,14 +314,22 @@ camera.add(listener);
 const sound = new THREE.Audio(listener);
 
 // Load a sound and set it as the Audio object's buffer
-const audioLoader = new THREE.AudioLoader();
-audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
-  sound.setBuffer(buffer);
-  sound.setLoop(true);
-  sound.setVolume(0.5);
-  sound.play();
+
+
+audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
+    ambianceSound.setBuffer(buffer);
+    ambianceSound.setLoop(true);
+    ambianceSound.setVolume(0.5);
+    ambianceSound.play();
 });
 
+// Load game over sound
+audioLoader.load('/sound/game-over.mp3', function(buffer) {
+    gameOverSound.setBuffer(buffer);
+    gameOverSound.setLoop(false);
+    gameOverSound.setVolume(0.5);
+    //we'll play it when health reaches zero
+});
 
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
@@ -608,6 +670,7 @@ scene.add(spotLight.target); // Add the target to the scene
                 objectsToRaycast.push(RocksObject);
                 characterControls.objectsToCollide.push(RocksObject); // Add to collision detection array
                 setupRaycasting(camera, objectsToRaycast);
+                onAssetLoaded();
             });
         });
 
@@ -626,6 +689,7 @@ scene.add(spotLight.target); // Add the target to the scene
             objectsToRaycast.push(RockQObject);
             characterControls.objectsToCollide.push(RockQObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
         });
     
@@ -646,6 +710,7 @@ scene.add(spotLight.target); // Add the target to the scene
             //  
             characterControls.objectsToCollide.push(GoldRockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -663,6 +728,7 @@ scene.add(spotLight.target); // Add the target to the scene
             // 
             characterControls.objectsToCollide.push(BasicRockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -683,6 +749,7 @@ scene.add(spotLight.target); // Add the target to the scene
 
             characterControls.objectsToCollide.push(RockObject);
             setupRaycasting(camera, objectsToRaycast);
+            onAssetLoaded();
         });
     });
 
@@ -702,6 +769,7 @@ scene.add(spotLight.target); // Add the target to the scene
 
         characterControls.objectsToCollide.push(spaceRockObject);
         setupRaycasting(camera, objectsToRaycast);
+        onAssetLoaded();
     });
 });
 
@@ -771,6 +839,9 @@ scene.add(spotLight.target); // Add the target to the scene
 
     });
 
+
+    const meow = new Audio('public/sound/meow.wav');
+
    
     
     // Load the static model
@@ -804,6 +875,9 @@ scene.add(spotLight.target); // Add the target to the scene
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
                     catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
+                    setTimeout(() => {
+                        meow.play(); 
+                    }, 1000);
                 
                     catConversation.style.animation = 'none'; 
                     setTimeout(() => {
@@ -871,13 +945,14 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play(); 
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else if(!isItemInInventory('button')){
@@ -886,25 +961,28 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play();
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'By the way, who was it that sent you here?';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else if(!isItemInInventory('circuit')){
             conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
+            meow.play();
         }
 
         else if(!isItemInInventory('console')){
             conversationText = `Ruins on the moon... How did they get here?`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText; 
+            meow.play();
         }
 
         else if(!isItemInInventory('antenna')){
@@ -913,13 +991,14 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play();
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'Be careful, though. Humans are fragile.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else{
@@ -962,33 +1041,39 @@ function isItemInInventory(itemName) {
     function animate() {
         let delta = clock.getDelta();
         if (characterControls) {
-            characterControls.update(delta, keysPressed);
+          characterControls.update(delta, keysPressed, isFirstPerson);
         }
-    
-        // Background animations
-        earth.rotation.y += 0.001;
-    
-        updateShootingStars();
 
-    
+      
+
         if (astronaut) {
-            // Compute the offset between camera and controls.target
+          if (isFirstPerson) {
+            // In first-person view, camera follows astronaut's position
+            camera.position.copy(astronaut.position);
+            camera.position.y += 1.7; // Adjust for astronaut's eye height
+          } else {
+            // Third-person view
             const cameraOffset = camera.position.clone().sub(controls.target);
-    
+      
             // Update controls target to astronaut's position
-            controls.target.copy(astronaut.position);
-    
-
+            controls.target.copy(astronaut.position);   
             // Update camera's position to maintain the offset
             camera.position.copy(astronaut.position).add(cameraOffset);
+          }
 
         }
-    
-        controls.update();
+      
+        if (isFirstPerson) {
+      
+          controlsFirstPerson.update();
+        } else {
+          controls.update();
+        }
+      
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
-    }
-    
+      }
+      
 
     animate();
 
@@ -1032,7 +1117,18 @@ function restartLevel() {
 
     decreaseHealth();
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const volumeControl = document.getElementById('volumeControl');
 
+    // Set up the volume control listener
+    volumeControl.addEventListener('input', function () {
+        const volume = parseFloat(volumeControl.value);
+        ambianceSound.setVolume(volume);
+        gameOverSound.setVolume(volume);
+        timerWarningSound.setVolume(volume);
+        
+    });
+});
 
 // Event Listeners for buttons
 document.getElementById('restartButton').addEventListener('click', restartLevel);

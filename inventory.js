@@ -1,4 +1,6 @@
-import { checkForWin, handleWin } from "./win_check.js";
+
+import { checkForWin, handleWin, checkForWin_l2, handleWin_l2 } from "./win_check.js";
+
 
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
@@ -21,7 +23,14 @@ export const items = {
     redgem: {img: 'public/Graphics/redgem.png', count: 0},
     redruby: {img: 'public/Graphics/redruby.jpg', count: 0},
     diamant: {img: 'public/Graphics/quartz.png', count: 0},
-    jub: {img: 'public/Graphics/jub.jpg', count: 0}
+    jub: {img: 'public/Graphics/jub.jpg', count: 0},
+    mat: {img: 'public/Graphics/map.png', count: 0},
+    Clue1: {img: 'public/Graphics/firstDigit.png', count: 0},
+    Clue2: {img: 'public/Graphics/secondDigit.png', count: 0},
+    Clue3: {img: 'public/Graphics/thirdDigit.png', count: 0},
+    Clue4: {img: 'public/Graphics/fourthDigit.png', count: 0},
+    Clue5: {img: 'public/Graphics/FithDigit.png', count: 0}
+
 };
 
 function getNextAvailableSlot() {
@@ -107,9 +116,17 @@ export function addItem(itemName) {
         items[itemName].hasItem = true;
         clearInventoryFullMessage(); 
 
-        if(checkForWin()){
+        if(checkForWin() || checkForWin_l2()){
+            if(checkForWin_l2()){
+                handleWin_l2();
+            }
+            else{
             handleWin();
+            }
         }
+
+
+
     } else {
         showInventoryFullMessage(); 
     }
@@ -201,7 +218,7 @@ function toggleInventory() {
 
 // Listen for the "keydown" event to detect the "Shift" key
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'Shift') {
+    if (event.key === 'Control') {
         toggleInventory();  // Toggle inventory when Shift is pressed
     }
 });

@@ -17,25 +17,83 @@ body { margin: 0; overflow: hidden; }
 
 /* Exit Menu */
 #exitMenu {
-    display: none;
+    display: none; /* Keep hidden initially */
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.9);
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
+    background: linear-gradient(135deg, rgba(0, 0, 15, 0.95), rgba(50, 0, 70, 0.9));
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px rgba(233, 107, 255, 0.8); /* Glowing effect */
     color: rgb(233, 107, 255);
     z-index: 100;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    transition: opacity 0.5s ease;
+    gap: 15px; /* Space between items */
 }
 
-/* Buttons in Exit Menu */
+
+/* Styling for the Exit Menu heading */
+#exitMenu h2 {
+    font-size: 28px;
+    color: #e776ff; /* Bright accent color */
+    margin-bottom: 20px;
+    text-shadow: 0px 0px 8px #ff99ff; /* Glowing text effect */
+}
+/* Styling for buttons inside the Exit Menu */
 #exitMenu button {
+    display: block;
+    width: 100%; 
+    background-color: #4a167b;
+    color: #fff;
+    border: 2px solid rgba(255, 105, 180, 0.8); /* Neon border */
+    border-radius: 30px; /* Full rounded button */
     margin: 10px;
-    padding: 10px 20px;
-    background: rgba(233, 107, 255, 0.75);
-    font-size: 16px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), 0px 0px 10px rgba(255, 105, 180, 0.6); /* Neon shadow */
+}
+
+#exitMenu button:hover {
+    background-color: #73268c; /* Slightly brighter */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), 0px 0px 15px rgba(255, 150, 200, 0.8); /* More intense glow */
+}
+
+#exitMenu button:active {
+    transform: scale(0.97); /* Button press effect */
+}
+
+/* Volume control input styling */
+#volumeControl {
+    margin-top: 10px; /* Add space above the volume control */
+    width: 100%; /* Match button width */
+    background: rgba(233, 107, 255, 0.5);
+    height: 10px;
+    border-radius: 5px;
+    outline: none;
+    appearance: none;
+}
+#volumeControl::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ff99ff;
+    box-shadow: 0px 0px 8px #ff99ff; /* Neon thumb */
+    cursor: pointer;
+}
+#volumeControl::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ff99ff;
+    box-shadow: 0px 0px 8px #ff99ff; /* Neon thumb */
     cursor: pointer;
 }
 
@@ -168,5 +226,3 @@ body { margin: 0; overflow: hidden; }
         width: 100%;
     }
 }
-
-

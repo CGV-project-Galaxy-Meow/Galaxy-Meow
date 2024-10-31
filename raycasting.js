@@ -138,6 +138,41 @@ const itemDataMapping = {
         additionalInfo: 'Its power is unknown.',
         imgSrc: items['jub'].img,
         itemName: 'jub'
+    },
+    'Node-Mesh_1':{
+        title: 'Clue',
+        description: 'Part of a code.',
+        additionalInfo: '1',
+        imgSrc: items['Clue1'].img,
+        itemName: 'Clue1'
+    },
+    'Cube_Cube001':{
+        title: 'Clue',
+        description: 'Part of a code.',
+        additionalInfo: 'The first digit of Y2K.',
+        imgSrc: items['Clue2'].img,
+        itemName: 'Clue2'
+    },
+    'Debris_Papers_2':{
+        title: 'Clue',
+        description: 'Part of a code',
+        additionalInfo: 'The number of triplets.',
+        imgSrc: items['Clue3'].img,
+        itemName: 'Clue3'
+    },
+    'Node-Mesh':{
+        title: 'Clue',
+        description: 'Part of a code',
+        additionalInfo: 'What is 2 raised to the power of 2 ?',
+        imgSrc: items['Clue4'].img,
+        itemName: 'Clue4'
+    },
+    'Box003':{
+        title: 'Clue',
+        description: 'Part of a code',
+        additionalInfo: 'Factorial question x! = 120 Find x.',
+        imgSrc: items['Clue5'].img,
+        itemName: 'Clue5'
     }
 };
 export function setupRaycasting(camera, objectsToRaycast) {
