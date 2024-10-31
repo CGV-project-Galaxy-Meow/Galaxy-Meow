@@ -148,7 +148,12 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
 
     //setupRaycasting(camera, objectsToRaycast);
 });
-
+loadModel('models/ground.glb', scene, controls, camera, (asteroid_groundObject) => {
+    asteroid_groundObject.scale.set(30, 1, 30);  // Scale it large enough to simulate an infinite ground
+    asteroid_groundObject.position.set(0, -1.5, 0);  // Place the plane below the astronaut
+    //moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
+    scene.add(asteroid_groundObject);
+});
 
 //loading screen!!!
 // const loadingScreen = document.getElementById('loadingScreen');
@@ -277,7 +282,7 @@ let characterControls;
 loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
     astronaut.scale.set(1.7, 1.7, 1.7);
-    astronaut.position.set(50, 0, 5);
+    astronaut.position.set(0, 0, 5);
     astronaut.rotation.x = 0;
 
 

@@ -53,6 +53,12 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Bright whi
 directionalLight.position.set(0, 10, 10).normalize();  // Position the light
 scene.add(directionalLight);
 
+const spaceTexture = new THREE.TextureLoader().load('textures/test1.png');
+const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
+const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
+const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
+scene.add(space);
+
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
 camera.position.set(50, -10, 5);   // Set an initial camera position
@@ -614,7 +620,7 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
                 catConversation.style.animation = 'none'; 
                 setTimeout(() => {
                     responses.style.display = 'flex'; 
-                }, 4000);
+                }, 3000);
             }
         }
     });
