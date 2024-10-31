@@ -31,6 +31,8 @@ const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let astronaut;
 let catObject;
+const meow = new Audio('sound/meow.wav');
+let conversationText;
 
 const clock = new THREE.Clock();
 let objectsToRaycast = []
@@ -123,6 +125,7 @@ function decreaseHealth() {
         if (health > 0) {
             health -= 1;
             healthElement.innerHTML = `Oxygen: ${health}/100`;
+            lore();
             checkOxygen();
         } else {
             clearInterval(healthInterval); // Stop the timer when health reaches 0
@@ -142,12 +145,29 @@ function decreaseHealth() {
 //cat warns you of the oxygen
 function checkOxygen(){
     if(health == 30){
+        meow.play();
         modal.style.display = 'flex';
-        catConversation.style.animation = 'none';
         catConversation.textContent = `Be careful! Your oxygen is running low.`;
     
-        void catConversation.offsetWidth; 
-        catConversation.style.animation = 'typing 3.5s steps(40, end)';
+        // Keep the buttons hidden
+        responses.style.display = 'none'; 
+    }
+}
+
+function lore(){
+    if(health == 99){
+        meow.play();
+        modal.style.display = 'flex';
+        catConversation.textContent = `SPO's first agent, Ms M.S Fitgerald was also the first to learn of their corruption.`;
+
+        setTimeout(() => { 
+            conversationText = '';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+            
+            conversationText = 'And look at how she ended up.';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+
+        }, 3000); 
     
         // Keep the buttons hidden
         responses.style.display = 'none'; 
@@ -594,7 +614,6 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
     onAssetLoaded();
 });
 
-const meow = new Audio('sound/meow.wav');
 
 loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
     console.log('Static model loaded:', object);
@@ -721,7 +740,7 @@ helpButton.addEventListener('click', () => {
 
     else{
         meow.play(); 
-        conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
+        conversationText = `Help? But you have everything you need to proceed`;             
         document.getElementById('catConversation').innerHTML = conversationText;
         catConversation.textContent = conversationText;
     }

@@ -6,6 +6,7 @@ import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, po
 import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
+import { clearInventory, items } from './inventory.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -17,6 +18,8 @@ const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let catObject; 
+const meow = new Audio('sound/meow.wav');
+let conversationText;
 
 const clock = new THREE.Clock();
 let health = 100;
@@ -104,6 +107,7 @@ function decreaseHealth() {
         if (health > 0) {
             health -= 1;
             healthElement.innerHTML = `Oxygen: ${health}/100`;
+            lore();
             checkOxygen();
         } else {
             clearInterval(healthInterval); // Stop the timer when health reaches 0
@@ -123,19 +127,34 @@ function decreaseHealth() {
 //cat warns you of the oxygen
 function checkOxygen(){
     if(health == 30){
+        meow.play();
         modal.style.display = 'flex';
-        catConversation.style.animation = 'none';
         catConversation.textContent = `Be careful! Your oxygen is running low.`;
-    
-        void catConversation.offsetWidth; 
-        catConversation.style.animation = 'typing 3.5s steps(40, end)';
-    
+
         // Keep the buttons hidden
         responses.style.display = 'none'; 
     }
 }
 
+function lore(){
+    if(health == 99){
+        meow.play();
+        modal.style.display = 'flex';
+        catConversation.textContent = `Luckily for you, Ms Fitzgerald has left her successors clues on how to return to Earth.`;
 
+        setTimeout(() => { 
+            conversationText = '';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+            
+            conversationText = 'Use this chance wisely so that no more lives will be forsaken.';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+
+        }, 3000); 
+    
+        // Keep the buttons hidden
+        responses.style.display = 'none'; 
+    }
+}
 
 
 //use this to start the game
@@ -392,18 +411,7 @@ loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camer
 loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObject) => {
         CarpetObject.scale.set(1.5, 1.5, 1.5);  
         CarpetObject.position.set(0, 0.1,0);
-        CarpetObject.traverse((child) => {
-            if (child.isMesh) {
-                // Assign custom name or userData to ensure we're modifying the correct mesh
-                child.name = 'magic-carpet'; // Set a specific name for this child object
-                child.customId = 'magic-carpet'; // Alternatively, assign a custom ID
-                
-                // Store additional custom data if needed
-                child.userData = { customId: 'magic-carpet' }; // Set custom user data for the mesh
-            }
-            onAssetLoaded();
-        });
-         
+        CarpetObject.name = 'Magic Carpet';        
         scene.add(CarpetObject);               
         objectsToRaycast.push(CarpetObject);   
     
@@ -609,15 +617,13 @@ loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (objec
     // Set initial controls target
     controls.target.copy(astronaut.position);
 });
-
-const meow = new Audio('sound/meow.wav');
    
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
         object.scale.set(1, 1, 1);
-        object.position.set(-10, 0, -10);
+        object.position.set(-10, 0, 10);
         object.rotation.y =  Math.PI / 2;
 
         catObject = object;
@@ -642,7 +648,7 @@ const meow = new Audio('sound/meow.wav');
 
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
-                    catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
+                    catConversation.textContent = `Can you still afford to ask me for help?`;
                     setTimeout(() => {
                         meow.play(); 
                     }, 1000);
@@ -658,7 +664,7 @@ const meow = new Audio('sound/meow.wav');
 // Event listener for 'Don't Help' button
 dontHelpButton.addEventListener('click', () => {
     catConversation.style.animation = 'none';
-    catConversation.textContent = `As you wish.`;
+    catConversation.textContent = `Why, of course.`;
 
     // Keep the buttons hidden
     responses.style.display = 'none'; 
@@ -672,8 +678,8 @@ function isItemInInventory(itemName) {
     helpButton.addEventListener('click', () => {
         let conversationText;
     
-        if (!isItemInInventory('battery')) {
-            conversationText = `Very well. The battery can be found near the vehicle you arrived here with.`;             
+        if (!isItemInInventory('Clue1')) {
+            conversationText = `Have you thoroughly searched the comets?`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
     
@@ -682,14 +688,14 @@ function isItemInInventory(itemName) {
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
-                conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
+                conversationText = 'How sweet of Madam Fitzgerald to leave you these clues.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
             }, 3000); 
         }
 
-        else if(!isItemInInventory('button')){
-            conversationText = `Perhaps you can ask Mr Neil Armstrong on the whereabouts of the button.`;             
+        else if(!isItemInInventory('Clue2')){
+            conversationText = `On my left.. once again. You might need this soon.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
     
@@ -698,44 +704,44 @@ function isItemInInventory(itemName) {
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
-                conversationText = 'By the way, who was it that sent you here?';
+                conversationText = 'Have you figured out why you were sent here, memoryless?';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
             }, 3000); 
         }
 
-        else if(!isItemInInventory('circuit')){
-            conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
+        else if(!isItemInInventory('Clue3')){
+            conversationText = `Don't be afraid to search behind me as well.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
             meow.play();
+
+            setTimeout(() => {
+                meow.play();
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'When you go back, make sure SPO is never allowed to send out another astronaut.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 3000); 
         }
 
-        else if(!isItemInInventory('console')){
-            conversationText = `Ruins on the moon... How did they get here?`;             
+        else if(!isItemInInventory('Clue4')){
+            conversationText = `This asteroid does look extraterrestrial, doesn't it? That's not a human arch.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText; 
             meow.play();
         }
 
-        else if(!isItemInInventory('antenna')){
-            conversationText = `Here comes the sun...`;             
+        else if(!isItemInInventory('Clue5')){
+            conversationText = `Do you think flora is unique to Earth?`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
-    
-            setTimeout(() => {
-                meow.play();
-                conversationText = '';
-                document.getElementById('catConversation').innerHTML = conversationText; 
-                
-                conversationText = 'Be careful, though. Humans are fragile.';
-                document.getElementById('catConversation').innerHTML = conversationText; 
-
-            }, 3000); 
         }
 
         else{
-            conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
+            conversationText = `Help? But you have everything you need to proceed.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
         }
@@ -846,3 +852,4 @@ document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
 animate();  // Start the animation loop
 
 };
+
