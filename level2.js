@@ -14,6 +14,7 @@ let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
+
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const modal = document.getElementById('myModal');
