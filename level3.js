@@ -835,4 +835,3 @@ document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
 animate();  // Start the animation loop
 
 };
-
