@@ -140,39 +140,39 @@ const itemDataMapping = {
         itemName: 'jub'
     },
     'Node-Mesh_1':{
-        title: 'Magic Carpet',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
+        title: 'Clue',
+        description: 'Enter info',
+        additionalInfo: 'Enter info',
         imgSrc: items['mat'].img,
-        itemName: 'mat'
+        itemName: 'Clue1'
     },
     'Cube_Cube001':{
         title: 'Clue',
         description: 'Enter info',
         additionalInfo: 'Info',
         imgSrc: items['mat'].img,
-        itemName: 'mat'
+        itemName: 'Clue2'
     },
     'Debris_Papers_2':{
         title: 'Clue',
         description: 'Enter info',
         additionalInfo: 'Enter ifnfo',
         imgSrc: items['mat'].img,
-        itemName: 'mat'
+        itemName: 'Clue3'
     },
     'Node-Mesh':{
         title: 'Clue',
         description: 'Enter info',
         additionalInfo: 'Enter info',
         imgSrc: items['mat'].img,
-        itemName: 'mat'
+        itemName: 'Clue4'
     },
     'Box003':{
         title: 'Clue',
         description: 'Enter info',
         additionalInfo: 'Enter info',
         imgSrc: items['mat'].img,
-        itemName: 'mat'
+        itemName: 'Clue5'
     }
 };
 export function setupRaycasting(camera, objectsToRaycast) {
