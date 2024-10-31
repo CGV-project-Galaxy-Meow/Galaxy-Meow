@@ -157,7 +157,8 @@ function checkOxygen(){
         meow.play();
         modal.style.display = 'flex';
         catConversation.textContent = `Be careful! Your oxygen is running low.`;
-    
+
+        timerWarningSound.play();
         // Keep the buttons hidden
         responses.style.display = 'none'; 
     }
