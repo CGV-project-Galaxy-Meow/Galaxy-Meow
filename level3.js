@@ -5,6 +5,7 @@ import { CharacterControls } from './characterControls.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster,positionsRocks2, positionsQ2,positionsStones2} from './modelLocations.js';
 import {showDeathMessage} from './levelMenus.js'
 import { setupRaycasting } from './raycasting.js';
+import { createSun } from './background.js';
 
 
 
@@ -28,9 +29,10 @@ scene.background = new THREE.Color(0x000000);  // Set a background color for vis
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // Soft white light
 scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Bright white light
-directionalLight.position.set(0, 10, 10).normalize();  // Position the light
-scene.add(directionalLight);
+const directionalLight = new THREE.DirectionalLight(0x999793, 25);
+    directionalLight.position.set(0, 50, -50).normalize();
+    scene.add(directionalLight);
+    createSun(scene);
 
 const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
