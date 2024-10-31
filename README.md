@@ -11,3 +11,6 @@ Branch Management Guidelines:
 - Make sure your tests pass before commits.
 - Give your commits to your branch meaningful names including: What you did and who you are - Github actions will reflect the date and time so you do not need to worry about that.
 - Do not merge to main without the agreement of all devs.
+
+
+**The lamp version of the code is in the Lunar branch**
