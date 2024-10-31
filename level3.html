@@ -205,10 +205,13 @@ canvas {
 
     <span id = "inventoryFull"></span>
 
+    <!-- Exit Menu -->
     <div id="exitMenu">
-        <h2>Are you sure?</h2>
+        <h2>Astral Meow-nu</h2>
         <button id="mainMenuButton">Main Menu</button>
         <button id="restartButton">Restart Level</button>
+        <label for="volumeControl">Music Volume:</label>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
     </div>
 
     <!-- You Died Message -->
@@ -235,7 +238,7 @@ canvas {
 
 
     <!-- Import Three.js -->
-     <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
+     <!-- <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
    
@@ -243,6 +246,7 @@ canvas {
 
     <!-- Import your custom JavaScript file -->
     <script type = "module" src = "/level3Intro.js"> </script>
+    <!-- <script type="module" src="level3.js"></script> -->
     <script type = "module" src = "/inventory.js"> </script>
    
     
