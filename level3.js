@@ -3,13 +3,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster,positionsRocks2, positionsQ2,positionsStones2} from './modelLocations.js';
-import {showDeathMessage} from './levelMenus.js'
+
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { AudioManager } from './AudioManager.js';
-
+import { HealthManager } from './HealthManager.js';
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const modal = document.getElementById('myModal');
@@ -25,11 +25,9 @@ let conversationText;
 let astronaut;
 const clock = new THREE.Clock();
 
-let health = 80;
-let healthElement = document.getElementById('healthBar');
+
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
-let healthInterval; // To control the health timer
 
 
 // Initialize AudioManager
@@ -39,6 +37,10 @@ const audioManager = new AudioManager();
 audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
 audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
 audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
+
+const healthManager = new HealthManager(80, audioManager);
+
+
 export let objectsToRaycast = [];
 
 //for loading screen
@@ -52,7 +54,7 @@ function onAssetLoaded() {
     assetsLoaded++;
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
-        decreaseHealth();
+        healthManager.startHealthDecrease();
     }
 }
 
@@ -128,36 +130,7 @@ window.addEventListener('resize', () => {
 
 
 //----important functions-----
-function decreaseHealth() {
-    if (healthInterval) {
-        clearInterval(healthInterval); // Clear any previous interval
-    }
-    healthInterval = setInterval(() => {
-        if (health > 0) {
-            health -= 1;
-            healthElement.innerHTML = `Oxygen: ${health}/100`;
-            lore();
-            checkOxygen();
-        } else {
-            clearInterval(healthInterval); // Stop the timer when health reaches 0
-            showDeathMessage();
-            audioManager.stopSound('ambiance');
-            audioManager.playSound('gameOver');
-        }
-    }, 4000); // Decrease health every 5 seconds
-}
 
-//cat warns you of the oxygen
-function checkOxygen(){
-    if(health == 30){
-        meow.play();
-        modal.style.display = 'flex';
-        catConversation.textContent = `You are almost home. Don't dawdle.`;
-        //timerWarningSound.play();
-        // Keep the buttons hidden
-        responses.style.display = 'none'; 
-    }
-}
 
 function lore(){
     if(health == 99){
@@ -782,7 +755,7 @@ function isItemInInventory(itemName) {
 
         responses.style.display = 'none';
 
-        health -= 10;
+        healthManager.decreaseHealthBy(10);
     });
 
         // Close modal on button click
@@ -848,9 +821,7 @@ function animate() {
 function restartLevel() {
     clearInventory();
     // Reset health
-    health = 79;
-    healthElement.innerHTML = `Oxygen: ${health}/100`;
-
+    healthManager.resetHealth();
     // Hide death and exit menus
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
@@ -863,7 +834,7 @@ function restartLevel() {
 
     audioManager.playSound('ambiance');
 
-    decreaseHealth();
+    healthManager.startHealthDecrease(); // Restart health decrease
 }
 
 
@@ -879,8 +850,6 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
 });
-
-
 
 
 animate();  // Start the animation loop
