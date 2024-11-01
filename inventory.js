@@ -1,8 +1,15 @@
-import { checkForWin, handleWin, checkForWin_l2, handleWin_l2 } from "./win_check";
+import { checkForWin, handleWin, } from "./win_check";
+
 
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 8;
+
+const urlPath = window.location.pathname;
+const fileName = urlPath.substring(urlPath.lastIndexOf('/') + 1);
+
+let currentLevel;
+
 
 export const items = {
     gems: { img: 'images/crystal.png', count: 0 },
@@ -114,13 +121,16 @@ export function addItem(itemName) {
         items[itemName].hasItem = true;
         clearInventoryFullMessage(); 
 
-        if(checkForWin() || checkForWin_l2()){
-            if(checkForWin_l2()){
-                handleWin_l2();
-            }
-            else{
-            handleWin();
-            }
+        if (fileName === 'game.html') {
+            currentLevel = 1;
+        } else if (fileName === 'level2.html') {
+            currentLevel = 2;
+        }
+        console.log(currentLevel);
+
+        if(checkForWin(currentLevel)){
+            handleWin(currentLevel);
+            
         }
 
 
