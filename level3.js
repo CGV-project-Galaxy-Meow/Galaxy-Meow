@@ -439,8 +439,7 @@ loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObje
         console.log(userCode); // Log user input for debugging
 
         if (userCode === correctCode) {
-            alert("Congratulations! You've won the level!");
-            // Trigger level win logic here
+            window.location.href = 'epilogue.html'
             container.style.display = 'none'; // Optionally hide the input container after winning
         } else {
             modal.style.display = 'flex';
