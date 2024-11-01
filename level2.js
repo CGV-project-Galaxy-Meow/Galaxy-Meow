@@ -9,10 +9,11 @@ import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
-import {showDeathMessage} from './levelMenus.js'
+
+import { HealthManager } from './HealthManager.js';
 
 
-let health = 90;
+
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
@@ -42,6 +43,9 @@ audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
 audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
 audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
 
+const healthManager = new HealthManager(90, audioManager);
+
+
 
 const clock = new THREE.Clock();
 let objectsToRaycast = []
@@ -55,7 +59,7 @@ function onAssetLoaded() {
     assetsLoaded++;
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
-        decreaseHealth();
+        healthManager.startHealthDecrease();;
     }
 }
 
@@ -113,34 +117,7 @@ window.addEventListener('resize', () => {
 
 //----functions----
 
-function decreaseHealth() {
-    if (healthInterval) clearInterval(healthInterval); // Clear any previous interval
-    healthInterval = setInterval(() => {
-        if (health > 0) {
-            health -= 1;
-            healthElement.innerHTML = `Oxygen: ${health}/100`;
-            checkOxygen();
-        } else {
-            clearInterval(healthInterval);
-            showDeathMessage();
-            audioManager.stopSound('ambiance');
-            audioManager.playSound('gameOver');
-        }
-    }, 5000); // Decrease health every 5 seconds
-}
 
-//cat warns you of the oxygen
-function checkOxygen(){
-    if(health == 30){
-        meow.play();
-        modal.style.display = 'flex';
-        catConversation.textContent = `Be careful! Your oxygen is running low.`;
-
-        audioManager.playSound('timerWarning');
-        // Keep the buttons hidden
-        responses.style.display = 'none'; 
-    }
-}
 
 function lore(){
     if(health >= 69 && health <= 79){
@@ -727,7 +704,8 @@ helpButton.addEventListener('click', () => {
 
     responses.style.display = 'none';
 
-    health -= 10;
+     // Use HealthManager to decrease health by 10 points for the cat interaction
+ healthManager.decreaseHealthBy(10);
 });
 
     // Close modal on button click
@@ -792,8 +770,8 @@ function animate() {
 function restartLevel() {
     clearInventory();
     // Reset health
-    health = 100;
-    healthElement.innerHTML = `Oxygen: ${health}/100`;
+      // Use HealthManager's reset method
+      healthManager.resetHealth();
 
     // Hide death and exit menus
     deathMessage.style.display = 'none';
@@ -807,8 +785,7 @@ function restartLevel() {
 
     
     audioManager.playSound('ambiance');
-
-    decreaseHealth();
+    healthManager.startHealthDecrease(); // Restart health decrease
 }
 
 
