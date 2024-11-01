@@ -8,7 +8,7 @@ body, html {
   .start-menu {
     width: 100vw;
     height: 100vh;
-    background-image: url('/Graphics/MainMenuGalaxyMeow.png'); 
+    background-image: url('https://lamp.ms.wits.ac.za/~sgalaxy/public/Graphics/MainMenuGalaxyMeow.png'); 
     background-size: cover;
     background-position: center;
     position: relative;
