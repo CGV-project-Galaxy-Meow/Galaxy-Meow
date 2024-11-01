@@ -36,9 +36,9 @@ let healthInterval; // To control the health timer
 const audioManager = new AudioManager();
 
 // Initialize sounds with file paths
-audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
-audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
-audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
+audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
 export let objectsToRaycast = [];
 
 //for loading screen
@@ -632,7 +632,7 @@ loadModel('public/models/rocks/Stalactites_&_gems.glb', scene, controls, camera,
 
 
 let characterControls;
-loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
     astronaut.scale.set(1.7, 1.7, 1.7);
     astronaut.position.set(0, 0, 5);
