@@ -15,6 +15,20 @@ export function createSun(scene) {
   scene.add(sun);
 }
 
+export function createSun2(scene) {
+  const sunGeometry = new THREE.SphereGeometry(50, 32, 32);
+
+  const sunTexture = new THREE.TextureLoader().load('textures/sun.jpg');
+
+  const sunMaterial = new THREE.MeshBasicMaterial({
+      map: sunTexture
+  });
+
+  const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+  sun.position.set(1000, 100, 4); 
+  scene.add(sun);
+}
+
 
 
 export function createCelestialBody(textureUrl, size, position, scene) {

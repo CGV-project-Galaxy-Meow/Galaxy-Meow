@@ -3,13 +3,14 @@ import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitC
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster,positionsRocks2, positionsQ2,positionsStones2} from './modelLocations.js';
-
-import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
 import { AudioManager } from './AudioManager.js';
 import { HealthManager } from './HealthManager.js';
+import LightSetup from './LightSetup.js';
+import {createSun2 } from './background.js';
+
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const modal = document.getElementById('myModal');
@@ -63,29 +64,34 @@ function onAssetLoaded() {
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
-// Add lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // Soft white light
-scene.add(ambientLight);
 
-const spotLight = new THREE.SpotLight(0xb900ff, 80); // Red light with intensity 80
-spotLight.position.set(0, 0,0); // Positioning the light above the ground
+const ambientConfig = { color: 0xffffff, intensity: 0.5 };
+const directionalConfig = { color: 0x999793, intensity: 25, position: { x: 300, y: 100, z: 4 } };
+const spotlightConfig = [{
+  color: 0xb900ff,
+  intensity: 100,
+  position: { x: 0, y: 0, z: 0 },
+  target: { x:50 , y: 0, z: 8 },
+  angle: Math.PI / 3,
+  penumbra: 0.2,
+  decay: 2,
+  distance: 60
+},
 
-// Set the spotlight to shine directly downwards
-spotLight.angle = Math.PI / 2; // Angle of the spotlight's cone (adjust if needed)
-spotLight.penumbra = 0.1; // Soft edges of the spotlight
-spotLight.decay = 2; // How quickly the light diminishes
-spotLight.distance = 50; // The distance the light reaches
+{
+    color: 0xff009e,
+    intensity: 70,
+    position: { x: 0, y: 10, z: 150 }, // Position directly above the tree
+    target: { x: 0, y: 1.5, z: 150 }, // Target the center of the tree
+    angle: Math.PI / 4, // Adjust for desired width
+    penumbra: 0.2,
+    decay: 2,
+    distance: 60,
+    castShadow: true // Enable shadow if needed
+}]
 
-// Enable shadows if needed
-spotLight.castShadow = true;
-
-// Point the light directly downwards
-spotLight.target.position.set(50, 0, 8); // Set the target to the ground (where the torch is pointing)
-spotLight.target.updateMatrixWorld(); // Update the target matrix
-
-// Add the spotlight to the scene
-scene.add(spotLight);
-scene.add(spotLight.target); // Add the target to the scene
+new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
+createSun2(scene)
 
 const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
@@ -234,28 +240,6 @@ loadModel('public/models/Moon.glb', scene, controls, camera, (astroObject) => {
 });
   
     
-//Load the sun model
-loadModel('public/models/sun1.glb', scene, controls, camera, (astroObject) => {
-    // Scale and position the sun
-    astroObject.scale.set(50, 50, 50);
-    astroObject.position.set(1000, 100, 4);
-    astroObject.name = 'sun';
-    scene.add(astroObject);
-    objectsToRaycast.push(astroObject);
-
-    // Create a directional light to simulate sunlight
-    const sunlight = new THREE.DirectionalLight(0x999793, 25); // White light, intensity 1
-    sunlight.position.set(300, 100, 4); // Same position as the sun
-    sunlight.target.position.set(0, 0, 0); // Target to illuminate towards the origin or another object
-    scene.add(sunlight);
-    scene.add(sunlight.target); // Ensure target is part of the scene to get directional lighting working
-
-    // Optionally, you can add a slight light effect on the sun itself (not required for realism)
-    const sunLightGlow = new THREE.PointLight(0xffcc33, 2, 500); // Orange-ish glow, intensity 2, range 500
-    sunLightGlow.position.set(300, 100, 4); // Same position as the sun
-    scene.add(sunLightGlow);
-});
-
 
 loadModel('public/models/earth1.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(25, 25, 25);
@@ -822,7 +806,7 @@ function animate() {
 function restartLevel() {
     clearInventory();
     // Reset health
-    healthManager.resetHealth();
+    healthManager.resetHealth(80);
     // Hide death and exit menus
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';

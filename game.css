@@ -39,6 +39,7 @@ body { margin: 0; overflow: hidden; }
 #exitMenu h2 {
     font-size: 28px;
     color: #e776ff; /* Bright accent color */
+    margin-left: 20px;
     margin-bottom: 20px;
     text-shadow: 0px 0px 8px #ff99ff; /* Glowing text effect */
 }
