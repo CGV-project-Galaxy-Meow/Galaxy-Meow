@@ -8,6 +8,7 @@ import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { AudioManager } from './AudioManager.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -30,6 +31,14 @@ let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
 
+
+// Initialize AudioManager
+const audioManager = new AudioManager();
+
+// Initialize sounds with file paths
+audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
 export let objectsToRaycast = [];
 
 //for loading screen
@@ -117,27 +126,6 @@ window.addEventListener('resize', () => {
 });
 
 
-// Audio listener
-const listener = new THREE.AudioListener();
-camera.add(listener);
-
-// Audio loader
-const audioLoader = new THREE.AudioLoader();
-
-// separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
-const timerWarningSound= new THREE.Audio(listener);
-
-audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
-    timerWarningSound.setBuffer(buffer);
-    timerWarningSound.setLoop(false);
-    timerWarningSound.setVolume(0.5);
-
-});
-
-
-
 
 //----important functions-----
 function decreaseHealth() {
@@ -153,14 +141,8 @@ function decreaseHealth() {
         } else {
             clearInterval(healthInterval); // Stop the timer when health reaches 0
             showDeathMessage();
-
-            // Stop the ambiance music
-            if (ambianceSound.isPlaying) {
-                ambianceSound.stop();
-            }
-
-            // Play the game over sound
-            gameOverSound.play();
+            audioManager.stopSound('ambiance');
+            audioManager.playSound('gameOver');
         }
     }, 4000); // Decrease health every 5 seconds
 }
@@ -257,37 +239,12 @@ export function startGame() {
     const volumeControl = document.getElementById('volumeControl');
     volumeControl.addEventListener('input', function () {
         const volume = parseFloat(volumeControl.value);
-        ambianceSound.setVolume(volume);
-        gameOverSound.setVolume(volume);
-        timerWarningSound.setVolume(volume);
-        console.log("Volume set to: ", volume);  // Debug: confirm volume change
+        audioManager.setVolume('ambiance', volume);
+        audioManager.setVolume('gameOver', volume);
+        audioManager.setVolume('timerWarning', volume);
     });
-    
-    
-    //sound 
-    // Load ambiance sound
-    audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-        ambianceSound.setBuffer(buffer);
-        ambianceSound.setLoop(true);
-        ambianceSound.setVolume(0.5);
-        ambianceSound.play();
-    });
-    
-    // Load game over sound
-    audioLoader.load('/sound/game-over.mp3', function(buffer) {
-        gameOverSound.setBuffer(buffer);
-        gameOverSound.setLoop(false);
-        gameOverSound.setVolume(0.5);
-        //we'll play it when health reaches zero
-    });
-    
-    audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
-        timerWarningSound.setBuffer(buffer);
-        timerWarningSound.setLoop(false);
-        timerWarningSound.setVolume(0.5);
-    
-    });
-    
+
+    audioManager.playSound('ambiance');
 
 
 //Function to load and apply texture to the moon model
@@ -337,23 +294,6 @@ loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
 
 
     //setupRaycasting(camera, objectsToRaycast);
-});
-
-//sound 
-// Load ambiance sound
-audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
-
-// Load game over sound
-audioLoader.load('public/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
 });
 
 
@@ -460,8 +400,8 @@ loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObje
    setupRaycasting(camera, objectsToRaycast);  
    onAssetLoaded();
 }, function (error) {
-    console.error('Error loading carpet model:', error);
-    });
+    console.error('Error loading carpet model:',error);
+});
 
     window.addEventListener('click', (event) => {
 
@@ -922,15 +862,7 @@ function restartLevel() {
         astronaut.rotation.set(0, 0, 0); 
     }
 
-    // Stop the game over sound if it's playing
-    if (gameOverSound.isPlaying) {
-        gameOverSound.stop();
-    }
-
-    // Start the ambiance music if it's not playing
-    if (!ambianceSound.isPlaying) {
-        ambianceSound.play();
-    }
+    audioManager.playSound('ambiance');
 
     decreaseHealth();
 }
