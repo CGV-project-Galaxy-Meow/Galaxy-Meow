@@ -27,7 +27,7 @@ export class CharacterControls {
 
 playCurrentAction() {
     if (this.currentAnimationAction) {
-        this.currentAnimationAction.stop();
+        this.currentAnimationAction.fadeOut(0.2);
     }
 
     this.currentAnimationAction = this.animationsMap.get(this.currentAction);

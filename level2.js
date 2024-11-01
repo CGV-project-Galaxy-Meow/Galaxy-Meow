@@ -9,7 +9,7 @@ import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
-
+import LightSetup from './LightSetup.js';
 import { HealthManager } from './HealthManager.js';
 
 let exitMenu = document.getElementById('exitMenu');
@@ -35,9 +35,9 @@ let conversationText;
 const audioManager = new AudioManager();
 
 // Initialize sounds with file paths
-audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
-audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
-audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
+audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
 
 const healthManager = new HealthManager(90, audioManager);
 
@@ -62,14 +62,14 @@ function onAssetLoaded() {
 // ---------Create the scene--------------
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
-// Add lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // Soft white light
-scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0x999793, 25);
-    directionalLight.position.set(0, 50, -50).normalize();
-    scene.add(directionalLight);
-    createSun(scene);
+
+const ambientConfig = { color: 0xffffff, intensity: 0.5};
+const directionalConfig = { color: 0x999793, intensity: 25, position: { x: 0, y: 50, z: -50 } };
+
+new LightSetup(scene, ambientConfig, directionalConfig);
+createSun(scene);
+
 
 const spaceTexture = new THREE.TextureLoader().load('public/textures/test2.webp');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
@@ -214,7 +214,7 @@ const marsTexture = textureLoader.load('textures/mars.jpeg', function (texture) 
 });
 
 // Function to load and apply texture to the moon model
-loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
+loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) => {
     marsObject.traverse((child) => {
         if (child.isMesh) {
             // Apply the texture to the mesh material
@@ -230,7 +230,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     //console.log('Ground model loaded and added to the scene');
 
     
-    loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
+    loadModel('public/models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
         crystalObject.scale.set(0.3, 0.3, 0.3); // Set size of crystal
         crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
         
@@ -767,7 +767,7 @@ function restartLevel() {
     clearInventory();
     // Reset health
       // Use HealthManager's reset method
-      healthManager.resetHealth();
+      healthManager.resetHealth(90);
 
     // Hide death and exit menus
     deathMessage.style.display = 'none';
