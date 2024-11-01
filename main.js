@@ -8,17 +8,15 @@ import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
-import {showDeathMessage} from './levelMenus.js'
 import { clearInventory, items } from './inventory.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
 import { AudioManager } from './AudioManager.js';
+import { HealthManager } from './HealthManager.js';
 
-let health = 100;
-let healthElement = document.getElementById('healthBar');
+
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let characterControls;
-let healthInterval; // To control the health timer
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -150,29 +148,10 @@ controls.mouseButtons = {
 
 
 //----functions----
+// Initialize HealthManager with initial health and audio manager
+const healthManager = new HealthManager(100, audioManager);
 
-function decreaseHealth() {
-    if (healthInterval) clearInterval(healthInterval); // Clear any previous interval
-    healthInterval = setInterval(() => {
-        if (health > 0) {
-            health -= 1;
-            healthElement.innerHTML = `Oxygen: ${health}/100`;
-            checkOxygen();
-        } else {
-            clearInterval(healthInterval);
-            showDeathMessage();
-            audioManager.stopSound('ambiance');
-            audioManager.playSound('gameOver');
-        }
-    }, 5000); // Decrease health every 5 seconds
-}
 
-//cat warns you of the oxygen
-function checkOxygen() {
-    if (health == 30) {
-        audioManager.playSound('timerWarning');
-    }
-}
 
 document.getElementById('bagIcon').style.display = 'none';
 document.getElementById('startPiP').style.display = 'none';
@@ -183,7 +162,8 @@ function onAssetLoaded() {
     assetsLoaded++;
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
-        decreaseHealth();
+       healthManager.startHealthDecrease();
+
     }
 }
 
@@ -877,8 +857,8 @@ function isItemInInventory(itemName) {
         }
 
         responses.style.display = 'none';
-
-        health -= 10;
+ // Use HealthManager to decrease health by 10 points for the cat interaction
+ healthManager.decreaseHealthBy(10);
     });
 
         // Close modal on button click
@@ -950,19 +930,18 @@ function isItemInInventory(itemName) {
 }
 
 
-
 function restartLevel() {
     clearInventory();
-    health = 100;
-    healthElement.innerHTML = `Oxygen: ${health}/100`;
+    healthManager.resetHealth();
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
     if (astronaut) astronaut.position.copy(initialAstronautPosition);
     
     audioManager.playSound('ambiance');
     
-    decreaseHealth();
+    healthManager.startHealthDecrease(); // Restart health decrease
 }
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
