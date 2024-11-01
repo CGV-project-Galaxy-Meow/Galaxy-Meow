@@ -1,34 +1,36 @@
-import { checkForWin, handleWin, checkForWin_l2, handleWin_l2 } from "./win_check";
+
+import { checkForWin, handleWin, checkForWin_l2, handleWin_l2 } from "./win_check.js";
+
 
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 8;
 
 export const items = {
-    gems: { img: 'images/crystal.png', count: 0 },
-    sword: { img: 'images/sword.png', count: 0 },
-    potion: { img: 'images/potion.png', count: 0 },
-    crudeOil: { img: 'images/crude_oil.png', count: 0 },
-    battery: { img: 'images/bat.png', count: 0},
-    skull: { img: 'images/skull.png', count: 0 },
-    flag: { img: 'images/flag.png', count: 0 },
-    button: { img: 'images/button.png', count: 0 },
+    gems: { img: 'public/images/crystal.png', count: 0 },
+    sword: { img: 'public/images/sword.png', count: 0 },
+    potion: { img: 'public/images/potion.png', count: 0 },
+    crudeOil: { img: 'public/images/crude_oil.png', count: 0 },
+    battery: { img: 'public/images/bat.png', count: 0},
+    skull: { img: 'public/images/skull.png', count: 0 },
+    flag: { img: 'public/images/flag.png', count: 0 },
+    button: { img: 'public/images/button.png', count: 0 },
 
-    circuit: { img: 'images/circuit.png', count: 0},
-    antenna: { img: 'Graphics/anttena.png', count: 0 },
-    console: { img: 'Graphics/teleporterHull.png', count: 0},
-    chest: {img: 'Graphics/chest.png', count: 0},
-    redgem: {img: 'Graphics/redgem.png', count: 0},
-    redruby: {img: 'Graphics/redruby.png', count: 0},
-    diamant: {img: 'Graphics/quartz.png', count: 0},
-    jub: {img: 'Graphics/jub.png', count: 0},
-    mat: {img: 'Graphics/map.png', count: 0},
-    Clue1: {img: 'Graphics/firstDigit.png', count: 0},
-    Clue2: {img: 'Graphics/secondDigit.png', count: 0},
-    Clue3: {img: 'Graphics/thirdDigit.png', count: 0},
-    Clue4: {img: 'Graphics/fourthDigit.png', count: 0},
-    Clue5: {img: 'Graphics/FithDigit.png', count: 0}
-
+    circuit: { img: 'public/images/circuit.png', count: 0},
+    antenna: { img: 'public/Graphics/anttena.png', count: 0 },
+    console: { img: 'public/Graphics/teleporterHull.png', count: 0},
+    chest: {img: 'public/Graphics/chest.png', count: 0},
+    redgem: {img: 'public/Graphics/redgem.png', count: 0},
+    redruby: {img: 'public/Graphics/redruby.png', count: 0},
+    diamant: {img: 'public/Graphics/quartz.png', count: 0},
+    jub: {img: 'public/Graphics/jub.png', count: 0},
+    mat: {img: 'public/Graphics/map.png', count: 0},
+    Clue1: {img: 'public/Graphics/firstDigit.png', count: 0},
+    Clue2: {img: 'public/Graphics/secondDigit.png', count: 0},
+    Clue3: {img: 'public/Graphics/thirdDigit.png', count: 0},
+    Clue4: {img: 'public/Graphics/fourthDigit.png', count: 0},
+    Clue5: {img: 'public/Graphics/FithDigit.png', count: 0}
+ 
 };
 
 function getNextAvailableSlot() {
@@ -48,7 +50,7 @@ function isInventoryFull() {
             itemCount++;
         }
     }
-    console.log(itemCount)
+    // console.log(itemCount);
     return itemCount >= MAX_ITEMS;
 }
 
@@ -159,7 +161,7 @@ export function clearInventory() {
         items[itemName].hasItem = false;
     }
 
-    console.log('Inventory cleared.');
+    // console.log('Inventory cleared.');
 }
 
 // Function to create and show the "Remove?" prompt

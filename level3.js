@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import * as THREE from './node_modules/three/build/three.module.min.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster,positionsRocks2, positionsQ2,positionsStones2} from './modelLocations.js';
@@ -7,7 +7,7 @@ import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, po
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
 import { AudioManager } from './AudioManager.js';
 import { HealthManager } from './HealthManager.js';
 const raycaster = new THREE.Raycaster();
@@ -20,7 +20,7 @@ const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let catObject; 
-const meow = new Audio('sound/meow.wav');
+const meow = new Audio('public/sound/meow.wav');
 let conversationText;
 let astronaut;
 const clock = new THREE.Clock();
@@ -58,9 +58,9 @@ function onAssetLoaded() {
     }
 }
 
-console.log("second one",document.body.querySelectorAll("canvas").length);
 
 // ---------------Create the scene--------------
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
 // Add lighting
@@ -221,7 +221,7 @@ export function startGame() {
 
 
 //Function to load and apply texture to the moon model
-loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
+loadModel('public/models/Moon.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(10, 10, 10);
     astroObject.position.set(-850, 100, 4);
     astroObject.name = 'asteroids';
@@ -235,7 +235,7 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
   
     
 //Load the sun model
-loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
+loadModel('public/models/sun1.glb', scene, controls, camera, (astroObject) => {
     // Scale and position the sun
     astroObject.scale.set(50, 50, 50);
     astroObject.position.set(1000, 100, 4);
@@ -257,7 +257,7 @@ loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
 });
 
 
-loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
+loadModel('public/models/earth1.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(25, 25, 25);
     astroObject.position.set(-950, 10, 4);
     astroObject.name = 'asteroids';
@@ -624,11 +624,12 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
     // Set initial controls target
     controls.target.copy(astronaut.position);
 });
+
    
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
-        console.log('Static model loaded:', object);
+        // console.log('Static model loaded:', object);
         object.scale.set(1, 1, 1);
         object.position.set(-10, 0, 10);
         object.rotation.y =  Math.PI / 2;
@@ -651,7 +652,7 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
                 const intersects = raycaster.intersectObject(catObject, true); 
     
                 if (intersects.length > 0) {
-                    console.log('Model clicked:', catObject);
+                    // console.log('Model clicked:', catObject);
 
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
