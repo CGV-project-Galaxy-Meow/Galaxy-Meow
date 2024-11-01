@@ -24,7 +24,7 @@ let conversationText;
 let astronaut;
 const clock = new THREE.Clock();
 
-let health = 100;
+let health = 80;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
@@ -909,7 +909,7 @@ function animate() {
 function restartLevel() {
     clearInventory();
     // Reset health
-    health = 100;
+    health = 79;
     healthElement.innerHTML = `Oxygen: ${health}/100`;
 
     // Hide death and exit menus
