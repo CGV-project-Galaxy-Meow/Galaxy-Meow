@@ -5,7 +5,7 @@ const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 8;
 
 export const items = {
-    gems: { img: 'images/crystal.png', count: 1 },
+    gems: { img: 'images/crystal.png', count: 0 },
     sword: { img: 'images/sword.png', count: 0 },
     potion: { img: 'images/potion.png', count: 0 },
     crudeOil: { img: 'images/crude_oil.png', count: 0 },
@@ -16,7 +16,7 @@ export const items = {
 
     circuit: { img: 'images/circuit.png', count: 0},
     antenna: { img: 'Graphics/anttena.png', count: 0 },
-    console: { img: 'Graphics/teleporterHull.png', count: 1},
+    console: { img: 'Graphics/teleporterHull.png', count: 0},
     chest: {img: 'Graphics/chest.png', count: 0},
     redgem: {img: 'Graphics/redgem.png', count: 0},
     redruby: {img: 'Graphics/redruby.png', count: 0},
