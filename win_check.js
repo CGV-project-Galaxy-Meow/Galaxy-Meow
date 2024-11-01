@@ -36,5 +36,5 @@ export function handleWin(level) {
     winSound.play();
     setTimeout(() => {
         level === 2 ? showWinningModal_l2() : showWinningModal();
-    }, 500); // Adjust delay as needed
+    }, 500); 
 }
