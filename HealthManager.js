@@ -65,9 +65,9 @@ export class HealthManager {
         showDeathMessage();
     }
 
-    resetHealth() {
+    resetHealth(healthLevel) {
         console.log('Health reset to 100'); // Debug log
-        this.health = 100;
+        this.health = healthLevel;
         this.updateHealthBar();
         if (this.healthInterval) clearInterval(this.healthInterval);
         this.startHealthDecrease();

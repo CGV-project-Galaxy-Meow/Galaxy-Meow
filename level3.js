@@ -241,7 +241,7 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
   
     
 
-loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
+loadModel('public/models/earth1.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(25, 25, 25);
     astroObject.position.set(-950, 10, 4);
     astroObject.name = 'asteroids';
@@ -805,7 +805,7 @@ function animate() {
 function restartLevel() {
     clearInventory();
     // Reset health
-    healthManager.resetHealth();
+    healthManager.resetHealth(80);
     // Hide death and exit menus
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';

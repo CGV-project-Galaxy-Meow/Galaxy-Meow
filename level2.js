@@ -35,9 +35,9 @@ let conversationText;
 const audioManager = new AudioManager();
 
 // Initialize sounds with file paths
-audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
-audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
-audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
+audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
 
 const healthManager = new HealthManager(90, audioManager);
 
@@ -214,7 +214,7 @@ const marsTexture = textureLoader.load('textures/mars.jpeg', function (texture) 
 });
 
 // Function to load and apply texture to the moon model
-loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
+loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) => {
     marsObject.traverse((child) => {
         if (child.isMesh) {
             // Apply the texture to the mesh material
@@ -230,7 +230,7 @@ loadModel('models/moonground.glb', scene, controls, camera, (marsObject) => {
     //console.log('Ground model loaded and added to the scene');
 
     
-    loadModel('models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
+    loadModel('public/models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
         crystalObject.scale.set(0.3, 0.3, 0.3); // Set size of crystal
         crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
         
@@ -767,7 +767,7 @@ function restartLevel() {
     clearInventory();
     // Reset health
       // Use HealthManager's reset method
-      healthManager.resetHealth();
+      healthManager.resetHealth(90);
 
     // Hide death and exit menus
     deathMessage.style.display = 'none';
