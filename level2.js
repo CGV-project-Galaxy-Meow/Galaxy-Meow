@@ -12,7 +12,7 @@ import { clearInventory, items } from './inventory.js';
 import {showDeathMessage} from './levelMenus.js'
 
 
-let health = 100;
+let health = 90;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
@@ -143,7 +143,7 @@ function checkOxygen(){
 }
 
 function lore(){
-    if(health == 99){
+    if(health >= 69 && health <= 79){
         meow.play();
         modal.style.display = 'flex';
         catConversation.textContent = `SPO's first agent, Ms M.S Fitgerald was also the first to learn of their corruption.`;
@@ -208,6 +208,8 @@ function toggleView() {
   
 
 export function startGame() { 
+
+    
     
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
