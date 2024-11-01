@@ -1,5 +1,8 @@
 import {showDeathMessage} from './levelMenus.js'
 
+const modal = document.getElementById('myModal');
+const catConversation = document.getElementById('catConversation')
+
 export class HealthManager {
     constructor(initialHealth, audioManager) {
         this.health = initialHealth;
@@ -50,6 +53,8 @@ export class HealthManager {
         if (this.health === 30) {
             console.log('Warning: Low oxygen level'); // Debug log
             this.audioManager.playSound('timerWarning'); // Play warning sound when oxygen is low
+            modal.style.display = 'flex';
+            catConversation.textContent = `Be careful! Your oxygen is running low.`;
         }
     }
 

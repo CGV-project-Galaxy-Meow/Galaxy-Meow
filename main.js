@@ -12,6 +12,7 @@ import { clearInventory, items } from './inventory.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
 import { AudioManager } from './AudioManager.js';
 import { HealthManager } from './HealthManager.js';
+import LightSetup from './LightSetup.js';
 
 
 let exitMenu = document.getElementById('exitMenu');
@@ -235,35 +236,22 @@ renderer.domElement.addEventListener('contextmenu', function(event) {
 
 audioManager.playSound('ambiance');
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
-    scene.add(ambientLight);
+  
+const ambientConfig = { color: 0xffffff, intensity: 1.3};
+const directionalConfig = { color: 0x999793, intensity: 25, position: { x: 0, y: 50, z: -50 } };
+const spotlightConfig = [{
+  color: 0xffa200,
+  intensity: 70,
+  position: { x: 50, y: 1, z: 8 },
+  target: { x: 50, y: 0, z: 8 },
+  angle: Math.PI / 3,
+  penumbra: 0.2,
+  decay: 2,
+  distance: 60
+}
+]
 
-    const directionalLight = new THREE.DirectionalLight(0x999793, 25);
-    directionalLight.position.set(0, 50, -50).normalize();
-    //directionalLight.castShadow = true;  // Enable shadows if needed
-    scene.add(directionalLight);
-
-    // Create a spotlight
-const spotLight = new THREE.SpotLight(0xffa200, 80); // Red light with intensity 80
-spotLight.position.set(50, 1, 8); // Positioning the light above the ground
-
-// Set the spotlight to shine directly downwards
-spotLight.angle = Math.PI / 2; // Angle of the spotlight's cone (adjust if needed)
-spotLight.penumbra = 0.1; // Soft edges of the spotlight
-spotLight.decay = 2; // How quickly the light diminishes
-spotLight.distance = 50; // The distance the light reaches
-
-// Enable shadows if needed
-spotLight.castShadow = true;
-
-// Point the light directly downwards
-spotLight.target.position.set(50, 0, 8); // Set the target to the ground (where the torch is pointing)
-spotLight.target.updateMatrixWorld(); // Update the target matrix
-
-// Add the spotlight to the scene
-scene.add(spotLight);
-scene.add(spotLight.target); // Add the target to the scene
-    
+new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
 
     createSun(scene);
 
