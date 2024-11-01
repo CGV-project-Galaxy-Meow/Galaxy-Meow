@@ -37,9 +37,9 @@ const meow = new Audio('sound/meow.wav');
 const audioManager = new AudioManager();
 
 // Initialize sounds with file paths
-audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
-audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
-audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
+audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
@@ -390,7 +390,7 @@ setInterval(createShootingStar, 300);
 
 
   // Load the American Flag Model
-  loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
+  loadModel('public/models/american_flag.glb', scene, controls, camera, (flagObject) => {
     flagObject.scale.set(1.7, 1.7, 1.7);
     flagObject.position.set(100, 5,100);
     flagObject.name = 'american_flag';
@@ -401,7 +401,7 @@ setInterval(createShootingStar, 300);
 });
 
 
-        loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
+        loadModel('public/models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(3.3, 3.3, 3.3);
             barrelObject.position.set(-28, 0, 53);
             barrelObject.name = 'barrel'
@@ -412,7 +412,7 @@ setInterval(createShootingStar, 300);
             onAssetLoaded();
         });
 
-        loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
+        loadModel('public/models/skull.glb', scene, controls, camera, (skullObject) => {
             skullObject.scale.set(0.6, 0.6, 0.6);
             skullObject.position.set(45, 0.3, 4);
             skullObject.name = 'skeleton';
@@ -425,7 +425,7 @@ setInterval(createShootingStar, 300);
             onAssetLoaded();
         });
 
-        loadModel('models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
+        loadModel('public/models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
             blueprintObject.scale.set(5, 5, 5);
             blueprintObject.position.set(50, 1, 6);
             blueprintObject.name = 'blueprint';
@@ -438,7 +438,7 @@ setInterval(createShootingStar, 300);
         });
 
         
-        loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
+        loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.5, 0.5, 0.5);
             BatteryObject.position.set(-181, 0, 70);
 
@@ -450,7 +450,7 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
             onAssetLoaded();
         });
-        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+        loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
             CirctuitIObject.position.set(-210, 0.4, -310);
             CirctuitIObject.name = 'Circuit Board'
@@ -461,7 +461,7 @@ setInterval(createShootingStar, 300);
             onAssetLoaded();
         });
 
-        loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
+        loadModel('public/models/Button.glb', scene, controls, camera, (ButtonObject) => {
             ButtonObject.scale.set(0.8, 0.8, 0.8);
             ButtonObject.position.set(210, 0, 294);
             ButtonObject.name = 'Button'
@@ -473,7 +473,7 @@ setInterval(createShootingStar, 300);
         });
 
 
-        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+        loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
             CirctuitIObject.position.set(-210, 0.4, -310);
             CirctuitIObject.name = 'Circuit Board'
@@ -920,7 +920,7 @@ function isItemInInventory(itemName) {
 
 function restartLevel() {
     clearInventory();
-    healthManager.resetHealth();
+    healthManager.resetHealth(100);
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
     if (astronaut) astronaut.position.copy(initialAstronautPosition);

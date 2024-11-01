@@ -239,7 +239,7 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
   
     
 //Load the sun model
-loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
+loadModel('public/models/sun1.glb', scene, controls, camera, (astroObject) => {
     // Scale and position the sun
     astroObject.scale.set(50, 50, 50);
     astroObject.position.set(1000, 100, 4);
@@ -254,7 +254,7 @@ loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
 });
 
 
-loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
+loadModel('public/models/earth1.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(25, 25, 25);
     astroObject.position.set(-950, 10, 4);
     astroObject.name = 'asteroids';
@@ -818,7 +818,7 @@ function animate() {
 function restartLevel() {
     clearInventory();
     // Reset health
-    healthManager.resetHealth();
+    healthManager.resetHealth(80);
     // Hide death and exit menus
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';

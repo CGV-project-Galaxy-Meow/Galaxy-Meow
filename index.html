@@ -6,35 +6,46 @@
   <title>Galaxy Meow</title>
   <link rel="stylesheet" href="index.css">
   
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r142/three.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
 </head>
 <body>
 
-  <!-- Start Menu -->
-  <div class="start-menu">
+ <!-- Start Menu -->
+ <div class="start-menu">
+  <div class="menu-container">
+    <div class="title-section">
+      <h1>Space Paws Odyssey</h1>
+      <img src="public/Graphics/MainMenuGalaxyMeow.png" alt="Space Cat" id="titleImage">
+    </div>
     <div class="menu-bar">
-      <button class="menu-button" id="startGame">Start</button>
-      <button class="menu-button" id="openSettings">Settings</button>
-      <button class="menu-button" id="openControls">Controls</button> <!-- New Controls Button -->
-      <button class="menu-button" id="openCredits">Credits</button>
+      <div class="button-group" id="levelButtons">
+        <button class="menu-button" id="startGame">Level 1: Moon</button>
+        <button class="menu-button" id="level2">Level 2: Mars</button>
+        <button class="menu-button" id="level3">Level 3: Asteroid</button>
+      </div>
+      <div class="button-group" id="otherButtons">
+        <button class="menu-button" id="openSettings">Settings</button>
+        <button class="menu-button" id="openControls">Controls</button>
+        <button class="menu-button" id="openCredits">Credits</button>
+      </div>
     </div>
   </div>
-
-
-  <!-- Settings Modal -->
-<div class="modal" id="settingsModal">
-  <div class="modal-header">Settings <span class="modal-close" id="closeSettings">×</span></div>
-  
-  <label for="volumeControl">Music Volume:</label>
-  <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
-  
 </div>
 
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-header">
+      Settings <span class="modal-close" id="closeSettings">×</span>
+    </div>
+    <label for="volumeControl">Music Volume:</label>
+    <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+  </div>
 
   <!-- Controls Modal -->
   <div class="modal" id="controlsModal">
-    <div class="modal-header">Controls <span class="modal-close" id="closeControls">×</span></div>
+    <div class="modal-header">
+      Controls <span class="modal-close" id="closeControls">×</span>
+    </div>
     <p>You can use the following controls:</p>
     <ul>
       <li>W - Move forward</li>
@@ -46,34 +57,34 @@
       <li>If you need help - Click The Cat</li>
       <li>Esc - Restart/Leave game</li>
       <li>Shift - Sprint</li>
-      <li>Cntrl - Opens inventory</li>
+      <li>Ctrl - Opens inventory</li>
       <li>Left mouse click - To select objects</li>
       <li>Right mouse click and drag - Look around the map</li>
-      <li>V - Change prespective</li>
+      <li>V - Change perspective</li>
     </ul>
   </div>
 
   <!-- Credits Modal -->
-  <!-- Credits Modal -->
-<div class="modal" id="creditsModal">
-  <div class="modal-header">Credits <span class="modal-close" id="closeCredits">×</span></div>
-  <p>Game developed by Galaxy Meow.</p>
-  <p>Our Team:
-    <br>Claire
-    <br>Wendy
-    <br>Mayuri
-    <br>Chloe
-    <br>Dineo
-    <br>Busisiwe
-
-  </p>
-  <a href="credits.html" target="_blank" id="seeMoreCredits">See More</a>
-</div>
-
+  <div class="modal" id="creditsModal">
+    <div class="modal-header">
+      Credits <span class="modal-close" id="closeCredits">×</span>
+    </div>
+    <p>Game developed by Galaxy Meow.</p>
+    <p>Our Team:</p>
+    <ul>
+      <li>Claire</li>
+      <li>Wendy</li>
+      <li>Mayuri</li>
+      <li>Chloe</li>
+      <li>Dineo</li>
+      <li>Busisiwe</li>
+    </ul>
+    <a href="credits.html" target="_blank" id="seeMoreCredits">See More</a>
+  </div>
 
   <script>
     //create background audio
-const listener = new THREE.AudioListener();
+    const listener = new THREE.AudioListener();
 
 
 // Create a global audio source
@@ -83,7 +94,7 @@ const audioLoader = new THREE.AudioLoader();
 // Load sound and play as before
 audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
-  sound.setLoop(false);
+  sound.setLoop(true);
   sound.setVolume(0.5);
   sound.play();
 });
@@ -98,17 +109,15 @@ volumeControl.addEventListener('input', function () {
 });
 
 
+    // Navigation buttons
+    document.getElementById('startGame').addEventListener('click', () => window.location.href = 'game.html');
+    document.getElementById('level2').addEventListener('click', () => window.location.href = 'level2.html');
+    document.getElementById('level3').addEventListener('click', () => window.location.href = 'level3.html');
 
-    // Start button 
-    document.getElementById('startGame').addEventListener('click', function() {
-      window.location.href = 'game.html';
-    });
-
-    // Open and close Settings Modal
+    // Modal handling
     const settingsModal = document.getElementById('settingsModal');
     const creditsModal = document.getElementById('creditsModal');
-    const controlsModal = document.getElementById('controlsModal'); // Controls Modal
-
+    const controlsModal = document.getElementById('controlsModal');
     document.getElementById('openSettings').addEventListener('click', function() {
       settingsModal.style.display = 'block';
     });
@@ -134,7 +143,6 @@ volumeControl.addEventListener('input', function () {
     document.getElementById('closeCredits').addEventListener('click', function() {
       creditsModal.style.display = 'none';
     });
-
   </script>
 
 </body>
