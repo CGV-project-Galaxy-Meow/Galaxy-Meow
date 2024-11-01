@@ -15,11 +15,13 @@ audioLoader.load('/sound/triumph-83761.mp3', function(buffer) {
 });
 
 // List of items required to win
-const requiredItems = ['circuit', 'battery','antenna','console', 'button'];
+const requiredItems_l1 = ['circuit', 'battery','antenna','console', 'button'];
 const requiredItems_l2=['jub','diamant','redruby','redgem','gems']
 // const requiredItems = ['circuit', 'battery', 'button'];
 // Function to check if the player has won
-export function checkForWin() {
+// Function to check if the player has won for a specific level
+export function checkForWin(level) {
+    const requiredItems = level === 2 ? requiredItems_l2 : requiredItems_l1;
     for (let itemName of requiredItems) {
         if (!items[itemName] || items[itemName].count === 0) {
             return false; // Player hasn't collected all required items
@@ -29,35 +31,10 @@ export function checkForWin() {
     return true; // All required items collected
 }
 
-export function checkForWin_l2() {
-    for (let itemName of requiredItems_l2) {
-        if (!items[itemName] || items[itemName].count === 0) {
-            return false; // Player hasn't collected all required items
-        }
-    }
-    // winSound.play();
-    return true; // All required items collected
-} 
-
-// Function to handle winning logic
-export function handleWin() {
+// Function to handle winning logic based on the level
+export function handleWin(level) {
     winSound.play();
     setTimeout(() => {
-        showWinningModal();
+        level === 2 ? showWinningModal_l2() : showWinningModal();
     }, 500); // Adjust delay as needed
 }
-
-export function handleWin_l2() {
-    winSound.play();
-    setTimeout(() => {
-        showWinningModal_l2();
-    }, 500); // Adjust delay as needed
-}
-
-// placeholder Function to proceed to the next level
-/*document.getElementById('proceedButton').addEventListener('click', function() {
-   
-    // Hide the modal after clicking
-    document.getElementById('winningModal').style.display = 'none';
-    window.location.href = 'level2.html';
-  });*/

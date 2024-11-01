@@ -1,11 +1,18 @@
-import { checkForWin, handleWin, checkForWin_l2, handleWin_l2 } from "./win_check";
+import { checkForWin, handleWin, } from "./win_check";
+
 
 const inventorySlots = document.querySelectorAll('.inventory-slot');
 const inventoryFullElement = document.getElementById('inventoryFull')
 const MAX_ITEMS = 8;
 
+const urlPath = window.location.pathname;
+const fileName = urlPath.substring(urlPath.lastIndexOf('/') + 1);
+
+let currentLevel;
+
+
 export const items = {
-    gems: { img: 'images/crystal.png', count: 1 },
+    gems: { img: 'images/crystal.png', count: 0 },
     sword: { img: 'images/sword.png', count: 0 },
     potion: { img: 'images/potion.png', count: 0 },
     crudeOil: { img: 'images/crude_oil.png', count: 0 },
@@ -16,7 +23,7 @@ export const items = {
 
     circuit: { img: 'images/circuit.png', count: 0},
     antenna: { img: 'Graphics/anttena.png', count: 0 },
-    console: { img: 'Graphics/teleporterHull.png', count: 1},
+    console: { img: 'Graphics/teleporterHull.png', count: 0},
     chest: {img: 'Graphics/chest.png', count: 0},
     redgem: {img: 'Graphics/redgem.png', count: 0},
     redruby: {img: 'Graphics/redruby.jpg', count: 0},
@@ -114,13 +121,16 @@ export function addItem(itemName) {
         items[itemName].hasItem = true;
         clearInventoryFullMessage(); 
 
-        if(checkForWin() || checkForWin_l2()){
-            if(checkForWin_l2()){
-                handleWin_l2();
-            }
-            else{
-            handleWin();
-            }
+        if (fileName === 'game.html') {
+            currentLevel = 1;
+        } else if (fileName === 'level2.html') {
+            currentLevel = 2;
+        }
+        console.log(currentLevel);
+
+        if(checkForWin(currentLevel)){
+            handleWin(currentLevel);
+            
         }
 
 
