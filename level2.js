@@ -11,6 +11,7 @@ import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import {showDeathMessage} from './levelMenus.js'
 
+
 let health = 100;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
@@ -30,6 +31,17 @@ let astronaut;
 let catObject;
 const meow = new Audio('sound/meow.wav');
 let conversationText;
+
+
+
+// Initialize AudioManager
+const audioManager = new AudioManager();
+
+// Initialize sounds with file paths
+audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
+
 
 const clock = new THREE.Clock();
 let objectsToRaycast = []
@@ -97,15 +109,6 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-// Initialize AudioManager
-const audioManager = new AudioManager();
-
-// Initialize sounds with file paths
-audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
-audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
-audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
-
 
 
 //----functions----
@@ -800,15 +803,8 @@ function restartLevel() {
         astronaut.rotation.set(0, 0, 0); 
     }
 
-    // Stop the game over sound if it's playing
-    if (gameOverSound.isPlaying) {
-        gameOverSound.stop();
-    }
-
-    // Start the ambiance music if it's not playing
-    if (!ambianceSound.isPlaying) {
-        ambianceSound.play();
-    }
+    
+    audioManager.playSound('ambiance');
 
     decreaseHealth();
 }
