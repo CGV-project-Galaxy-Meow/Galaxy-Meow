@@ -9,6 +9,7 @@ import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockCont
 import { AudioManager } from './AudioManager.js';
 import { HealthManager } from './HealthManager.js';
 import LightSetup from './LightSetup.js';
+import {createSun2 } from './background.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -68,7 +69,7 @@ const ambientConfig = { color: 0xffffff, intensity: 0.5 };
 const directionalConfig = { color: 0x999793, intensity: 25, position: { x: 300, y: 100, z: 4 } };
 const spotlightConfig = [{
   color: 0xb900ff,
-  intensity: 70,
+  intensity: 100,
   position: { x: 0, y: 0, z: 0 },
   target: { x:50 , y: 0, z: 8 },
   angle: Math.PI / 3,
@@ -90,6 +91,7 @@ const spotlightConfig = [{
 }]
 
 new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
+createSun2(scene)
 
 const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
@@ -238,21 +240,6 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
 });
   
     
-//Load the sun model
-loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
-    // Scale and position the sun
-    astroObject.scale.set(50, 50, 50);
-    astroObject.position.set(1000, 100, 4);
-    astroObject.name = 'sun';
-    scene.add(astroObject);
-    objectsToRaycast.push(astroObject);
-
-    // Optionally, you can add a slight light effect on the sun itself (not required for realism)
-    const sunLightGlow = new THREE.PointLight(0xffcc33, 2, 500); // Orange-ish glow, intensity 2, range 500
-    sunLightGlow.position.set(300, 100, 4); // Same position as the sun
-    scene.add(sunLightGlow);
-});
-
 
 loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(25, 25, 25);
