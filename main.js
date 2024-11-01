@@ -958,10 +958,12 @@ function restartLevel() {
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
     if (astronaut) astronaut.position.copy(initialAstronautPosition);
-    if (audioManager.isPlaying('gameOver')) audioManager.stopSound('gameOver');
-    if (!audioManager.isPlaying('ambiance')) audioManager.playSound('ambiance');
+    
+    audioManager.playSound('ambiance');
+    
     decreaseHealth();
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const volumeControl = document.getElementById('volumeControl');

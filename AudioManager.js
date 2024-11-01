@@ -38,6 +38,13 @@ export class AudioManager {
         const sound = this.sounds[name];
         if (sound) sound.setVolume(volume);
     }
+    restartSound(name) {
+        if (this.sounds[name]) {
+            this.sounds[name].currentTime = 0; // Reset to the beginning
+            this.sounds[name].play(); // Play or resume the sound
+        }
+    }
+    
 
     addListenerTo(camera) {
         camera.add(this.listener);
