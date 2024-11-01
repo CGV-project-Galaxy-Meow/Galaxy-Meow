@@ -12,12 +12,8 @@ import { clearInventory, items } from './inventory.js';
 
 import { HealthManager } from './HealthManager.js';
 
-
-
-let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
-let healthInterval; // To control the health timer
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -59,7 +55,7 @@ function onAssetLoaded() {
     assetsLoaded++;
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
-        healthManager.startHealthDecrease();;
+        healthManager.startHealthDecrease();
     }
 }
 
@@ -800,9 +796,6 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
 });
-
-
-
 
 
 animate();  // Start the animation loop
