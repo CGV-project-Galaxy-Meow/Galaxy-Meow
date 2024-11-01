@@ -9,7 +9,7 @@ import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
-
+import LightSetup from './LightSetup.js';
 import { HealthManager } from './HealthManager.js';
 
 let exitMenu = document.getElementById('exitMenu');
@@ -62,14 +62,14 @@ function onAssetLoaded() {
 // ---------Create the scene--------------
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
-// Add lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // Soft white light
-scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0x999793, 25);
-    directionalLight.position.set(0, 50, -50).normalize();
-    scene.add(directionalLight);
-    createSun(scene);
+
+const ambientConfig = { color: 0xffffff, intensity: 0.5};
+const directionalConfig = { color: 0x999793, intensity: 25, position: { x: 0, y: 50, z: -50 } };
+
+new LightSetup(scene, ambientConfig, directionalConfig);
+createSun(scene);
+
 
 const spaceTexture = new THREE.TextureLoader().load('public/textures/test2.webp');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
