@@ -33,16 +33,16 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
-const meow = new Audio('sound/meow.wav');
+const meow = new Audio('public/sound/meow.wav');
 
 
 // Initialize AudioManager
 const audioManager = new AudioManager();
 
 // Initialize sounds with file paths
-audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
-audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
-audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
+audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
 
 
 const scene = new THREE.Scene();
@@ -813,39 +813,6 @@ scene.add(spotLight.target); // Add the target to the scene
                 }
             }
         });
-
-
-
-
-//     // Remove these lines
-//     const astronautBox = new THREE.Box3(); // Astronaut bounding box
-//     const moonBox = new THREE.Box3();      // Moon bounding box
-
-//     function updateBoundingBoxes() {
-//         if (astronaut && moonObject) {
-//             astronautBox.setFromObject(astronaut);
-//             moonBox.setFromObject(moonObject);
-//             return true; // Bounding boxes updated successfully
-//         } else {
-//             return false; // Cannot update bounding boxes
-//         }
-//     }
-
-
-//     // Check collision during animation
-//     // Remove or comment out this function
-//     function checkCollision() {
-//         if (astronaut && moonObject) {
-//         // Adjust 'offset' based on the astronaut's model height if necessary
-//             const offset = 1; // Adjust this value as needed
-//             const moonY = moonObject.position.y;
-//             const astronautY = astronaut.position.y;
-
-//             if (astronautY < moonY + offset) {
-//             astronaut.position.y = moonY + offset;
-//             }
-//         }
-//     }
 
 
 

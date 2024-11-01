@@ -1,5 +1,5 @@
 // AudioManager.js
-import * as THREE from 'three';
+import * as THREE from './node_modules/three/build/three.module.min.js';
 
 export class AudioManager {
     constructor() {

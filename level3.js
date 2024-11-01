@@ -7,7 +7,7 @@ import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
 import { AudioManager } from './AudioManager.js';
 
 const raycaster = new THREE.Raycaster();
@@ -20,7 +20,7 @@ const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let catObject; 
-const meow = new Audio('sound/meow.wav');
+const meow = new Audio('public/sound/meow.wav');
 let conversationText;
 let astronaut;
 const clock = new THREE.Clock();
