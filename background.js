@@ -1,10 +1,10 @@
-import * as THREE from 'three';
+import * as THREE from 'https://lamp.ms.wits.ac.za/~sgalaxy/node_modules/three/build/three.module.min.js';
 
 
 export function createSun(scene) {
   const sunGeometry = new THREE.SphereGeometry(200, 64, 64);
 
-  const sunTexture = new THREE.TextureLoader().load('textures/sun.jpg');
+  const sunTexture = new THREE.TextureLoader().load('public/textures/sun.jpg');
 
   const sunMaterial = new THREE.MeshBasicMaterial({
       map: sunTexture
