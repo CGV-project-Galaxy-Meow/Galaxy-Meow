@@ -28,6 +28,7 @@
         <button class="menu-button" id="openSettings">Settings</button>
         <button class="menu-button" id="openControls">Controls</button>
         <button class="menu-button" id="openCredits">Credits</button>
+        <button class="menu-button" id="openHowToPlay">How to Play</button>
       </div>
     </div>
   </div>
@@ -84,6 +85,24 @@
     </ul>
     <a href="credits.html" target="_blank" id="seeMoreCredits">See More</a>
   </div>
+
+  <!-- How to Play Modal -->
+  <div class="modal" id="howToPlayModal">
+    <div class="modal-header">
+        How to Play <span class="modal-close" id="closeHowToPlay">×</span>
+    </div>
+    <p>Welcome to <strong>Space Paws Odyssey!</strong> Here’s the deal:</p>
+    <p>You’ve been sent by the SPO (Space Paws Odyssey) on a super-secret intergalactic mission, but... oops! Your space cruiser had a little “oopsie” on the Moon. Now, it’s up to you to find your way home!</p>
+    <ul>
+        <li><strong>Level 1:</strong> The Moon has everything you need to fix up a teleporter! Sniff out an antenna, a button, a battery, a console, and a circuit board. With these, you’ll be able to teleport to the next adventure! (P.S. Your oxygen’s full at 100, so breathe easy… for now!)</li>
+        
+        <li><strong>Level 2:</strong> Welcome to Mars, where crystals are more precious than catnip! Collect enough sparkly crystals to recharge your battery. Oxygen? Now it’s down to 90, so keep an eye on that tank, space kitty!</li>
+        
+        <li><strong>Level 3:</strong> Now, for the grand finale! On a far-off asteroid, you’ll find the digits you need for your ultimate escape: summoning your magical flying carpet back to Earth! But wait—oxygen is down to 80, so let’s not linger too long!</li>
+    </ul>
+    <p>Good luck, and may the starry paws be with you!</p>
+</div>
+
 
   <script>
     //create background audio
@@ -148,6 +167,20 @@ volumeControl.addEventListener('input', function () {
     document.getElementById('closeCredits').addEventListener('click', function() {
       creditsModal.style.display = 'none';
     });
+
+    // Reference the new How to Play modal
+const howToPlayModal = document.getElementById('howToPlayModal');
+
+// Open How to Play modal on button click
+document.getElementById('openHowToPlay').addEventListener('click', function() {
+    howToPlayModal.style.display = 'block';
+});
+
+// Close How to Play modal
+document.getElementById('closeHowToPlay').addEventListener('click', function() {
+    howToPlayModal.style.display = 'none';
+});
+
   </script>
 
 </body>
