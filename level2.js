@@ -1,10 +1,11 @@
-import * as THREE from 'three';
-//import { playerName } from './intro.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createSun } from './background.js';
 import { AudioManager } from './AudioManager.js';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
+//import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
+import * as THREE from './node_modules/three/build/three.module.min.js';
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import { setupRaycasting } from './raycasting.js';
@@ -26,7 +27,7 @@ const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let astronaut;
 let catObject;
-const meow = new Audio('sound/meow.wav');
+const meow = new Audio('public/sound/meow.wav');
 let conversationText;
 
 
@@ -212,9 +213,11 @@ export function startGame() {
     const volumeControl = document.getElementById('volumeControl');
     volumeControl.addEventListener('input', function () {
         const volume = parseFloat(volumeControl.value);
+
         audioManager.setVolume('ambiance', volume);
         audioManager.setVolume('gameOver', volume);
         audioManager.setVolume('timerWarning', volume);
+
     });
     
     audioManager.playSound('ambiance');
@@ -222,8 +225,8 @@ export function startGame() {
     
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
-const marsTexture = textureLoader.load('textures/mars.jpeg', function (texture) {
-    console.log('Texture loaded successfully');
+const marsTexture = textureLoader.load('public/textures/mars.jpeg', function (texture) {
+    // console.log('Texture loaded successfully');
 }, undefined, function (err) {
     console.error('Error loading texture:', err);
 });
@@ -245,6 +248,7 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
     //console.log('Ground model loaded and added to the scene');
 
     
+
     loadModel('public/models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
         crystalObject.scale.set(0.3, 0.3, 0.3); // Set size of crystal
         crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
@@ -301,7 +305,7 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
         skullObject.scale.set(50, 50, 50);  // Set size of skull
         skullObject.position.set(-5.927182022763221, 0, -136.58502827742493);
         const textureLoader = new THREE.TextureLoader();
-        const skullTexture = textureLoader.load('textures/blue.jpg')
+        const skullTexture = textureLoader.load('public/textures/blue.jpg')
     
         // Traverse the object and apply the texture
         skullObject.traverse((child) => {
@@ -344,7 +348,7 @@ loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
 
     // Load texture
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('textures/red.png', (texture) => {
+    textureLoader.load('public/textures/red.png', (texture) => {
         skullObject.traverse((child) => {
             if (child.isMesh) {
                 child.material.map = texture;  // Apply texture to the material
@@ -583,8 +587,9 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
 });
 
 
+
 loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
-    console.log('Static model loaded:', object);
+    // console.log('Static model loaded:', object);
     object.scale.set(1, 1, 1);
     object.position.set(-10, 0, -10);
     object.rotation.y =  Math.PI / 2;
@@ -608,7 +613,7 @@ loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => 
             const intersects = raycaster.intersectObject(catObject, true); 
 
             if (intersects.length > 0) {
-                console.log('Model clicked:', catObject);
+                // console.log('Model clicked:', catObject);
 
                 modal.style.display = 'flex';
                 responses.style.display = 'none'; 
@@ -751,12 +756,14 @@ function animate() {
     }
   
     if (astronaut) {
+
       if (isFirstPerson) {
         // In first-person view, camera follows astronaut's position
         camera.position.copy(astronaut.position);
         camera.position.y += 1.7; // Adjust for astronaut's eye height
       } else {
         // Third-person view
+
         const cameraOffset = camera.position.clone().sub(controls.target);
   
         // Update controls target to astronaut's position
@@ -814,4 +821,4 @@ document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
 
 
 animate();  // Start the animation loop
-}
+};
