@@ -6,7 +6,7 @@ import {items} from "./inventory.js";
 const itemDataMapping = {
     'Object_2': {
         title: 'M.S Fitzgerald',
-        description: '12/09/67 - ??/??/2022, Margie Sandy Fitzgerald was SPO\'s first assigned agent.',
+        description: '19/04/02 - ??/??/22, Margie Sandy Fitzgerald was SPO\'s youngest assigned agent.',
         additionalInfo: 'What is her story ?',
         imgSrc: 'public/images/skull.png',
         itemName: 'skull'
@@ -14,7 +14,7 @@ const itemDataMapping = {
     'power-crystal': {
         title: 'Power Crystal',
         description: 'Basically a charger.',
-        additionalInfo: 'Take as many as you need.',
+        additionalInfo: 'Taking too many can be dangerous.',
         imgSrc: items['gems'].img,
         itemName: 'gems'
     },

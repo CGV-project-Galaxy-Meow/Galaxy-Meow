@@ -1,11 +1,10 @@
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js';
 import { createSun } from './background.js';
+import { AudioManager } from './AudioManager.js';
 import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
 //import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
 import * as THREE from './node_modules/three/build/three.module.min.js';
 import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
-
-
 
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
@@ -13,7 +12,8 @@ import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import {showDeathMessage} from './levelMenus.js'
 
-let health = 100;
+
+let health = 90;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
@@ -30,6 +30,19 @@ const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let astronaut;
 let catObject;
+const meow = new Audio('sound/meow.wav');
+let conversationText;
+
+
+
+// Initialize AudioManager
+const audioManager = new AudioManager();
+
+// Initialize sounds with file paths
+audioManager.loadSound('ambiance', '/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', '/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', '/sound/beep-warning-6387.mp3', false, 0.5);
+
 
 const clock = new THREE.Clock();
 let objectsToRaycast = []
@@ -98,79 +111,52 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Audio listener
-const listener = new THREE.AudioListener();
-camera.add(listener);
-
-// Audio loader
-const audioLoader = new THREE.AudioLoader();
-
-// separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
-const timerWarningSound= new THREE.Audio(listener);
-
-
-audioLoader.load('public/sound/beep-warning-6387.mp3', function(buffer) {
-    timerWarningSound.setBuffer(buffer);
-    timerWarningSound.setLoop(false);
-    timerWarningSound.setVolume(0.5);
-});
-
-// Load ambiance sound
-audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
-
-// Load game over sound
-audioLoader.load('public/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
-
-});
-
-
 
 //----functions----
 
 function decreaseHealth() {
-    if (healthInterval) {
-        clearInterval(healthInterval); // Clear any previous interval
-    }
+    if (healthInterval) clearInterval(healthInterval); // Clear any previous interval
     healthInterval = setInterval(() => {
         if (health > 0) {
             health -= 1;
             healthElement.innerHTML = `Oxygen: ${health}/100`;
             checkOxygen();
         } else {
-            clearInterval(healthInterval); // Stop the timer when health reaches 0
+            clearInterval(healthInterval);
             showDeathMessage();
-
-            // Stop the ambiance music
-            if (ambianceSound.isPlaying) {
-                ambianceSound.stop();
-            }
-
-            // Play the game over sound
-            gameOverSound.play();
+            audioManager.stopSound('ambiance');
+            audioManager.playSound('gameOver');
         }
-    }, 4000); // Decrease health every 5 seconds
+    }, 5000); // Decrease health every 5 seconds
 }
 
 //cat warns you of the oxygen
 function checkOxygen(){
     if(health == 30){
+        meow.play();
         modal.style.display = 'flex';
-        catConversation.style.animation = 'none';
         catConversation.textContent = `Be careful! Your oxygen is running low.`;
-        timerWarningSound.play();
-        void catConversation.offsetWidth; 
-        catConversation.style.animation = 'typing 3.5s steps(40, end)';
+
+        audioManager.playSound('timerWarning');
+        // Keep the buttons hidden
+        responses.style.display = 'none'; 
+    }
+}
+
+function lore(){
+    if(health >= 69 && health <= 79){
+        meow.play();
+        modal.style.display = 'flex';
+        catConversation.textContent = `SPO's first agent, Ms M.S Fitgerald was also the first to learn of their corruption.`;
+
+        setTimeout(() => { 
+            conversationText = '';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+            
+            conversationText = 'And look at how she ended up.';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+
+        }, 3000); 
     
         // Keep the buttons hidden
         responses.style.display = 'none'; 
@@ -223,6 +209,8 @@ function toggleView() {
   
 
 export function startGame() { 
+
+    
     
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
@@ -237,37 +225,15 @@ export function startGame() {
     const volumeControl = document.getElementById('volumeControl');
     volumeControl.addEventListener('input', function () {
         const volume = parseFloat(volumeControl.value);
-        ambianceSound.setVolume(volume);
-        gameOverSound.setVolume(volume);
-        timerWarningSound.setVolume(volume);
-        // console.log("Volume set to: ", volume);  // Debug: confirm volume change
+
+        audioManager.setVolume('ambiance', volume);
+        audioManager.setVolume('gameOver', volume);
+        audioManager.setVolume('timerWarning', volume);
+
     });
     
-    
-    //sound 
-    // Load ambiance sound
-    audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
-        ambianceSound.setBuffer(buffer);
-        ambianceSound.setLoop(true);
-        ambianceSound.setVolume(0.5);
-        ambianceSound.play();
-    });
-    
-    // Load game over sound
-    audioLoader.load('public/sound/game-over.mp3', function(buffer) {
-        gameOverSound.setBuffer(buffer);
-        gameOverSound.setLoop(false);
-        gameOverSound.setVolume(0.5);
-        //we'll play it when health reaches zero
-    });
-    
-    audioLoader.load('public/sound/beep-warning-6387.mp3', function(buffer) {
-        timerWarningSound.setBuffer(buffer);
-        timerWarningSound.setLoop(false);
-        timerWarningSound.setVolume(0.5);
-    
-    });
-    
+    audioManager.playSound('ambiance');
+
     
 // Load the texture
 const textureLoader = new THREE.TextureLoader();
@@ -632,7 +598,7 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
     onAssetLoaded();
 });
 
-const meow = new Audio('public/sound/meow.wav');
+
 
 loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
     // console.log('Static model loaded:', object);
@@ -759,7 +725,7 @@ helpButton.addEventListener('click', () => {
 
     else{
         meow.play(); 
-        conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
+        conversationText = `Help? But you have everything you need to proceed`;             
         document.getElementById('catConversation').innerHTML = conversationText;
         catConversation.textContent = conversationText;
     }
@@ -846,15 +812,8 @@ function restartLevel() {
         astronaut.rotation.set(0, 0, 0); 
     }
 
-    // Stop the game over sound if it's playing
-    if (gameOverSound.isPlaying) {
-        gameOverSound.stop();
-    }
-
-    // Start the ambiance music if it's not playing
-    if (!ambianceSound.isPlaying) {
-        ambianceSound.play();
-    }
+    
+    audioManager.playSound('ambiance');
 
     decreaseHealth();
 }

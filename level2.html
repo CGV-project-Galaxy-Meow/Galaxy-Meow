@@ -155,6 +155,11 @@
           border-radius: 5px;
         }
 
+        @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
     </style>
 </head>
 <body>
@@ -181,7 +186,7 @@
     <button id="startPiP">PiP</button> -->
 
     <!-- Health Bar -->
-    <div id="healthBar">Oxygen: 100/100</div>
+    <div id="healthBar">Oxygen: 90/100</div>
 
         <!--Popup when clicking on cat-->
         <div id="myModal">
@@ -256,9 +261,10 @@
     </div>
 
 
-<div id="loadingScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); color: white; z-index: 20; display: flex; justify-content: center; align-items: center;">
-    <p>Loading assets, please wait...</p>
-</div>
+    <div id="loadingScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); color: white; z-index: 20; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <p>Loading assets, please wait...</p>
+        <div id="loadingSpinner" style="width: 40px; height: 40px; border: 5px solid #444; border-top: 5px solid #ba03fc; border-radius: 50%; margin-top: 10px; animation: spin 3s linear infinite;"></div>
+    </div>
 
 
 <div id="introScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: black; color: white; z-index: 10; display: flex; justify-content: center; align-items: center;">

@@ -63,3 +63,4 @@ export function handleWin_l2() {
     document.getElementById('winningModal').style.display = 'none';
     window.location.href = 'level2.html';
   });*/
+

@@ -7,6 +7,8 @@ import {showDeathMessage} from './levelMenus.js'
 import { createSun } from './background.js';
 import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { AudioManager } from './AudioManager.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -18,15 +20,25 @@ const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
 let catObject; 
+const meow = new Audio('sound/meow.wav');
+let conversationText;
 let astronaut;
 const clock = new THREE.Clock();
 
-let health = 100;
+let health = 80;
 let healthElement = document.getElementById('healthBar');
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let healthInterval; // To control the health timer
 
+
+// Initialize AudioManager
+const audioManager = new AudioManager();
+
+// Initialize sounds with file paths
+audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
 export let objectsToRaycast = [];
 
 //for loading screen
@@ -81,7 +93,7 @@ scene.add(space);
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
-camera.position.set(50, 10, 2);   // Set an initial camera position
+camera.position.set(50, -10, 5);   // Set an initial camera position
 
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
@@ -89,6 +101,11 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
 
+const controlsFirstPerson = new PointerLockControls(camera, renderer.domElement);
+let isFirstPerson = false; // Starts in third-person view
+
+
+// -------Orbit controls----------
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
@@ -100,12 +117,14 @@ controls.mouseButtons = {
     RIGHT: THREE.MOUSE.ROTATE
 };
 
+
 // Handle window resize events
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
 
 
 //----important functions-----
@@ -117,18 +136,13 @@ function decreaseHealth() {
         if (health > 0) {
             health -= 1;
             healthElement.innerHTML = `Oxygen: ${health}/100`;
+            lore();
             checkOxygen();
         } else {
             clearInterval(healthInterval); // Stop the timer when health reaches 0
             showDeathMessage();
-
-            // Stop the ambiance music
-            if (ambianceSound.isPlaying) {
-                ambianceSound.stop();
-            }
-
-            // Play the game over sound
-            gameOverSound.play();
+            audioManager.stopSound('ambiance');
+            audioManager.playSound('gameOver');
         }
     }, 4000); // Decrease health every 5 seconds
 }
@@ -136,33 +150,82 @@ function decreaseHealth() {
 //cat warns you of the oxygen
 function checkOxygen(){
     if(health == 30){
+        meow.play();
         modal.style.display = 'flex';
-        catConversation.style.animation = 'none';
-        catConversation.textContent = `Be careful! Your oxygen is running low.`;
-    
-        void catConversation.offsetWidth; 
-        catConversation.style.animation = 'typing 3.5s steps(40, end)';
+        catConversation.textContent = `You are almost home. Don't dawdle.`;
+        //timerWarningSound.play();
+        // Keep the buttons hidden
+        responses.style.display = 'none'; 
+    }
+}
+
+function lore(){
+    if(health == 99){
+        meow.play();
+        modal.style.display = 'flex';
+        catConversation.textContent = `Luckily for you, Ms Fitzgerald has left her successors clues on how to return to Earth.`;
+
+        setTimeout(() => { 
+            conversationText = '';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+            
+            conversationText = 'Use this chance wisely so that no more lives will be forsaken.';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+
+        }, 3000); 
     
         // Keep the buttons hidden
         responses.style.display = 'none'; 
     }
 }
 
+function toggleView() {
+    isFirstPerson = !isFirstPerson;
+  
+    if (isFirstPerson) {
+        // Ensure astronaut is loaded before trying to hide it
+        if (astronaut) astronaut.visible = false;
 
+        controls.enabled = false; // Disable OrbitControls
+        controlsFirstPerson.enabled = true;
+        controlsFirstPerson.lock(); // Lock pointer for first-person controls
+  
+        // Position the camera at the astronaut's head position
+        if (astronaut) {
+            camera.position.copy(astronaut.position);
+            camera.position.y += 6; // Adjust for astronaut's eye height
+        }
+    } else {
+        // Switch to third-person view
+        controlsFirstPerson.unlock();
+        controlsFirstPerson.enabled = false;
+        controls.enabled = true;
 
-const listener = new THREE.AudioListener();
-camera.add(listener);
+        // Show the astronaut model again
+        if (astronaut) astronaut.visible = true;
 
-// Audio loader
-const audioLoader = new THREE.AudioLoader();
+        // Position the camera behind the astronaut
+        const offset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        if (astronaut) {
+            camera.position.copy(astronaut.position).add(offset);
+        }
 
-// separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
+        // Update controls target
+        if (astronaut) controls.target.copy(astronaut.position);
+    }
+}
+document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyV') { // Press 'V' to toggle views
+      toggleView();
+    }
+  });
+  
+  
 
 
 export function startGame() {
 
+   
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             if (exitMenu.style.display === 'none') {
@@ -172,7 +235,16 @@ export function startGame() {
             }
         }
     });
+    
+    const volumeControl = document.getElementById('volumeControl');
+    volumeControl.addEventListener('input', function () {
+        const volume = parseFloat(volumeControl.value);
+        audioManager.setVolume('ambiance', volume);
+        audioManager.setVolume('gameOver', volume);
+        audioManager.setVolume('timerWarning', volume);
+    });
 
+    audioManager.playSound('ambiance');
 
 
 //Function to load and apply texture to the moon model
@@ -222,23 +294,6 @@ loadModel('public/models/earth1.glb', scene, controls, camera, (astroObject) => 
 
 
     //setupRaycasting(camera, objectsToRaycast);
-});
-
-//sound 
-// Load ambiance sound
-audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
-
-// Load game over sound
-audioLoader.load('public/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
 });
 
 
@@ -321,31 +376,91 @@ loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camer
     console.error('Error loading skull model:', error);
 });
 
+let carpet;
+
 loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObject) => {
-        CarpetObject.scale.set(1.5, 1.5, 1.5);  
-        CarpetObject.position.set(0, 0.1,0);
-        CarpetObject.traverse((child) => {
-            if (child.isMesh) {
-                // Assign custom name or userData to ensure we're modifying the correct mesh
-                child.name = 'magic-carpet'; // Set a specific name for this child object
-                child.customId = 'magic-carpet'; // Alternatively, assign a custom ID
-                
-                // Store additional custom data if needed
-                child.userData = { customId: 'magic-carpet' }; // Set custom user data for the mesh
-            }
-            onAssetLoaded();
-        });
-         
-        scene.add(CarpetObject);               
-        objectsToRaycast.push(CarpetObject);   
-    
-       setupRaycasting(camera, objectsToRaycast);  
-       onAssetLoaded();
-    }, function (error) {
-        console.error('Error loading carpet model:', error);
+    CarpetObject.scale.set(1.5, 1.5, 1.5);  
+    CarpetObject.position.set(0, 0.1,0);
+    CarpetObject.traverse((child) => {
+        if (child.isMesh) {
+            // Assign custom name or userData to ensure we're modifying the correct mesh
+            child.name = 'magic-carpet'; // Set a specific name for this child object
+            child.customId = 'magic-carpet'; // Alternatively, assign a custom ID
+            
+            // Store additional custom data if needed
+            child.userData = { customId: 'magic-carpet' }; // Set custom user data for the mesh
+        }
+        onAssetLoaded();
     });
+    
+    carpet = CarpetObject;
+    scene.add(CarpetObject);               
+    objectsToRaycast.push(CarpetObject);   
 
+   setupRaycasting(camera, objectsToRaycast);  
+   onAssetLoaded();
+}, function (error) {
+    console.error('Error loading carpet model:',error);
+});
 
+    window.addEventListener('click', (event) => {
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // Update the raycaster with the camera and mouse position
+        raycaster.setFromCamera(mouse, camera);
+
+        if(carpet){
+        const intersects = raycaster.intersectObjects(carpet.children, true);
+
+        if (intersects.length > 0) {
+                handleMagicCarpetClick();
+            }
+        }
+ })
+
+ const container = document.getElementById("codeInputContainer");
+
+ function handleMagicCarpetClick() {
+    // Show the input container when the carpet is clicked
+    container.style.display = 'flex'; 
+
+    // Focus on the input field
+    const inputField = document.getElementById("codeInput");
+    inputField.focus();
+
+    const correctCode = "19402";
+    const button = document.getElementById("winCheck");
+
+    // Button click event handler
+    button.onclick = function() {
+        const userCode = inputField.value; // Get the user's input when the button is clicked
+        console.log(userCode); // Log user input for debugging
+
+        if (userCode === correctCode) {
+            window.location.href = 'epilogue.html'
+            container.style.display = 'none'; // Optionally hide the input container after winning
+        } else {
+            modal.style.display = 'flex';
+            meow.play();
+            conversationText = `That's not right. Try again, little astronaut.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+        }
+    };
+}
+
+const close = document.getElementById('close');
+close.addEventListener('click', () =>{
+    container.style.display = 'none';
+})
+
+// To ensure focus when clicking on the input
+const inputField = document.getElementById("codeInput");
+inputField.addEventListener('click', () => {
+    inputField.focus();
+});
 
 
 // Load the model for each position in the array
@@ -537,14 +652,13 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
     controls.target.copy(astronaut.position);
 });
 
-const meow = new Audio('public/sound/meow.wav');
    
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         // console.log('Static model loaded:', object);
         object.scale.set(1, 1, 1);
-        object.position.set(-10, 0, -10);
+        object.position.set(-10, 0, 10);
         object.rotation.y =  Math.PI / 2;
 
         catObject = object;
@@ -569,7 +683,7 @@ const meow = new Audio('public/sound/meow.wav');
 
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
-                    catConversation.textContent = `Do you need help, ${playerName}? I hope you are willing to trade some oxygen for a clue.`;
+                    catConversation.textContent = `Can you still afford to ask me for help?`;
                     setTimeout(() => {
                         meow.play(); 
                     }, 1000);
@@ -585,7 +699,7 @@ const meow = new Audio('public/sound/meow.wav');
 // Event listener for 'Don't Help' button
 dontHelpButton.addEventListener('click', () => {
     catConversation.style.animation = 'none';
-    catConversation.textContent = `As you wish.`;
+    catConversation.textContent = `Why, of course.`;
 
     // Keep the buttons hidden
     responses.style.display = 'none'; 
@@ -599,8 +713,8 @@ function isItemInInventory(itemName) {
     helpButton.addEventListener('click', () => {
         let conversationText;
     
-        if (!isItemInInventory('battery')) {
-            conversationText = `Very well. The battery can be found near the vehicle you arrived here with.`;             
+        if (!isItemInInventory('Clue1')) {
+            conversationText = `Have you thoroughly searched the comets?`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
     
@@ -609,14 +723,14 @@ function isItemInInventory(itemName) {
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
-                conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
+                conversationText = 'How sweet of Madam Fitzgerald to leave you these clues.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
             }, 3000); 
         }
 
-        else if(!isItemInInventory('button')){
-            conversationText = `Perhaps you can ask Mr Neil Armstrong on the whereabouts of the button.`;             
+        else if(!isItemInInventory('Clue2')){
+            conversationText = `On my left.. once again. You might need this soon.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
     
@@ -625,44 +739,44 @@ function isItemInInventory(itemName) {
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
-                conversationText = 'By the way, who was it that sent you here?';
+                conversationText = 'Have you figured out why you were sent here, memoryless?';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
             }, 3000); 
         }
 
-        else if(!isItemInInventory('circuit')){
-            conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
+        else if(!isItemInInventory('Clue3')){
+            conversationText = `Don't be afraid to search behind me as well.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
             meow.play();
+
+            setTimeout(() => {
+                meow.play();
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'When you go back, make sure SPO is never allowed to send out another astronaut.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 3000); 
         }
 
-        else if(!isItemInInventory('console')){
-            conversationText = `Ruins on the moon... How did they get here?`;             
+        else if(!isItemInInventory('Clue4')){
+            conversationText = `This asteroid does look extraterrestrial, doesn't it? That's not a human arch.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText; 
             meow.play();
         }
 
-        else if(!isItemInInventory('antenna')){
-            conversationText = `Here comes the sun...`;             
+        else if(!isItemInInventory('Clue5')){
+            conversationText = `Do you think flora is unique to Earth?`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
-    
-            setTimeout(() => {
-                meow.play();
-                conversationText = '';
-                document.getElementById('catConversation').innerHTML = conversationText; 
-                
-                conversationText = 'Be careful, though. Humans are fragile.';
-                document.getElementById('catConversation').innerHTML = conversationText; 
-
-            }, 3000); 
         }
 
         else{
-            conversationText = `Help? But you have everything you need to proceed, ${playerName}`;             
+            conversationText = `Help? But you have everything you need to proceed.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
         }
@@ -701,31 +815,41 @@ document.addEventListener('keyup', (event) => {
 function animate() {
     let delta = clock.getDelta();
     if (characterControls) {
-        characterControls.update(delta, keysPressed);
+      characterControls.update(delta, keysPressed, isFirstPerson);
     }
-
-
+  
     if (astronaut) {
-        // Compute the offset between camera and controls.target
+      if (isFirstPerson) {
+        // In first-person view, camera follows astronaut's position
+        camera.position.copy(astronaut.position);
+        camera.position.y += 1.7; // Adjust for astronaut's eye height
+      } else {
+        // Third-person view
         const cameraOffset = camera.position.clone().sub(controls.target);
-
+  
         // Update controls target to astronaut's position
         controls.target.copy(astronaut.position);
-
+  
         // Update camera's position to maintain the offset
         camera.position.copy(astronaut.position).add(cameraOffset);
+      }
     }
-
-    controls.update();
+  
+    if (isFirstPerson) {
+  
+      controlsFirstPerson.update();
+    } else {
+      controls.update();
+    }
+  
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-}
-
+  }
 
 function restartLevel() {
     clearInventory();
     // Reset health
-    health = 100;
+    health = 79;
     healthElement.innerHTML = `Oxygen: ${health}/100`;
 
     // Hide death and exit menus
@@ -738,15 +862,7 @@ function restartLevel() {
         astronaut.rotation.set(0, 0, 0); 
     }
 
-    // Stop the game over sound if it's playing
-    if (gameOverSound.isPlaying) {
-        gameOverSound.stop();
-    }
-
-    // Start the ambiance music if it's not playing
-    if (!ambianceSound.isPlaying) {
-        ambianceSound.play();
-    }
+    audioManager.playSound('ambiance');
 
     decreaseHealth();
 }
@@ -771,3 +887,4 @@ document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
 animate();  // Start the animation loop
 
 };
+
