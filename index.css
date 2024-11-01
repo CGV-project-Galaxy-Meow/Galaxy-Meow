@@ -110,10 +110,32 @@ body, html {
   padding: 4px 0;
 }
 
+/* Volume control input styling */
 #volumeControl {
-  width: 100%;
-  margin-top: 10px;
-  accent-color: #b469ff;
+  margin-top: 10px; /* Add space above the volume control */
+  width: 100%; /* Match button width */
+  background: rgba(233, 107, 255, 0.5);
+  height: 10px;
+  border-radius: 5px;
+  outline: none;
+  appearance: none;
+}
+#volumeControl::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff99ff;
+  box-shadow: 0px 0px 8px #ff99ff; /* Neon thumb */
+  cursor: pointer;
+}
+#volumeControl::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff99ff;
+  box-shadow: 0px 0px 8px #ff99ff; /* Neon thumb */
+  cursor: pointer;
 }
 
 /* Credits Link Styling */
