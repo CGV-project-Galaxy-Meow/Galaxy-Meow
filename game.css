@@ -112,22 +112,31 @@ body { margin: 0; overflow: hidden; }
     z-index: 101;
 }
 
-#nameInput {
-    border-radius: 5px;
-    border: 2px solid white;
-    background-color: black;
-    color: white;
-    font-family: 'Arial', sans-serif;
-}
 
 #nextButton {
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 5px;
+    background-color: #4a167b; /* Dark purple background */
+    color: #fff;
+    border: 2px solid rgba(255, 105, 180, 0.8); /* Neon border */
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 10px rgba(255, 105, 180, 0.6); /* Neon shadow */
+    text-shadow: 0px 0px 5px #ff99ff;
+    margin-top: 20px;
 }
 
+#nextButton:hover {
+    background-color: #73268c; /* Slightly brighter on hover */
+    box-shadow: 0px 6px 15px rgba(255, 150, 200, 0.8); /* More intense glow on hover */
+    transform: scale(1.05); /* Slight enlargement */
+}
+
+#nextButton:active {
+    transform: scale(0.97); /* Slight shrink on click */
+}
 /* Modal popup style */
 #myModal {
     display: none; 
@@ -214,12 +223,38 @@ body { margin: 0; overflow: hidden; }
     z-index: 9999; /* Ensure it's above other elements */
 }
 
+#dialogueBox {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 15, 0.85); /* Dark background with slight transparency */
+    border: 2px solid rgba(255, 105, 180, 0.8); /* Neon pink border */
+    border-radius: 15px;
+    width: 50%;
+    max-width: 600px;
+    color: #e776ff; /* Bright accent color */
+    text-shadow: 0px 0px 8px #ff99ff; /* Glowing text effect */
+    box-shadow: 0px 4px 20px rgba(233, 107, 255, 0.8); /* Neon shadow around box */
+    font-size: 18px;
+    margin: 0 auto; /* Center align */
+    z-index: 10;
+}
 
-@keyframes typing {
-    from {
-        width: 0;
-    }
-    to {
-        width: 100%;
-    }
+
+/* Style for the text inside the dialogueBox */
+#dialogueText {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #e6e6ff; /* Slightly lighter color for text */
+}
+
+/* Style for the input box in dialogueBox */
+#nameInput {
+    display: block;
+    padding: 10px;
+    width: 80%;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 105, 180, 0.8); /* Border to match the neon theme */
+    border-radius: 8px;
+    outline: none;
 }

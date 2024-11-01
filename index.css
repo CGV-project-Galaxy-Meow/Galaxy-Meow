@@ -14,6 +14,7 @@ body, html {
     position: relative;
   }
 
+
   /* Bottom bar for buttons */
   .menu-bar {
     position: absolute; 
@@ -26,19 +27,31 @@ body, html {
     gap: 20px;
   }
 
-  /* Buttons styling */
-  .menu-button {
-    background-color: rgb(233, 107, 255);
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+/* Apply same glow effect to modal buttons */
+.menu-button {
+  background-color: #4a167b;
+  color: #fff;
+  border: 2px solid rgba(255, 105, 180, 0.8);
+  border-radius: 15px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease, transform 0.3s ease;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), 0px 0px 10px rgba(255, 105, 180, 0.6);
+}
+/* Hover effects */
+.menu-button:hover, .menu-button:focus {
+  background-color: #73268c;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3), 0px 0px 20px rgba(255, 150, 200, 0.8);
+  transform: scale(1.05) translateY(-3px);
+}
 
-  .menu-button:hover {
-    background-color: lightgray;
-  }
-
+/* Active (click) effect */
+.menu-button:active {
+  transform: scale(0.97);
+}
   /* Popup modal styling */
   .modal {
     display: none;
@@ -46,21 +59,104 @@ body, html {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px;
+    width: 320px;
     padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  }
+    background-color: rgba(10, 10, 30, 0.9); /* Dark background with transparency */
+    border-radius: 10px;
+    border: 2px solid rgba(180, 105, 255, 0.8); /* Glowing border */
+    box-shadow: 0 0 15px rgba(180, 105, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4);
+    color: #f0e6ff; /* Light text color */
+    font-family: 'Arial', sans-serif;
+}
+/* Modal Header */
+.modal-header {
+  font-size: 24px;
+  font-weight: bold;
+  color: #b469ff; /* Glowing purple for headers */
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 15px;
+  position: relative;
+}
 
-  .modal-header {
-    font-size: 20px;
-    margin-bottom: 15px;
-  }
 
-  .modal-close {
-    cursor: pointer;
-    color: red;
-    font-weight: bold;
-    float: right;
-    font-size: 20px;
-  }
+/* Modal Close Button */
+.modal-close {
+  cursor: pointer;
+  color: #ff4d4d; /* Red glow effect */
+  font-weight: bold;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 24px;
+  transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #ff1a1a; /* Darker red on hover */
+}
+
+/* Control List in Modal */
+.modal ul {
+  padding: 0;
+  list-style: none;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.modal ul li {
+  color: #d3b7ff; /* Light purple list items */
+  padding: 4px 0;
+}
+
+/* Volume control input styling */
+#volumeControl {
+  margin-top: 10px; /* Add space above the volume control */
+  width: 100%; /* Match button width */
+  background: rgba(233, 107, 255, 0.5);
+  height: 10px;
+  border-radius: 5px;
+  outline: none;
+  appearance: none;
+}
+#volumeControl::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff99ff;
+  box-shadow: 0px 0px 8px #ff99ff; /* Neon thumb */
+  cursor: pointer;
+}
+#volumeControl::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff99ff;
+  box-shadow: 0px 0px 8px #ff99ff; /* Neon thumb */
+  cursor: pointer;
+}
+
+/* Credits Link Styling */
+#seeMoreCredits {
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  color: #b469ff;
+  text-decoration: none;
+  margin-top: 15px;
+  transition: color 0.2s ease;
+}
+
+#seeMoreCredits:hover {
+  color: #f0e6ff; /* Light text color on hover */
+}
+  /* Dynamic animated background for the start menu */
+
+/* Animation keyframes for background movement */
+@keyframes galaxyMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
