@@ -94,7 +94,7 @@ const audioLoader = new THREE.AudioLoader();
 // Load sound and play as before
 audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
   sound.setBuffer(buffer);
-  sound.setLoop(false);
+  sound.setLoop(true);
   sound.setVolume(0.5);
   sound.play();
 });

@@ -767,7 +767,7 @@ function restartLevel() {
     clearInventory();
     // Reset health
       // Use HealthManager's reset method
-      healthManager.resetHealth();
+      healthManager.resetHealth(90);
 
     // Hide death and exit menus
     deathMessage.style.display = 'none';

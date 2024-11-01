@@ -818,7 +818,7 @@ function animate() {
 function restartLevel() {
     clearInventory();
     // Reset health
-    healthManager.resetHealth();
+    healthManager.resetHealth(80);
     // Hide death and exit menus
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';

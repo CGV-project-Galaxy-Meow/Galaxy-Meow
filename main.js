@@ -920,7 +920,7 @@ function isItemInInventory(itemName) {
 
 function restartLevel() {
     clearInventory();
-    healthManager.resetHealth();
+    healthManager.resetHealth(100);
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
     if (astronaut) astronaut.position.copy(initialAstronautPosition);
