@@ -18,7 +18,7 @@ export function createSun(scene) {
 export function createSun2(scene) {
   const sunGeometry = new THREE.SphereGeometry(50, 32, 32);
 
-  const sunTexture = new THREE.TextureLoader().load('textures/sun.jpg');
+  const sunTexture = new THREE.TextureLoader().load('public/textures/sun.jpg');
 
   const sunMaterial = new THREE.MeshBasicMaterial({
       map: sunTexture
