@@ -221,7 +221,6 @@ export function setupRaycasting(camera, objectsToRaycast) {
     });
 }
 
-
 let currentItemName = null; // Store the current item name
 
 export function setupPickupRaycasting(camera, objectsToRaycast) {
