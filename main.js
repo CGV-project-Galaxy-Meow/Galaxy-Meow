@@ -573,7 +573,8 @@ setInterval(createShootingStar, 300);
                 RocksObject.position.copy(position); // Set the position from the array
                 //console.log(position)
                 RocksObject.name = 'Rocks'; // Set a name for reference
-        
+                const boxHelper = new THREE.BoxHelper(RocksObject, 0xff0000); // Red color
+                scene.add(boxHelper); // Add helper to the scene
                 // Add the object to the scene and collision arrays
                 scene.add(RocksObject);
                 objectsToRaycast.push(RocksObject);

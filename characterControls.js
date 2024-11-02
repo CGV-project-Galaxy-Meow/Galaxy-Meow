@@ -19,7 +19,7 @@ export class CharacterControls {
         this.gravity = 12; // Gravity affecting the character
         this.velocityY = 0; // Vertical velocity
         this.isOnGround = true; // Check if the character is on the ground
-
+        this.groundCheckDistance = 0.1;
         this.playCurrentAction();
     }
 
@@ -204,61 +204,44 @@ playCurrentAction() {
         const box = new THREE.Box3().setFromObject(this.model); // Bounding box of the character
         let collided = false;
     
-        // Loop through all objects to check for collisions
         for (const object of this.objectsToCollide) {
             const objectBox = new THREE.Box3().setFromObject(object); // Bounding box of the object
     
-            // Check for collision
             if (box.intersectsBox(objectBox)) {
+                // Check if the character is above the object
+                const characterAboveObject = box.min.y > objectBox.max.y;
+                
+                // Ignore collisions if character is above the object
+                if (characterAboveObject) {
+                    continue; // Skip collision handling for this object
+                }
+    
                 collided = true;
                 console.log("Collision detected with", object.name);
     
-                // Calculate the overlap vector
-                const overlap = new THREE.Vector3();
-                box.getSize(overlap); // Get the size of the character's bounding box
+                // Calculate overlap distances on the X and Z axes
+                const overlapX = Math.min(box.max.x - objectBox.min.x, objectBox.max.x - box.min.x);
+                const overlapZ = Math.min(box.max.z - objectBox.min.z, objectBox.max.z - box.min.z);
     
-                // Get the direction to push the character away
-                const minX = Math.min(box.max.x - objectBox.min.x, objectBox.max.x - box.min.x);
-                const minY = Math.min(box.max.y - objectBox.min.y, objectBox.max.y - box.min.y);
-                const minZ = Math.min(box.max.z - objectBox.min.z, objectBox.max.z - box.min.z);
-                // console.log("min X", minX);
-                // console.log("min Y", minY);
-                // console.log("min Z", minZ);
-                // Determine the smallest overlap
-                const smallestOverlap = Math.min(minX, minY, minZ);
-    
-                // Correct the character's position based on the overlap direction
-                if (smallestOverlap === minX) {
-                    // Adjust based on the relative position to the object
-                    overlap.y = 0;
-                    //overlap.z = minZ*1.8;
-                    if (box.max.x > objectBox.min.x) {
-                        overlap.x = minX;
-                    } else {
-                        overlap.x = -minX;
-                    }
-                    //console.log("min x is smallest", overlap.x);
-                } else if (smallestOverlap === minY) {
-                    // Handle Y overlap (if necessary)
-                    overlap.y = 0; // Keep y-axis correction if needed
-                   // console.log("min y is smallest", overlap.y);
+                // Determine which axis to resolve collision on, based on the smaller overlap
+                if (overlapX < overlapZ) {
+                    // Resolve collision on the X axis
+                    this.model.position.x += (box.min.x < objectBox.min.x) ? -overlapX : overlapX;
                 } else {
-                    overlap.y = 0;
-                    //overlap.x = minX*1.8;
-                    if (box.max.z > objectBox.min.z) {
-                        overlap.z = minZ;
-                    } else {
-                        overlap.z = -minZ;
-                    }
-                    //console.log("min z is smallest", overlap.z);
+                    // Resolve collision on the Z axis
+                    this.model.position.z += (box.min.z < objectBox.min.z) ? -overlapZ : overlapZ;
                 }
     
-                // Move the character away from the collision based on the overlap
-                this.model.position.add(overlap.normalize().multiplyScalar(0.1));
+                // Recalculate bounding box position after collision adjustment
+                box.setFromObject(this.model);
                 break; // Exit loop after handling one collision
             }
         }
     }
+    
+
+    
+    
     
 
     handleJumping(delta, keysPressed) {
