@@ -7,7 +7,7 @@ import { CharacterControls } from './characterControls.js';  // Import character
 import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
-import { setupRaycasting,setupPickupRaycasting} from './raycasting.js';
+import { setupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
 import { AudioManager } from './AudioManager.js';
@@ -436,7 +436,6 @@ setInterval(createShootingStar, 300);
 
 
             setupRaycasting(camera, objectsToRaycast);
-            setupPickupRaycasting(camera, objectsToRaycast)
             onAssetLoaded();
         });
 
