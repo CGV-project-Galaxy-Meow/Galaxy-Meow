@@ -299,7 +299,7 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
     });
 
     loadModel('public/models/GLB.glb', scene, controls, camera, (skullObject) => {
-        skullObject.scale.set(50, 50, 50);  // Set size of skull
+        skullObject.scale.set(80, 80, 80);  // Set size of skull
         skullObject.position.set(-5.927182022763221, 0, -136.58502827742493);
         const textureLoader = new THREE.TextureLoader();
         const skullTexture = textureLoader.load('textures/blue.jpg')
