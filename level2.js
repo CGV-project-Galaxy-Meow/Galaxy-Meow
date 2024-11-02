@@ -272,7 +272,7 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
     
 
     loadModel('public/models/space_crytal.glb', scene, controls, camera, (skullObject) => {
-        skullObject.scale.set(0.4, 0.4, 0.4);  // Set size 
+        skullObject.scale.set(0.2, 0.2, 0.2);  // Set size 
         skullObject.position.set(-211.47354442104583,0, -330.745265951462);  
         skullObject.name = 'skeleton';         // Set a name for identification
         scene.add(skullObject);               
@@ -298,7 +298,7 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
     });
 
     loadModel('public/models/GLB.glb', scene, controls, camera, (skullObject) => {
-        skullObject.scale.set(100, 100, 100);  // Set size of skull
+        skullObject.scale.set(50, 50, 50);  // Set size of skull
         skullObject.position.set(-5.927182022763221, 0, -136.58502827742493);
         const textureLoader = new THREE.TextureLoader();
         const skullTexture = textureLoader.load('textures/blue.jpg')
@@ -339,8 +339,8 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
 
 
 loadModel('public/models/model.glb', scene, controls, camera, (skullObject) => {
-    skullObject.scale.set(1.2, 1.2, 1.2);  // Set size of skull
-    skullObject.position.set(-17.359087005804316, -5,240.28950987634434);    // Position it relative to ground
+    skullObject.scale.set(1, 1, 1);  // Set size of skull
+    skullObject.position.set(-17.359087005804316, -4,240.28950987634434);    // Position it relative to ground
 
     // Load texture
     const textureLoader = new THREE.TextureLoader();
