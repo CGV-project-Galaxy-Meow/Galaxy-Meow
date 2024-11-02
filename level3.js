@@ -335,7 +335,7 @@ loadModel('public/models/paper/Debris_Papers.glb', scene, controls, camera, (Deb
 
 loadModel('public/models/paper/Manila_Envelope.glb', scene, controls, camera, (ManilaObject) => {
     ManilaObject.scale.set(1.5, 1.5, 1.5);  
-    ManilaObject.position.set(215, 0.1,317);  //200, -4, 300
+    ManilaObject.position.set(235, 0.1,317);  //200, -4, 300
     ManilaObject.name = 'Manila envelope';        
     scene.add(ManilaObject);               
     objectsToRaycast.push(ManilaObject);   
@@ -366,7 +366,7 @@ loadModel('public/models/paper/Toilet_paper.glb', scene, controls, camera, (Toil
 
 loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camera, (StackPaperObject) => {
     StackPaperObject.scale.set(20, 20, 20);  
-    StackPaperObject.position.set(230, 0.1,0);  
+    StackPaperObject.position.set(230, 0.01,-25);  
     StackPaperObject.name = 'Stack of paper';        
     scene.add(StackPaperObject);               
     objectsToRaycast.push(StackPaperObject);   
