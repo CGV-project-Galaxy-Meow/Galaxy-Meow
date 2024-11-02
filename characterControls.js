@@ -230,18 +230,18 @@ playCurrentAction() {
                 // console.log("min Y", minY);
                 // console.log("min Z", minZ);
                 
-                if(minX-minZ>0&& minX-minZ < 1){
-                    // console.log("In minX-MinZ");
-                    const SpecialOverlap = Math.min(minX, minZ);
-                    if(SpecialOverlap==minX){
-                        // console.log("Bix X");
-                        minX = minX+50;
-                    }
-                    else{
-                        // console.log("Bix Z");
-                        minZ = minZ + 50;
-                    }
-                }
+                // if(minX-minZ>0&& minX-minZ < 1){
+                //     // console.log("In minX-MinZ");
+                //     const SpecialOverlap = Math.min(minX, minZ);
+                //     if(SpecialOverlap==minX){
+                //         // console.log("Bix X");
+                //         minX = minX+50;
+                //     }
+                //     else{
+                //         // console.log("Bix Z");
+                //         minZ = minZ + 50;
+                //     }
+                // }
 
 
                 // Determine the smallest overlap

@@ -1,7 +1,7 @@
 import * as THREE from './node_modules/three/build/three.module.min.js';
 
 import {showItemModal} from './modal.js';
-import {items,,addItem} from "./inventory.js";
+import {items,addItem} from './inventory.js';
 
 
 const itemDataMapping = {
