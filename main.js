@@ -168,48 +168,62 @@ function onAssetLoaded() {
     }
 }
 
+// Reference to the view mode message element
+const viewModeMessage = document.getElementById('viewModeMessage');
+
+// Function to update the view mode message
+function updateViewModeMessage() {
+    const modeText = isFirstPerson ? "First Person View" : "Third Person View";
+    viewModeMessage.textContent = `${modeText} - Press V to switch`;
+    
+    // Briefly animate the opacity for emphasis
+    viewModeMessage.style.opacity = '0';
+    setTimeout(() => {
+        viewModeMessage.style.opacity = '1';
+    }, 100);
+}
+
+// Update view mode when toggling views
 function toggleView() {
     isFirstPerson = !isFirstPerson;
   
     if (isFirstPerson) {
-        // Ensure astronaut is loaded before trying to hide it
         if (astronaut) astronaut.visible = false;
-
-        controls.enabled = false; // Disable OrbitControls
+        controls.enabled = false;
         controlsFirstPerson.enabled = true;
-        controlsFirstPerson.lock(); // Lock pointer for first-person controls
-  
-        // Position the camera at the astronaut's head position
+        controlsFirstPerson.lock();
+
         if (astronaut) {
             camera.position.copy(astronaut.position);
-            camera.position.y += 6; // Adjust for astronaut's eye height
+            camera.position.y += 6;
         }
     } else {
-        // Switch to third-person view
         controlsFirstPerson.unlock();
         controlsFirstPerson.enabled = false;
         controls.enabled = true;
 
-        // Show the astronaut model again
         if (astronaut) astronaut.visible = true;
-
-        // Position the camera behind the astronaut
-        const offset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        const offset = new THREE.Vector3(0, 10, -20);
         if (astronaut) {
             camera.position.copy(astronaut.position).add(offset);
         }
 
-        // Update controls target
         if (astronaut) controls.target.copy(astronaut.position);
     }
+    
+    // Update the message whenever the view is toggled
+    updateViewModeMessage();
 }
 
+// Initial message update on page load
+updateViewModeMessage();
+
+// Keydown event listener to toggle view mode on 'V' key press
 document.addEventListener('keydown', function (event) {
-    if (event.code === 'KeyV') { // Press 'V' to toggle views
-      toggleView();
+    if (event.code === 'KeyV') {
+        toggleView();
     }
-  });
-  
+});
 
 
 export function startGame() {
