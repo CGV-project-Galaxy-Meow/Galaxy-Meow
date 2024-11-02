@@ -1,4 +1,8 @@
-import * as THREE from 'three';
+
+
+import * as THREE from './node_modules/three/build/three.module.min.js';;
+
+
 
 export class CharacterControls {
     constructor(model, mixer, animationsMap, orbitControl, camera, currentAction) {
@@ -12,6 +16,7 @@ export class CharacterControls {
         this.toggleRun = true;
         this.currentAction = currentAction;
         this.speed = 20; // Adjust movement speed as needed
+
 
         this.isJumping = false;
         this.jumpHeight = 15; // Height of the jump
@@ -217,11 +222,13 @@ playCurrentAction() {
                 }
     
                 collided = true;
-                console.log("Collision detected with", object.name);
+                //console.log("Collision detected with", object.name);
     
+
                 // Calculate overlap distances on the X and Z axes
                 const overlapX = Math.min(box.max.x - objectBox.min.x, objectBox.max.x - box.min.x);
                 const overlapZ = Math.min(box.max.z - objectBox.min.z, objectBox.max.z - box.min.z);
+
     
                 // Determine which axis to resolve collision on, based on the smaller overlap
                 if (overlapX < overlapZ) {

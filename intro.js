@@ -3,6 +3,8 @@ import {startGame} from './main.js';
 let playerName = '';
 let step = 0;
 
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const loadingScreen = document.getElementById('loadingScreen');
     const introScreen = document.getElementById('introScreen');
@@ -54,6 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li>Left mouse click - To select objects</li>
                         <li>Right mouse click and drag - Look around the map</li>
                         <li>V - Change prespective</li>
+                        <li>E - Interact with objects in first person perspective</li>
+                        <li>X - Close object popups in first person perspective</li>
+                        <li>1 - Add items to inventory in first person perspective</li>
                     </ul>
                 </div>
                 <p>Good luck, ${playerName}!</p>

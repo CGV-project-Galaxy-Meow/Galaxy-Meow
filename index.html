@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="index.css">
   
   <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
+
 </head>
 <body>
 
@@ -31,6 +32,7 @@
       </div>
     </div>
   </div>
+
 </div>
 
   <!-- Settings Modal -->
@@ -41,6 +43,7 @@
     <label for="volumeControl">Music Volume:</label>
     <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
   </div>
+
 
   <!-- Controls Modal -->
   <div class="modal" id="controlsModal">
@@ -62,6 +65,9 @@
       <li>Left mouse click - To select objects</li>
       <li>Right mouse click and drag - Look around the map</li>
       <li>V - Change perspective</li>
+      <li>E - Interact with objects in first person perspective</li>
+      <li>X - Close object popups in first person perspective</li>
+      <li>1 - Add items to inventory in first person perspective</li>
     </ul>
   </div>
 
@@ -109,9 +115,11 @@
 // Create a global audio source
 const sound = new THREE.Audio(listener);
 const audioLoader = new THREE.AudioLoader();
+
 // Load a sound and set it as the Audio object's buffer
 // Load sound and play as before
-audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
+audioLoader.load('public/sound/welcome-music.mp3', function (buffer) {
+
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.5);

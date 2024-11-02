@@ -1,14 +1,15 @@
-import * as THREE from 'three';
+import * as THREE from './node_modules/three/build/three.module.min.js';
 
 import {showItemModal} from './modal.js';
-import {items,addItem} from "./inventory";
+import {items,addItem} from './inventory.js';
+
 
 const itemDataMapping = {
     'Object_2': {
         title: 'M.S Fitzgerald',
         description: '19/04/02 - ??/??/22, Margie Sandy Fitzgerald was SPO\'s youngest assigned agent.',
         additionalInfo: 'What is her story ?',
-        imgSrc: 'images/skull.png',
+        imgSrc: 'public/images/skull.png',
         itemName: 'skull'
     },
     'power-crystal': {
@@ -22,21 +23,21 @@ const itemDataMapping = {
         title: 'U.S Flag',
         description: 'USA KAWWHHH!!!',
         additionalInfo: 'Americans never made it to the moon by the way.',
-        imgSrc: 'images/flag.png',
+        imgSrc: 'public/images/flag.png',
         itemName: 'flag'
     },
     'Object_3': {
         title: 'U.S Flag',
         description: 'USA KAWWHHH!!!',
         additionalInfo: 'Americans never made it to the moon by the way.',
-        imgSrc: 'images/flag.png',
+        imgSrc: 'public/images/flag.png',
         itemName: 'flag'
     },
     'Object_5': {
         title: 'U.S Flag',
         description: 'USA KAWWHHH!!!',
         additionalInfo: 'Americans never made it to the moon by the way.',
-        imgSrc: 'images/flag.png',
+        imgSrc: 'public/images/flag.png',
         itemName: 'flag'
     },
     'Cylinder002': {
