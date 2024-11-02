@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import {showItemModal} from './modal.js';
-import {items,addItem} from "./inventory";
+import {items} from "./inventory";
 
 const itemDataMapping = {
     'Object_2': {
@@ -175,7 +175,6 @@ const itemDataMapping = {
         itemName: 'Clue5'
     }
 };
-
 export function setupRaycasting(camera, objectsToRaycast) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -196,30 +195,27 @@ export function setupRaycasting(camera, objectsToRaycast) {
         // If an intersection is found, process it
         if (intersects.length > 0) {
             const clickedObject = intersects[0].object;
-            console.log("the clicked object :", clickedObject);
-            
+            console.log("the clicked object :", clickedObject)
             if (clickedObject.name in itemDataMapping || clickedObject.userData.customId === 'power-crystal') {
                 const itemData = itemDataMapping[clickedObject.name] || itemDataMapping[clickedObject.userData.customId];
                 showItemModal(itemData);
-            } else if (clickedObject.name === 'node_id31') {
+            }
+            else if(clickedObject.name ==='node_id31'){
                 const blueprintOverlay = document.getElementById('blueprint-overlay');
                 blueprintOverlay.style.display = 'block';
                 
-                // Add event listener to close the overlay when close button is clicked
+                // Add event listener to close the overlay when "X" is clicked
                 const closeButton = document.getElementById('close-blueprint');
                 closeButton.addEventListener('click', function() {
                     blueprintOverlay.style.display = 'none';
                 });
-
-
-                
-                
             }
+            
         }
-
-        
     });
+    //console.log(objectsToRaycast)
 }
+
 
 
 let currentItemName = null; // Store the current item name
@@ -364,3 +360,4 @@ export function setupPickupRaycasting(camera, objectsToRaycast) {
         }
     }
 }
+
