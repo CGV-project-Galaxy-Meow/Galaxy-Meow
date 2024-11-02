@@ -33,6 +33,7 @@ export function showItemModal(itemDetails) {
         modal.style.display = 'none'; // Hide the modal after adding
     };
 
+
     // Close modal functionality
     document.getElementById('closeModal2').onclick = function () {
         modal.style.display = 'none';
@@ -58,6 +59,13 @@ window.onclick = function(event) {
         modal.style.display = 'none';
     }
 };
+
+window.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('myModal2');
+    if (event.key === 'x' || event.key === 'X') { // Check for both lowercase and uppercase "X"
+        modal.style.display = 'none';
+    }
+});
 
 export function showWinningModal() {
     const winningModal = document.getElementById('winningModal');
