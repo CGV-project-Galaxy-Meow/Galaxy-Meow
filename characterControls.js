@@ -223,12 +223,27 @@ playCurrentAction() {
                 box.getSize(overlap); // Get the size of the character's bounding box
     
                 // Get the direction to push the character away
-                const minX = Math.min(box.max.x - objectBox.min.x, objectBox.max.x - box.min.x);
-                const minY = Math.min(box.max.y - objectBox.min.y, objectBox.max.y - box.min.y);
-                const minZ = Math.min(box.max.z - objectBox.min.z, objectBox.max.z - box.min.z);
+                let minX = Math.min(box.max.x - objectBox.min.x, objectBox.max.x - box.min.x);
+                let minY = Math.min(box.max.y - objectBox.min.y, objectBox.max.y - box.min.y);
+                let minZ = Math.min(box.max.z - objectBox.min.z, objectBox.max.z - box.min.z);
                 // console.log("min X", minX);
                 // console.log("min Y", minY);
                 // console.log("min Z", minZ);
+                
+                if(minX-minZ>0&& minX-minZ < 1){
+                    // console.log("In minX-MinZ");
+                    const SpecialOverlap = Math.min(minX, minZ);
+                    if(SpecialOverlap==minX){
+                        // console.log("Bix X");
+                        minX = minX+50;
+                    }
+                    else{
+                        // console.log("Bix Z");
+                        minZ = minZ + 50;
+                    }
+                }
+
+
                 // Determine the smallest overlap
                 const smallestOverlap = Math.min(minX, minY, minZ);
     
@@ -242,11 +257,11 @@ playCurrentAction() {
                     } else {
                         overlap.x = -minX;
                     }
-                    //console.log("min x is smallest", overlap.x);
+                    // console.log("min x is smallest", overlap.x);
                 } else if (smallestOverlap === minY) {
                     // Handle Y overlap (if necessary)
                     overlap.y = 0; // Keep y-axis correction if needed
-                   // console.log("min y is smallest", overlap.y);
+                //    console.log("min y is smallest", overlap.y);
                 } else {
                     overlap.y = 0;
                     //overlap.x = minX*1.8;
@@ -255,7 +270,7 @@ playCurrentAction() {
                     } else {
                         overlap.z = -minZ;
                     }
-                    //console.log("min z is smallest", overlap.z);
+                    // console.log("min z is smallest", overlap.z);
                 }
     
                 // Move the character away from the collision based on the overlap

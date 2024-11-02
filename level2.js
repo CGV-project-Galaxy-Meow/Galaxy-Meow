@@ -8,7 +8,7 @@ import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitC
 
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
-import { setupRaycasting } from './raycasting.js';
+import { setupRaycasting,setupPickupRaycasting } from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import LightSetup from './LightSetup.js';
 import { HealthManager } from './HealthManager.js';
@@ -269,7 +269,8 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
         scene.add(crystalObject); // Add crystal object to the scene
         objectsToRaycast.push(crystalObject); // Add crystal object to raycasting array
     
-        setupRaycasting(camera, objectsToRaycast); // Initialize raycasting with new objects
+        setupRaycasting(camera, objectsToRaycast); 
+        setupPickupRaycasting(camera, objectsToRaycast)
     }, function (error) {
         console.error('Error loading crystal model:', error);
     });
@@ -302,7 +303,7 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
     });
 
     loadModel('public/models/GLB.glb', scene, controls, camera, (skullObject) => {
-        skullObject.scale.set(50, 50, 50);  // Set size of skull
+        skullObject.scale.set(80, 80, 80);  // Set size of skull
         skullObject.position.set(-5.927182022763221, 0, -136.58502827742493);
         const textureLoader = new THREE.TextureLoader();
         const skullTexture = textureLoader.load('public/textures/blue.jpg')
