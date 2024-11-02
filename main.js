@@ -7,17 +7,17 @@ import { CharacterControls } from './characterControls.js';  // Import character
 import './intro.js';
 import { playerName } from './intro.js';
 import { createSun } from './background.js';
-import { setupRaycasting } from './raycasting.js';
-import {showDeathMessage} from './levelMenus.js'
+import { setupRaycasting,setupPickupRaycasting} from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster} from './modelLocations.js'
+import { AudioManager } from './AudioManager.js';
+import { HealthManager } from './HealthManager.js';
+import LightSetup from './LightSetup.js';
 
-let health = 100;
-let healthElement = document.getElementById('healthBar');
+
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
 let characterControls;
-let healthInterval; // To control the health timer
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -30,6 +30,16 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
+const meow = new Audio('sound/meow.wav');
+
+
+// Initialize AudioManager
+const audioManager = new AudioManager();
+
+// Initialize sounds with file paths
+audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
@@ -116,6 +126,9 @@ camera.position.set(50, 10, 2);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('gameCanvas').appendChild(renderer.domElement);
+// Add audio listener to the camera
+audioManager.addListenerTo(camera);
+
 
 const controlsFirstPerson = new PointerLockControls(camera, renderer.domElement);
 let isFirstPerson = false; // Starts in third-person view
@@ -133,83 +146,13 @@ controls.mouseButtons = {
     RIGHT: THREE.MOUSE.ROTATE
 };
 
-// Audio listener
-const listener = new THREE.AudioListener();
-camera.add(listener);
-
-// Audio loader
-const audioLoader = new THREE.AudioLoader();
-
-// separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
-const timerWarningSound= new THREE.Audio(listener);
-// Load ambiance sound
-// audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-//     ambianceSound.setBuffer(buffer);
-//     ambianceSound.setLoop(true);
-//     ambianceSound.setVolume(0.5);
-//     ambianceSound.play();
-// });
-
-// // Load game over sound
-// audioLoader.load('/sound/game-over.mp3', function(buffer) {
-//     gameOverSound.setBuffer(buffer);
-//     gameOverSound.setLoop(false);
-//     gameOverSound.setVolume(0.5);
-//     //we'll play it when health reaches zero
-// });
-
-audioLoader.load('/sound/beep-warning-6387.mp3', function(buffer) {
-    timerWarningSound.setBuffer(buffer);
-    timerWarningSound.setLoop(false);
-    timerWarningSound.setVolume(0.5);
-
-});
-
-
 
 
 //----functions----
+// Initialize HealthManager with initial health and audio manager
+const healthManager = new HealthManager(100, audioManager);
 
-function decreaseHealth() {
-    if (healthInterval) {
-        clearInterval(healthInterval); // Clear any previous interval
-    }
-    healthInterval = setInterval(() => {
-        if (health > 0) {
-            health -= 1;
-            healthElement.innerHTML = `Oxygen: ${health}/100`;
-            checkOxygen();
-        } else {
-            clearInterval(healthInterval); // Stop the timer when health reaches 0
-            showDeathMessage();
 
-            // Stop the ambiance music
-            if (ambianceSound.isPlaying) {
-                ambianceSound.stop();
-            }
-
-            // Play the game over sound
-            gameOverSound.play();
-        }
-    }, 5000); // Decrease health every 5 seconds
-}
-
-//cat warns you of the oxygen
-function checkOxygen(){
-    if(health == 30){
-        modal.style.display = 'flex';
-        catConversation.style.animation = 'none';
-        catConversation.textContent = `Be careful, ${playerName}! Your oxygen is running low.`;
-        timerWarningSound.play();
-        void catConversation.offsetWidth; 
-        catConversation.style.animation = 'typing 3.5s steps(40, end)';
-    
-        // Keep the buttons hidden
-        responses.style.display = 'none'; 
-    }
-}
 
 document.getElementById('bagIcon').style.display = 'none';
 document.getElementById('startPiP').style.display = 'none';
@@ -220,52 +163,67 @@ function onAssetLoaded() {
     assetsLoaded++;
     if (assetsLoaded === assetsToLoad) {
         loadingScreen.style.display = 'none'; // Hide loading screen 
-        decreaseHealth();
+       healthManager.startHealthDecrease();
+
     }
 }
 
+// Reference to the view mode message element
+const viewModeMessage = document.getElementById('viewModeMessage');
+
+// Function to update the view mode message
+function updateViewModeMessage() {
+    const modeText = isFirstPerson ? "First Person View" : "Third Person View";
+    viewModeMessage.textContent = `${modeText} - Press V to switch`;
+    
+    // Briefly animate the opacity for emphasis
+    viewModeMessage.style.opacity = '0';
+    setTimeout(() => {
+        viewModeMessage.style.opacity = '1';
+    }, 100);
+}
+
+// Update view mode when toggling views
 function toggleView() {
     isFirstPerson = !isFirstPerson;
   
     if (isFirstPerson) {
-        // Ensure astronaut is loaded before trying to hide it
         if (astronaut) astronaut.visible = false;
-
-        controls.enabled = false; // Disable OrbitControls
+        controls.enabled = false;
         controlsFirstPerson.enabled = true;
-        controlsFirstPerson.lock(); // Lock pointer for first-person controls
-  
-        // Position the camera at the astronaut's head position
+        controlsFirstPerson.lock();
+
         if (astronaut) {
             camera.position.copy(astronaut.position);
-            camera.position.y += 6; // Adjust for astronaut's eye height
+            camera.position.y += 6;
         }
     } else {
-        // Switch to third-person view
         controlsFirstPerson.unlock();
         controlsFirstPerson.enabled = false;
         controls.enabled = true;
 
-        // Show the astronaut model again
         if (astronaut) astronaut.visible = true;
-
-        // Position the camera behind the astronaut
-        const offset = new THREE.Vector3(0, 10, -20); // Adjust as needed
+        const offset = new THREE.Vector3(0, 10, -20);
         if (astronaut) {
             camera.position.copy(astronaut.position).add(offset);
         }
 
-        // Update controls target
         if (astronaut) controls.target.copy(astronaut.position);
     }
+    
+    // Update the message whenever the view is toggled
+    updateViewModeMessage();
 }
 
+// Initial message update on page load
+updateViewModeMessage();
+
+// Keydown event listener to toggle view mode on 'V' key press
 document.addEventListener('keydown', function (event) {
-    if (event.code === 'KeyV') { // Press 'V' to toggle views
-      toggleView();
+    if (event.code === 'KeyV') {
+        toggleView();
     }
-  });
-  
+});
 
 
 export function startGame() {
@@ -289,69 +247,25 @@ renderer.domElement.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 }, false);
 
-//create background audio
-const listener = new THREE.AudioListener();
-camera.add(listener);
 
-// Create a global audio source
-const sound = new THREE.Audio(listener);
+audioManager.playSound('ambiance');
 
-// Load a sound and set it as the Audio object's buffer
-const audioLoader = new THREE.AudioLoader();
-audioLoader.load('/sound/welcome-music.mp3', function (buffer) {
-  sound.setBuffer(buffer);
-  sound.setLoop(true);
-  sound.setVolume(0.5);
-  sound.play();
-});
-audioLoader.load('/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
+  
+const ambientConfig = { color: 0xffffff, intensity: 1.3};
+const directionalConfig = { color: 0x999793, intensity: 25, position: { x: 0, y: 50, z: -50 } };
+const spotlightConfig = [{
+  color: 0xffa200,
+  intensity: 70,
+  position: { x: 50, y: 1, z: 8 },
+  target: { x: 50, y: 0, z: 8 },
+  angle: Math.PI / 3,
+  penumbra: 0.2,
+  decay: 2,
+  distance: 60
+}
+]
 
-// Load game over sound
-audioLoader.load('/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
-});
-
-
-
-
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0x999793, 25);
-    directionalLight.position.set(0, 50, -50).normalize();
-    //directionalLight.castShadow = true;  // Enable shadows if needed
-    scene.add(directionalLight);
-
-    // Create a spotlight
-const spotLight = new THREE.SpotLight(0xffa200, 80); // Red light with intensity 80
-spotLight.position.set(50, 1, 8); // Positioning the light above the ground
-
-// Set the spotlight to shine directly downwards
-spotLight.angle = Math.PI / 2; // Angle of the spotlight's cone (adjust if needed)
-spotLight.penumbra = 0.1; // Soft edges of the spotlight
-spotLight.decay = 2; // How quickly the light diminishes
-spotLight.distance = 50; // The distance the light reaches
-
-// Enable shadows if needed
-spotLight.castShadow = true;
-
-// Point the light directly downwards
-spotLight.target.position.set(50, 0, 8); // Set the target to the ground (where the torch is pointing)
-spotLight.target.updateMatrixWorld(); // Update the target matrix
-
-// Add the spotlight to the scene
-scene.add(spotLight);
-scene.add(spotLight.target); // Add the target to the scene
-    
+new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
 
     createSun(scene);
 
@@ -490,7 +404,7 @@ setInterval(createShootingStar, 300);
 
 
   // Load the American Flag Model
-  loadModel('models/american_flag.glb', scene, controls, camera, (flagObject) => {
+  loadModel('public/models/american_flag.glb', scene, controls, camera, (flagObject) => {
     flagObject.scale.set(1.7, 1.7, 1.7);
     flagObject.position.set(100, 5,100);
     flagObject.name = 'american_flag';
@@ -501,7 +415,7 @@ setInterval(createShootingStar, 300);
 });
 
 
-        loadModel('models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
+        loadModel('public/models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(3.3, 3.3, 3.3);
             barrelObject.position.set(-28, 0, 53);
             barrelObject.name = 'barrel'
@@ -512,7 +426,7 @@ setInterval(createShootingStar, 300);
             onAssetLoaded();
         });
 
-        loadModel('models/skull.glb', scene, controls, camera, (skullObject) => {
+        loadModel('public/models/skull.glb', scene, controls, camera, (skullObject) => {
             skullObject.scale.set(0.6, 0.6, 0.6);
             skullObject.position.set(45, 0.3, 4);
             skullObject.name = 'skeleton';
@@ -522,10 +436,11 @@ setInterval(createShootingStar, 300);
 
 
             setupRaycasting(camera, objectsToRaycast);
+            setupPickupRaycasting(camera, objectsToRaycast)
             onAssetLoaded();
         });
 
-        loadModel('models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
+        loadModel('public/models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
             blueprintObject.scale.set(5, 5, 5);
             blueprintObject.position.set(50, 1, 6);
             blueprintObject.name = 'blueprint';
@@ -538,7 +453,7 @@ setInterval(createShootingStar, 300);
         });
 
         
-        loadModel('models/batteries.glb', scene, controls, camera, (BatteryObject) => {
+        loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
             BatteryObject.scale.set(0.5, 0.5, 0.5);
             BatteryObject.position.set(-181, 0, 70);
 
@@ -550,7 +465,7 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
             onAssetLoaded();
         });
-        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+        loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
             CirctuitIObject.position.set(-210, 0.4, -310);
             CirctuitIObject.name = 'Circuit Board'
@@ -561,7 +476,7 @@ setInterval(createShootingStar, 300);
             onAssetLoaded();
         });
 
-        loadModel('models/Button.glb', scene, controls, camera, (ButtonObject) => {
+        loadModel('public/models/Button.glb', scene, controls, camera, (ButtonObject) => {
             ButtonObject.scale.set(0.8, 0.8, 0.8);
             ButtonObject.position.set(210, 0, 294);
             ButtonObject.name = 'Button'
@@ -573,7 +488,7 @@ setInterval(createShootingStar, 300);
         });
 
 
-        loadModel('models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
+        loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
             CirctuitIObject.position.set(-210, 0.4, -310);
             CirctuitIObject.name = 'Circuit Board'
@@ -815,8 +730,6 @@ setInterval(createShootingStar, 300);
 
 
     });
-
-    const meow = new Audio('sound/meow.wav');
    
     
     // Load the static model
@@ -884,13 +797,14 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play(); 
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'I do wonder how such sound equipment managed to get destroyed.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else if(!isItemInInventory('button')){
@@ -899,25 +813,28 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play();
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'By the way, who was it that sent you here?';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else if(!isItemInInventory('circuit')){
             conversationText = `You should venture near the fallen asteroid, ${playerName}.`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText;
+            meow.play();
         }
 
         else if(!isItemInInventory('console')){
             conversationText = `Ruins on the moon... How did they get here?`;             
             document.getElementById('catConversation').innerHTML = conversationText;
             catConversation.textContent = conversationText; 
+            meow.play();
         }
 
         else if(!isItemInInventory('antenna')){
@@ -926,13 +843,14 @@ function isItemInInventory(itemName) {
             catConversation.textContent = conversationText;
     
             setTimeout(() => {
+                meow.play();
                 conversationText = '';
                 document.getElementById('catConversation').innerHTML = conversationText; 
                 
                 conversationText = 'Be careful, though. Humans are fragile.';
                 document.getElementById('catConversation').innerHTML = conversationText; 
 
-            }, 4000); 
+            }, 3000); 
         }
 
         else{
@@ -942,8 +860,8 @@ function isItemInInventory(itemName) {
         }
 
         responses.style.display = 'none';
-
-        health -= 10;
+ // Use HealthManager to decrease health by 10 points for the cat interaction
+ healthManager.decreaseHealthBy(10);
     });
 
         // Close modal on button click
@@ -1015,37 +933,29 @@ function isItemInInventory(itemName) {
 }
 
 
-
 function restartLevel() {
     clearInventory();
-    // Reset health
-    health = 100;
-    healthElement.innerHTML = `Oxygen: ${health}/100`;
-
-    // Hide death and exit menus
+    healthManager.resetHealth(100);
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
-
-    // Reset astronaut position and controls
-    if (astronaut) {
-        astronaut.position.copy(initialAstronautPosition);
-        astronaut.rotation.set(0, 0, 0); 
-    }
-
-    // Stop the game over sound if it's playing
-    if (gameOverSound.isPlaying) {
-        gameOverSound.stop();
-    }
-
-    // Start the ambiance music if it's not playing
-    if (!ambianceSound.isPlaying) {
-        ambianceSound.play();
-    }
-
-    decreaseHealth();
+    if (astronaut) astronaut.position.copy(initialAstronautPosition);
+    
+    audioManager.playSound('ambiance');
+    
+    healthManager.startHealthDecrease(); // Restart health decrease
 }
 
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const volumeControl = document.getElementById('volumeControl');
+    volumeControl.addEventListener('input', function () {
+        const volume = parseFloat(volumeControl.value);
+        audioManager.setVolume('ambiance', volume);
+        audioManager.setVolume('gameOver', volume);
+        audioManager.setVolume('timerWarning', volume);
+    });
+});
 // Event Listeners for buttons
 document.getElementById('restartButton').addEventListener('click', restartLevel);
 document.getElementById('restartButtonDeath').addEventListener('click', restartLevel);

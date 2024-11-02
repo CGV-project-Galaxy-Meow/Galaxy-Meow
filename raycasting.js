@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 
 import {showItemModal} from './modal.js';
-import {items} from "./inventory";
+import {items,addItem} from "./inventory";
 
 const itemDataMapping = {
     'Object_2': {
         title: 'M.S Fitzgerald',
-        description: '12/09/67 - ??/??/2022, Margie Sandy Fitzgerald was SPO\'s first assigned agent.',
+        description: '19/04/02 - ??/??/22, Margie Sandy Fitzgerald was SPO\'s youngest assigned agent.',
         additionalInfo: 'What is her story ?',
         imgSrc: 'images/skull.png',
         itemName: 'skull'
@@ -14,7 +14,7 @@ const itemDataMapping = {
     'power-crystal': {
         title: 'Power Crystal',
         description: 'Basically a charger.',
-        additionalInfo: 'Take as many as you need.',
+        additionalInfo: 'Taking too many can be dangerous.',
         imgSrc: items['gems'].img,
         itemName: 'gems'
     },
@@ -140,41 +140,42 @@ const itemDataMapping = {
         itemName: 'jub'
     },
     'Node-Mesh_1':{
-        title: 'Magic Carpet',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
-        imgSrc: items['mat'].img,
-        itemName: 'mat'
+        title: 'Clue',
+        description: 'Part of a code.',
+        additionalInfo: '1',
+        imgSrc: items['Clue1'].img,
+        itemName: 'Clue1'
     },
     'Cube_Cube001':{
-        title: 'Something I cant see',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
-        imgSrc: items['mat'].img,
-        itemName: 'mat'
+        title: 'Clue',
+        description: 'Part of a code.',
+        additionalInfo: 'The first digit of Y2K.',
+        imgSrc: items['Clue2'].img,
+        itemName: 'Clue2'
     },
     'Debris_Papers_2':{
-        title: 'Something I cant see',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
-        imgSrc: items['mat'].img,
-        itemName: 'mat'
+        title: 'Clue',
+        description: 'Part of a code',
+        additionalInfo: 'The number of triplets.',
+        imgSrc: items['Clue3'].img,
+        itemName: 'Clue3'
     },
     'Node-Mesh':{
-        title: 'Something I cant see',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
-        imgSrc: items['mat'].img,
-        itemName: 'mat'
+        title: 'Clue',
+        description: 'Part of a code',
+        additionalInfo: 'What is 2 raised to the power of 2 ?',
+        imgSrc: items['Clue4'].img,
+        itemName: 'Clue4'
     },
     'Box003':{
-        title: 'Something I cant see',
-        description: 'Maybe you will finally get home.',
-        additionalInfo: 'You have been here long enough I fear.',
-        imgSrc: items['mat'].img,
-        itemName: 'mat'
+        title: 'Clue',
+        description: 'Part of a code',
+        additionalInfo: 'Factorial question x! = 120 Find x.',
+        imgSrc: items['Clue5'].img,
+        itemName: 'Clue5'
     }
 };
+
 export function setupRaycasting(camera, objectsToRaycast) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -195,23 +196,202 @@ export function setupRaycasting(camera, objectsToRaycast) {
         // If an intersection is found, process it
         if (intersects.length > 0) {
             const clickedObject = intersects[0].object;
-            console.log("the clicked object :", clickedObject)
+            console.log("the clicked object :", clickedObject);
+            
             if (clickedObject.name in itemDataMapping || clickedObject.userData.customId === 'power-crystal') {
                 const itemData = itemDataMapping[clickedObject.name] || itemDataMapping[clickedObject.userData.customId];
                 showItemModal(itemData);
-            }
-            else if(clickedObject.name ==='node_id31'){
+            } else if (clickedObject.name === 'node_id31') {
                 const blueprintOverlay = document.getElementById('blueprint-overlay');
                 blueprintOverlay.style.display = 'block';
                 
-                // Add event listener to close the overlay when "X" is clicked
+                // Add event listener to close the overlay when close button is clicked
                 const closeButton = document.getElementById('close-blueprint');
                 closeButton.addEventListener('click', function() {
                     blueprintOverlay.style.display = 'none';
                 });
+
+
+                
+                
             }
-            
+        }
+
+        
+    });
+}
+
+
+let currentItemName = null; // Store the current item name
+
+export function setupPickupRaycasting(camera, objectsToRaycast) {
+    const raycaster = new THREE.Raycaster();
+
+    const interactionPrompt = document.createElement("div");
+    interactionPrompt.style.position = "fixed";
+    interactionPrompt.style.bottom = "50px"; 
+    interactionPrompt.style.left = "50%";
+    interactionPrompt.style.transform = "translateX(-50%) translateY(-10%)"; 
+    interactionPrompt.style.padding = "10px 20px";
+    interactionPrompt.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    interactionPrompt.style.color = "#fff";
+    interactionPrompt.style.fontSize = "36px";
+    interactionPrompt.style.borderRadius = "5px";
+    interactionPrompt.style.zIndex = "1000";
+    interactionPrompt.style.display = "none"; 
+    interactionPrompt.innerText = "Press E to interact. X to close modal. 1 to add items.";
+    document.body.appendChild(interactionPrompt);
+
+    const notification = document.createElement("div");
+    notification.style.position = "fixed";
+    notification.style.bottom = "50px"; 
+    notification.style.left = "50%";
+    notification.style.transform = "translateX(-50%) translateY(-50%)";
+    notification.style.padding = "10px 20px";
+    notification.style.backgroundColor = "rgba(0, 128, 0, 0.7)"; 
+    notification.style.color = "#fff";
+    notification.style.fontSize = "24px";
+    notification.style.borderRadius = "5px";
+    notification.style.zIndex = "1000";
+    notification.style.display = "none"; 
+    notification.innerText = "Added to inventory";
+    document.body.appendChild(notification);
+    
+    // Function to check proximity continuously
+    function checkProximity() {
+        raycaster.set(camera.position, camera.getWorldDirection(new THREE.Vector3()));
+        
+        const intersects = raycaster.intersectObjects(objectsToRaycast, true);
+        console.log('Intersects:', intersects); // Debugging intersections
+
+        // Show or hide the interaction prompt based on proximity
+        if (intersects.length > 0 && intersects[0].distance <= 10) {
+            interactionPrompt.style.display = "block"; // Show prompt
+            currentItemName = itemDataMapping[intersects[0].object.name]?.itemName || null; // Update currentItemName
+        } else {
+            interactionPrompt.style.display = "none"; // Hide prompt
+            currentItemName = null; // Reset currentItemName if no object is nearby
+        }
+
+        // Continuously check for proximity
+        requestAnimationFrame(checkProximity);
+    }
+    
+    checkProximity(); // Start checking proximity
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'e' || event.key === 'E') {
+            const intersects = raycaster.intersectObjects(objectsToRaycast, true);
+            if (intersects.length > 0 && intersects[0].distance <= 10) {
+                const targetObject = intersects[0].object;
+                handlePickup(targetObject);
+            } else {
+                console.log("No object within pickup range.");
+            }
+        }
+
+        if (event.key === '1' && currentItemName) {
+            addItem(currentItemName);
+            showNotification()
         }
     });
-    //console.log(objectsToRaycast)
+
+    function showNotification() {
+        notification.style.display = "block";
+        setTimeout(() => {
+            notification.style.display = "none"; 
+        }, 3000);
+    }
+
+    function handlePickup(object) {
+        console.log("Attempting to pick up object:", object);
+
+        if (object.name in itemDataMapping || object.userData.customId === 'power-crystal') {
+            const itemData = itemDataMapping[object.name] || itemDataMapping[object.userData.customId];
+            currentItemName = itemData.itemName; // Set currentItemName for adding to inventory
+            showItemModal(itemData); // Function to display the item modal
+        } else if (object.name === 'node_id31') {
+            const blueprintOverlay = document.getElementById('blueprint-overlay');
+            blueprintOverlay.style.display = 'block';
+
+            const closeButton = document.getElementById('close-blueprint');
+            closeButton.addEventListener('click', () => {
+                blueprintOverlay.style.display = 'none';
+            });
+
+            // Add event listener to close the overlay when "X" key is pressed
+            window.addEventListener('keydown', function(event) {
+                if (event.key === 'x' || event.key === 'X' && blueprintOverlay.style.display === 'block') { 
+                    blueprintOverlay.style.display = 'none';
+                }
+            });
+        }else if (object.name === 'magic-carpet') {
+            handleMagicCarpetClick(); // Handle magic carpet interaction
+        }
+    }
+
+    function handleMagicCarpetClick() {
+        const container = document.getElementById("codeInputContainer");
+        container.style.display = 'flex'; 
+    
+        const inputField = document.getElementById("codeInput");
+        inputField.focus();
+        inputField.value = '';
+    
+        const correctCode = "19402";
+        const button = document.getElementById("winCheck");
+    
+        // Button click event handler
+        button.onclick = function() {
+            checkCode();
+        };
+    
+        // Enter key event listener for the input field
+        inputField.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                checkCode();
+            }
+            if (event.key === 'x' || event.key === 'X') {
+                event.preventDefault();
+            }
+        });
+    
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'x' || event.key === 'X') {
+                container.style.display = 'none'; // Close the container
+            }
+        });
+    
+        function checkCode() {
+            const userCode = inputField.value; // Get the user's input when the button is clicked
+            console.log(userCode); // Log user input for debugging
+    
+            if (userCode === correctCode) {
+                window.location.href = 'epilogue.html';
+                container.style.display = 'none'; // Optionally hide the input container after winning
+            } else {
+                const modal = document.getElementById("modal"); // Assuming you have a modal element
+                modal.style.display = 'flex';
+                const meow = new Audio('path/to/meow.mp3'); // Adjust the path to your sound file
+                meow.play();
+                const conversationText = `That's not right. Try again, little astronaut.`;             
+                document.getElementById('catConversation').innerHTML = conversationText;
+            }
+        }
+    }
+    
+    // Close button functionality
+    const close = document.getElementById('close');
+    close.addEventListener('click', () => {
+        const container = document.getElementById("codeInputContainer");
+        container.style.display = 'none';
+    });
+    
+    // Ensure focus when clicking on the input
+    const inputField = document.getElementById("codeInput");
+    inputField.addEventListener('click', () => {
+        inputField.focus();
+    });
+    
+
 }

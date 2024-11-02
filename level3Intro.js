@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nextButton.addEventListener('click', () => {
         if (step === 0) {
             // Ask for the player's name
-            dialogueText.textContent = `Find all the numbers to the code`;
+            dialogueText.textContent = `Find all the numbers to the code.`;
             nextButton.textContent = 'Next';
             step++;
         } else if (step === 1) {
@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>You have landed on an astroid and need to collect the code to escape!</p>
                 <p>The path ahead is perilous.</p>
                 <p>Find the numbers to the code around the map</p>
+                <p>When you are ready select the magic carpet!</p>
                 <div style="display: flex; justify-content: flex-start; align-items: center; height: 100%; padding-left: 160px; margin-top: 2%; ">
                     <ul style="text-align: left; list-style-position: inside; margin: 0; padding-left: 20px;">
                         <li>W - Move forward</li>
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li>A - Move left</li>
                         <li>D - Move right</li>
                         <li>Space - Jump</li>
-                        <li>Oxygen Meter - You get 100 units of oxygen</li>
+                        <li>Oxygen Meter - You get 80 units of oxygen</li>
                         <li>If you need help - Click The Cat</li>
                         <li>Esc - Restart/Leave game</li>
                         <li>Shift - Sprint</li>

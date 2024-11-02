@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <li>A - Move left</li>
                         <li>D - Move right</li>
                         <li>Space - Jump</li>
-                        <li>Oxygen Meter - You get 100 units of oxygen</li>
+                        <li>Oxygen Meter - You get 90 units of oxygen</li>
                         <li>If you need help - Click The Cat</li>
                         <li>Esc - Restart/Leave game</li>
                         <li>Shift - Sprint</li>

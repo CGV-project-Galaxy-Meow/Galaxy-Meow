@@ -3,38 +3,97 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster,positionsRocks2, positionsQ2,positionsStones2} from './modelLocations.js';
-import {showDeathMessage} from './levelMenus.js'
-import { createSun } from './background.js';
-import { setupRaycasting } from './raycasting.js';
+import { setupRaycasting, setupPickupRaycasting} from './raycasting.js';
+import { clearInventory, items } from './inventory.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { AudioManager } from './AudioManager.js';
+import { HealthManager } from './HealthManager.js';
+import LightSetup from './LightSetup.js';
+import {createSun2 } from './background.js';
 
-
-
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const modal = document.getElementById('myModal');
+const responses = document.getElementById('responses');
+const closeModalBtn = document.getElementById('closeModal');
+const helpButton = document.getElementById('helpButton');
+const dontHelpButton = document.getElementById('dontHelpButton');
+const catConversation = document.getElementById('catConversation')
+const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
+let catObject; 
+const meow = new Audio('sound/meow.wav');
+let conversationText;
+let astronaut;
 const clock = new THREE.Clock();
-let health = 100;
-let healthElement = document.getElementById('healthBar');
+
+
 let exitMenu = document.getElementById('exitMenu');
 let deathMessage = document.getElementById('deathMessage');
-let healthInterval; // To control the health timer
+
+
+// Initialize AudioManager
+const audioManager = new AudioManager();
+
+// Initialize sounds with file paths
+audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
+audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
+audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
+
+const healthManager = new HealthManager(80, audioManager);
+
+
 export let objectsToRaycast = [];
 
 //for loading screen
-let assetsToLoad = 124; 
+let assetsToLoad = 164; 
 let assetsLoaded = 0;  // Counter for loaded assets
 
+//loading screen!!!
+const loadingScreen = document.getElementById('loadingScreen');
+
+function onAssetLoaded() {
+    assetsLoaded++;
+    if (assetsLoaded === assetsToLoad) {
+        loadingScreen.style.display = 'none'; // Hide loading screen 
+        healthManager.startHealthDecrease();
+    }
+}
+
+console.log("second one",document.body.querySelectorAll("canvas").length);
 
 // ---------------Create the scene--------------
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);  // Set a background color for visibility
-// Add lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);  // Soft white light
-scene.add(ambientLight);
 
-/*const directionalLight = new THREE.DirectionalLight(0x999793, 25);
-    directionalLight.position.set(0, 50, -50).normalize();
-    scene.add(directionalLight);
-    createSun(scene);*/
+const ambientConfig = { color: 0xffffff, intensity: 0.5 };
+const directionalConfig = { color: 0x999793, intensity: 25, position: { x: 300, y: 100, z: 4 } };
+const spotlightConfig = [{
+  color: 0xb900ff,
+  intensity: 100,
+  position: { x: 0, y: 0, z: 0 },
+  target: { x:50 , y: 0, z: 8 },
+  angle: Math.PI / 3,
+  penumbra: 0.2,
+  decay: 2,
+  distance: 60
+},
 
-const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+{
+    color: 0xff009e,
+    intensity: 70,
+    position: { x: 0, y: 10, z: 150 }, // Position directly above the tree
+    target: { x: 0, y: 1.5, z: 150 }, // Target the center of the tree
+    angle: Math.PI / 4, // Adjust for desired width
+    penumbra: 0.2,
+    decay: 2,
+    distance: 60,
+    castShadow: true // Enable shadow if needed
+}]
+
+new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
+createSun2(scene)
+
+const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
 const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
 const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
@@ -42,7 +101,7 @@ scene.add(space);
 
 // Create a camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
-camera.position.set(50, 10, 2);   // Set an initial camera position
+camera.position.set(50, -10, 5);   // Set an initial camera position
 
 // Create a renderer
 const renderer = new THREE.WebGLRenderer();
@@ -50,15 +109,11 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);  // Attach renderer's canvas to body
 
 
-
-// Handle window resize events
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
+const controlsFirstPerson = new PointerLockControls(camera, renderer.domElement);
+let isFirstPerson = false; // Starts in third-person view
 
 
+// -------Orbit controls----------
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;        // Enable damping (inertia)
 controls.dampingFactor = 0.05;        // Damping inertia
@@ -71,154 +126,125 @@ controls.mouseButtons = {
 };
 
 
+// Handle window resize events
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+
+
 //----important functions-----
-function decreaseHealth() {
-    if (healthInterval) {
-        clearInterval(healthInterval); // Clear any previous interval
-    }
-    healthInterval = setInterval(() => {
-        if (health > 0) {
-            health -= 1;
-            healthElement.innerHTML = `Oxygen: ${health}/100`;
-            checkOxygen();
-        } else {
-            clearInterval(healthInterval); // Stop the timer when health reaches 0
-            showDeathMessage();
 
-            // Stop the ambiance music
-            if (ambianceSound.isPlaying) {
-                ambianceSound.stop();
-            }
 
-            // Play the game over sound
-            gameOverSound.play();
-        }
-    }, 4000); // Decrease health every 5 seconds
-}
-
-//cat warns you of the oxygen
-function checkOxygen(){
-    if(health == 30){
+function lore(){
+    if(health == 99){
+        meow.play();
         modal.style.display = 'flex';
-        catConversation.style.animation = 'none';
-        catConversation.textContent = `Be careful! Your oxygen is running low.`;
-    
-        void catConversation.offsetWidth; 
-        catConversation.style.animation = 'typing 3.5s steps(40, end)';
+        catConversation.textContent = `Luckily for you, Ms Fitzgerald has left her successors clues on how to return to Earth.`;
+
+        setTimeout(() => { 
+            conversationText = '';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+            
+            conversationText = 'Use this chance wisely so that no more lives will be forsaken.';
+            document.getElementById('catConversation').innerHTML = conversationText; 
+
+        }, 3000); 
     
         // Keep the buttons hidden
         responses.style.display = 'none'; 
     }
 }
 
+// Reference to the view mode message element
+const viewModeMessage = document.getElementById('viewModeMessage');
 
-
-
-//use this to start the game
-// export function startGame() {}
-
-// Load the texture
-
-// Function to load and apply texture to the moon model
-// const numAsteroids = 100; // Number of asteroids to load
-// const objectsToRaycast = [];
-
-// for (let i = 0; i < numAsteroids; i++) {
-//     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
-//         // Randomize position
-//         const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
-//         const randomY = Math.random() * 20;       // Random value between 0 and 20
-//         const randomZ = Math.random() * 100 - 500; // Random value between -50 and 50
-
-//         // Randomize rotation
-//         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
-//         const randomRotationY = Math.random() * Math.PI * 2;
-//         const randomRotationZ = Math.random() * Math.PI * 2;
-
-//         // Randomize scale
-//         const randomScale = 0.05 + Math.random() * 0.1; // Random scale between 0.05 and 0.15
-
-//         astroObject.scale.set(randomScale, randomScale, randomScale);
-//         astroObject.position.set(randomX, randomY, randomZ);
-//         astroObject.rotation.set(randomRotationX, randomRotationY, randomRotationZ);
-//         astroObject.name = 'asteroids_' + i;
-
-//         scene.add(astroObject);
-//         objectsToRaycast.push(astroObject);
-//     });
-// }
-
-// loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
-//     astroObject.scale.set(50, 50, 50);
-//     astroObject.position.set(-300, 100, 4);
-//     astroObject.name = 'asteroids';
-//     scene.add(astroObject);
-//     objectsToRaycast.push(astroObject);
-
-
-
-//     //setupRaycasting(camera, objectsToRaycast);
-// });
-
-
-const listener = new THREE.AudioListener();
-camera.add(listener);
-
-// Audio loader
-const audioLoader = new THREE.AudioLoader();
-
-// separate audio sources for during game and game over
-const ambianceSound = new THREE.Audio(listener);
-const gameOverSound = new THREE.Audio(listener);
-
-
-//loading screen!!!
-const loadingScreen = document.getElementById('loadingScreen');
-
-function onAssetLoaded() {
-    assetsLoaded++;
-    console.log(assetsLoaded);
-    //if (assetsLoaded === assetsToLoad) {
-        loadingScreen.style.display = 'none'; // Hide loading screen 
-        decreaseHealth();
-    //}
+// Function to update the view mode message
+function updateViewModeMessage() {
+    const modeText = isFirstPerson ? "First Person View" : "Third Person View";
+    viewModeMessage.textContent = `${modeText} - Press V to switch`;
+    
+    // Briefly animate the opacity for emphasis
+    viewModeMessage.style.opacity = '0';
+    setTimeout(() => {
+        viewModeMessage.style.opacity = '1';
+    }, 100);
 }
 
-// const numAsteroids = 100; // Number of asteroids to load
-// for (let i = 0; i < numAsteroids; i++) {
-//     loadModel('models/asteroids.glb', scene, controls, camera, (astroObject) => {
-//         // Randomize position
-//         const randomX = Math.random() * 100 - 50; // Random value between -50 and 50
-//         const randomY = Math.random() * 20;       // Random value between 0 and 20
-//         const randomZ = Math.random() * 100 - 500; // Random value between -50 and 50
+// Update view mode when toggling views
+function toggleView() {
+    isFirstPerson = !isFirstPerson;
+  
+    if (isFirstPerson) {
+        if (astronaut) astronaut.visible = false;
+        controls.enabled = false;
+        controlsFirstPerson.enabled = true;
+        controlsFirstPerson.lock();
 
-//         // Randomize rotation
-//         const randomRotationX = Math.random() * Math.PI * 2; // Random rotation between 0 and 2π
-//         const randomRotationY = Math.random() * Math.PI * 2;
-//         const randomRotationZ = Math.random() * Math.PI * 2;
+        if (astronaut) {
+            camera.position.copy(astronaut.position);
+            camera.position.y += 6;
+        }
+    } else {
+        controlsFirstPerson.unlock();
+        controlsFirstPerson.enabled = false;
+        controls.enabled = true;
 
-//         // Randomize scale
-//         const randomScale = 0.05 + Math.random() * 0.1; // Random scale between 0.05 and 0.15
+        if (astronaut) astronaut.visible = true;
+        const offset = new THREE.Vector3(0, 10, -20);
+        if (astronaut) {
+            camera.position.copy(astronaut.position).add(offset);
+        }
 
-//         astroObject.scale.set(randomScale, randomScale, randomScale);
-//         astroObject.position.set(randomX, randomY, randomZ);
-//         astroObject.rotation.set(randomRotationX, randomRotationY, randomRotationZ);
-//         astroObject.name = 'asteroids_' + i;
+        if (astronaut) controls.target.copy(astronaut.position);
+    }
+    
+    // Update the message whenever the view is toggled
+    updateViewModeMessage();
+}
 
-//         scene.add(astroObject);
-//         objectsToRaycast.push(astroObject);
-//     });
-// }
+// Initial message update on page load
+updateViewModeMessage();
+
+// Keydown event listener to toggle view mode on 'V' key press
+document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyV') {
+        toggleView();
+    }
+});
+
+  
+
+  
+
 
 export function startGame() {
 
+   
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            if (exitMenu.style.display === 'none') {
+                exitMenu.style.display = 'block'; // Show menu
+            } else {
+                exitMenu.style.display = 'none'; // Hide menu
+            }
+        }
+    });
+    
+    const volumeControl = document.getElementById('volumeControl');
+    volumeControl.addEventListener('input', function () {
+        const volume = parseFloat(volumeControl.value);
+        audioManager.setVolume('ambiance', volume);
+        audioManager.setVolume('gameOver', volume);
+        audioManager.setVolume('timerWarning', volume);
+    });
 
+    audioManager.playSound('ambiance');
 
-// Load the texture
 
 //Function to load and apply texture to the moon model
-
-
 loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(10, 10, 10);
     astroObject.position.set(-850, 100, 4);
@@ -232,30 +258,8 @@ loadModel('models/Moon.glb', scene, controls, camera, (astroObject) => {
 });
   
     
-//Load the sun model
-loadModel('models/sun1.glb', scene, controls, camera, (astroObject) => {
-    // Scale and position the sun
-    astroObject.scale.set(50, 50, 50);
-    astroObject.position.set(1000, 100, 4);
-    astroObject.name = 'sun';
-    scene.add(astroObject);
-    objectsToRaycast.push(astroObject);
 
-    // Create a directional light to simulate sunlight
-    const sunlight = new THREE.DirectionalLight(0x999793, 25); // White light, intensity 1
-    sunlight.position.set(300, 100, 4); // Same position as the sun
-    sunlight.target.position.set(0, 0, 0); // Target to illuminate towards the origin or another object
-    scene.add(sunlight);
-    scene.add(sunlight.target); // Ensure target is part of the scene to get directional lighting working
-
-    // Optionally, you can add a slight light effect on the sun itself (not required for realism)
-    const sunLightGlow = new THREE.PointLight(0xffcc33, 2, 500); // Orange-ish glow, intensity 2, range 500
-    sunLightGlow.position.set(300, 100, 4); // Same position as the sun
-    scene.add(sunLightGlow);
-});
-
-
-loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
+loadModel('public/models/earth1.glb', scene, controls, camera, (astroObject) => {
     astroObject.scale.set(25, 25, 25);
     astroObject.position.set(-950, 10, 4);
     astroObject.name = 'asteroids';
@@ -267,41 +271,24 @@ loadModel('models/earth1.glb', scene, controls, camera, (astroObject) => {
     //setupRaycasting(camera, objectsToRaycast);
 });
 
-//sound 
-// Load ambiance sound
-audioLoader.load('public/sound/ambiance-sound.mp3', function(buffer) {
-    ambianceSound.setBuffer(buffer);
-    ambianceSound.setLoop(true);
-    ambianceSound.setVolume(0.5);
-    ambianceSound.play();
-});
-
-// Load game over sound
-audioLoader.load('public/sound/game-over.mp3', function(buffer) {
-    gameOverSound.setBuffer(buffer);
-    gameOverSound.setLoop(false);
-    gameOverSound.setVolume(0.5);
-    //we'll play it when health reaches zero
-});
-
 
 
 loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundObject) => {
-    asteroid_groundObject.scale.set(50, 1, 50);  // Scale it large enough to simulate an infinite ground
-    asteroid_groundObject.position.set(0, -1.5, 0);  // Place the plane below the astronaut
-    //moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
+    asteroid_groundObject.scale.set(50, 1, 50);  
+    asteroid_groundObject.position.set(0, -1.5, 0);  
     scene.add(asteroid_groundObject);
 
 
     //paper objects for this level
     loadModel('public/models/paper/Paper.glb', scene, controls, camera, (PaperObject) => {
     PaperObject.scale.set(0.05, 0.05, 0.05);  
-    PaperObject.position.set(9, -0.5,149);  //0, 1.5, 150
+    PaperObject.position.set(-1, -0.5,187);  
     PaperObject.name = 'Paper';        
     scene.add(PaperObject);               
     objectsToRaycast.push(PaperObject);   
 
-   setupRaycasting(camera, objectsToRaycast);  
+   setupRaycasting(camera, objectsToRaycast); 
+   setupPickupRaycasting(camera,objectsToRaycast)
    //onAssetLoaded();
 }, function (error) {
     console.error('Error loading skull model:', error);
@@ -329,9 +316,9 @@ loadModel('public/models/paper/Manila_Envelope.glb', scene, controls, camera, (M
     objectsToRaycast.push(ManilaObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
-    console.error('Error loading skull model:', error);
+    console.error('Error loading envelope model:', error);
 });
 
 
@@ -345,7 +332,7 @@ loadModel('public/models/paper/Toilet_paper.glb', scene, controls, camera, (Toil
     objectsToRaycast.push(ToiletPaperObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
     console.error('Error loading toilet paper model:', error);
 });
@@ -360,25 +347,96 @@ loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camer
     objectsToRaycast.push(StackPaperObject);   
 
    setupRaycasting(camera, objectsToRaycast);  
-   //onAssetLoaded();
+   onAssetLoaded();
 }, function (error) {
     console.error('Error loading skull model:', error);
 });
 
+let carpet;
+
 loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObject) => {
-        CarpetObject.scale.set(1.5, 1.5, 1.5);  
-        CarpetObject.position.set(0, 0.1,0);
-        CarpetObject.name = 'Magic Carpet';        
-        scene.add(CarpetObject);               
-        objectsToRaycast.push(CarpetObject);   
-    
-       setupRaycasting(camera, objectsToRaycast);  
-       //onAssetLoaded();
-    }, function (error) {
-        console.error('Error loading carpet model:', error);
+    CarpetObject.scale.set(1.5, 1.5, 1.5);  
+    CarpetObject.position.set(0, 0.1,0);
+    CarpetObject.traverse((child) => {
+        if (child.isMesh) {
+            // Assign custom name or userData to ensure we're modifying the correct mesh
+            child.name = 'magic-carpet'; // Set a specific name for this child object
+            child.customId = 'magic-carpet'; // Alternatively, assign a custom ID
+            
+            // Store additional custom data if needed
+            child.userData = { customId: 'magic-carpet' }; // Set custom user data for the mesh
+        }
+        onAssetLoaded();
     });
+    
+    carpet = CarpetObject;
+    scene.add(CarpetObject);               
+    objectsToRaycast.push(CarpetObject);   
 
+   setupRaycasting(camera, objectsToRaycast);  
+   onAssetLoaded();
+}, function (error) {
+    console.error('Error loading carpet model:',error);
+});
 
+    window.addEventListener('click', (event) => {
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // Update the raycaster with the camera and mouse position
+        raycaster.setFromCamera(mouse, camera);
+
+        if(carpet){
+        const intersects = raycaster.intersectObjects(carpet.children, true);
+
+        if (intersects.length > 0) {
+                handleMagicCarpetClick();
+            }
+        }
+ })
+
+ const container = document.getElementById("codeInputContainer");
+
+function handleMagicCarpetClick() {
+    // Show the input container when the carpet is clicked
+    container.style.display = 'flex'; 
+
+    // Focus on the input field
+    const inputField = document.getElementById("codeInput");
+    inputField.focus();
+
+    const correctCode = "19402";
+    const button = document.getElementById("winCheck");
+
+    // Button click event handler
+    button.onclick = function() {
+        const userCode = inputField.value; // Get the user's input when the button is clicked
+        console.log(userCode); // Log user input for debugging
+
+        if (userCode === correctCode) {
+            window.location.href = 'epilogue.html'
+            container.style.display = 'none'; // Optionally hide the input container after winning
+        } else {
+            modal.style.display = 'flex';
+            meow.play();
+            conversationText = `That's not right. Try again, little astronaut.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+        }
+    };
+}
+
+const close = document.getElementById('close');
+close.addEventListener('click', () =>{
+    container.style.display = 'none';
+})
+
+// To ensure focus when clicking on the input
+const inputField = document.getElementById("codeInput");
+inputField.addEventListener('click', () => {
+    inputField.focus();
+});
 
 
 // Load the model for each position in the array
@@ -548,13 +606,8 @@ loadModel('public/models/rocks/Stalactites_&_gems.glb', scene, controls, camera,
 
 
 
-
-
-
-
-let astronaut;
 let characterControls;
-loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
+loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (object, mixer, animationsMap) => {
     astronaut = object;
     astronaut.scale.set(1.7, 1.7, 1.7);
     astronaut.position.set(0, 0, 5);
@@ -574,6 +627,150 @@ loadModel('public/models/Walking Astronaut.glb', scene, controls, camera, (objec
     // Set initial controls target
     controls.target.copy(astronaut.position);
 });
+   
+    
+    // Load the static model
+    loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
+        console.log('Static model loaded:', object);
+        object.scale.set(1, 1, 1);
+        object.position.set(-10, 0, 10);
+        object.rotation.y =  Math.PI / 2;
+
+        catObject = object;
+        scene.add(object);
+        objectsToRaycast.push(catObject)
+        //characterControls.objectsToCollide.push(object);
+        setupRaycasting(camera, objectsToRaycast);
+    });
+    
+        window.addEventListener('click', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    
+            raycaster.setFromCamera(mouse, camera);
+    
+            // Check if the object is intersected by the ray
+            if (catObject) { 
+                const intersects = raycaster.intersectObject(catObject, true); 
+    
+                if (intersects.length > 0) {
+                    console.log('Model clicked:', catObject);
+
+                    modal.style.display = 'flex';
+                    responses.style.display = 'none'; 
+                    catConversation.textContent = `Can you still afford to ask me for help?`;
+                    setTimeout(() => {
+                        meow.play(); 
+                    }, 1000);
+                
+                    catConversation.style.animation = 'none'; 
+                    setTimeout(() => {
+                        responses.style.display = 'flex'; 
+                    }, 4000);
+                }
+            }
+        });
+
+// Event listener for 'Don't Help' button
+dontHelpButton.addEventListener('click', () => {
+    catConversation.style.animation = 'none';
+    catConversation.textContent = `Why, of course.`;
+
+    // Keep the buttons hidden
+    responses.style.display = 'none'; 
+});
+
+function isItemInInventory(itemName) {
+    return items[itemName] && items[itemName].count > 0;
+}
+
+    // Event listener for 'Help' button
+    helpButton.addEventListener('click', () => {
+        let conversationText;
+    
+        if (!isItemInInventory('Clue1')) {
+            conversationText = `Have you thoroughly searched the comets?`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+    
+            setTimeout(() => {
+                meow.play(); 
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'How sweet of Madam Fitzgerald to leave you these clues.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 3000); 
+        }
+
+        else if(!isItemInInventory('Clue2')){
+            conversationText = `On my left.. once again. You might need this soon.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+    
+            setTimeout(() => {
+                meow.play();
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'Have you figured out why you were sent here, memoryless?';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 3000); 
+        }
+
+        else if(!isItemInInventory('Clue3')){
+            conversationText = `Don't be afraid to search behind me as well.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+            meow.play();
+
+            setTimeout(() => {
+                meow.play();
+                conversationText = '';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+                
+                conversationText = 'When you go back, make sure SPO is never allowed to send out another astronaut.';
+                document.getElementById('catConversation').innerHTML = conversationText; 
+
+            }, 3000); 
+        }
+
+        else if(!isItemInInventory('Clue4')){
+            conversationText = `This asteroid does look extraterrestrial, doesn't it? That's not a human arch.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText; 
+            meow.play();
+        }
+
+        else if(!isItemInInventory('Clue5')){
+            conversationText = `Do you think flora is unique to Earth?`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+        }
+
+        else{
+            conversationText = `Help? But you have everything you need to proceed.`;             
+            document.getElementById('catConversation').innerHTML = conversationText;
+            catConversation.textContent = conversationText;
+        }
+
+        responses.style.display = 'none';
+
+        healthManager.decreaseHealthBy(10);
+    });
+
+        // Close modal on button click
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = 'none'; // Hide the modal
+        });
+    
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none'; // Hide the modal when clicking outside
+            }
+        });  
 
 
 const keysPressed = {};
@@ -588,40 +785,46 @@ document.addEventListener('keyup', (event) => {
     keysPressed[event.key.toLowerCase()] = false;
 }, false);
 
+
 // Render loop
 function animate() {
     let delta = clock.getDelta();
     if (characterControls) {
-        characterControls.update(delta, keysPressed);
+      characterControls.update(delta, keysPressed, isFirstPerson);
     }
-
-
-
-
-
+  
     if (astronaut) {
-        // Compute the offset between camera and controls.target
+      if (isFirstPerson) {
+        // In first-person view, camera follows astronaut's position
+        camera.position.copy(astronaut.position);
+        camera.position.y += 1.7; // Adjust for astronaut's eye height
+      } else {
+        // Third-person view
         const cameraOffset = camera.position.clone().sub(controls.target);
-
+  
         // Update controls target to astronaut's position
         controls.target.copy(astronaut.position);
-
+  
         // Update camera's position to maintain the offset
         camera.position.copy(astronaut.position).add(cameraOffset);
+      }
     }
-
-    controls.update();
+  
+    if (isFirstPerson) {
+  
+      controlsFirstPerson.update();
+    } else {
+      controls.update();
+    }
+  
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
-}
-
+  }
 
 function restartLevel() {
     clearInventory();
     // Reset health
-    health = 100;
-    healthElement.innerHTML = `Oxygen: ${health}/100`;
-
+    healthManager.resetHealth(80);
     // Hide death and exit menus
     deathMessage.style.display = 'none';
     exitMenu.style.display = 'none';
@@ -632,17 +835,9 @@ function restartLevel() {
         astronaut.rotation.set(0, 0, 0); 
     }
 
-    // Stop the game over sound if it's playing
-    if (gameOverSound.isPlaying) {
-        gameOverSound.stop();
-    }
+    audioManager.playSound('ambiance');
 
-    // Start the ambiance music if it's not playing
-    if (!ambianceSound.isPlaying) {
-        ambianceSound.play();
-    }
-
-    decreaseHealth();
+    healthManager.startHealthDecrease(); // Restart health decrease
 }
 
 
@@ -658,8 +853,6 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
 });
-
-
 
 
 animate();  // Start the animation loop

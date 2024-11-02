@@ -204,11 +204,16 @@
     <!-- Health Bar -->
     <div id="healthBar">Oxygen: 100/100</div>
 
+    <!-- View Mode Message -->
+<div id="viewModeMessage">Third Person View - Press V to switch</div>
+
     <!-- Exit Menu -->
     <div id="exitMenu">
-        <h2>Are you sure?</h2>
+        <h2>Astral Meow-nu</h2>
         <button id="mainMenuButton">Main Menu</button>
         <button id="restartButton">Restart Level</button>
+        <label for="volumeControl">Music Volume:</label>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
     </div>
 
     <!-- You Died Message -->
@@ -265,9 +270,14 @@
         </div>
     </div>
     
-    <div id="loadingScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); color: white; z-index: 20; display: flex; justify-content: center; align-items: center; flex-direction: column;">
-        <p>Loading assets, please wait...</p>
-        <div id="loadingSpinner" style="width: 40px; height: 40px; border: 5px solid #444; border-top: 5px solid #ba03fc; border-radius: 50%; margin-top: 10px; animation: spin 3s linear infinite;"></div>
+
+    <div id="loadingScreen" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); color: white; z-index: 20; display: flex; justify-content: center; align-items: center;">
+
+        <img src="public/Graphics/WeAreOnTheMoon.png" alt="roadmaptothemoon" style="position: absolute; width: 80%; max-width: 1000px;">
+        <div style="position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <p>Loading assets, please wait...</p>
+            <div id="loadingSpinner" style="width: 40px; height: 40px; border: 5px solid transparent; border-top: 5px solid #bf15fd; box-shadow: 0 0 10px #ba03fc, 0 0 20px #ba03fc, 0 0 30px #ba03fc, 0 0 40px #ba03fc; border-radius: 50%; margin-top: 10px; animation: spin 3s linear infinite;"></div>
+        </div>
     </div>
 
 <!-- Winning Modal -->
@@ -275,6 +285,7 @@
   <div style="background-color: #b800ccbb; padding: 20px; border-radius: 10px; text-align: center;">
     <h2 style="color: black;">Congratulations!</h2>
     <p style="color: black;">You have successfully collected all the items and won the level!</p>
+    <p style="color: black;">If you are in 1st person, Press V and then Proceed.</p>
     
     <!-- Proceed Button -->
      <a href="./level2.html">
@@ -373,5 +384,6 @@ function setCameraAngle(angle) {
     <script type="module" src="/intro.js"></script>
     <script type = "module" src = "/inventory.js"> </script>
     <script type = "module" src = "/win_check.js"> </script>
+    <script type = "module" src = "/HealthManager.js"> </script>
 </body>
 </html>
