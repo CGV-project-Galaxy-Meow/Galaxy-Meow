@@ -34,20 +34,6 @@ let deathMessage = document.getElementById('deathMessage');
 // Initialize AudioManager
 const audioManager = new AudioManager();
 
-function getRandomMushroomPosition() {
-    const x = Math.floor(Math.random() * 400) - 200; // Random x between -200 and 200
-    const z = Math.floor(Math.random() * 400) - 200; // Random z between -200 and 200
-    return [x, 0.1, z]; // y is set to 0.1 to place it above the ground
-}
-
-// Create an array to hold mushroom positions
-const mushroomPositions = [];
-
-// Generate 20 random mushroom positions
-for (let i = 0; i < 20; i++) {
-    mushroomPositions.push(getRandomMushroomPosition());
-}
-
 
 
 // Initialize sounds with file paths
@@ -332,36 +318,7 @@ loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundO
 });
 
 
-mushroomPositions.forEach((position) => {
-    loadModel('public/models/stylized_mushrooms.glb', scene, controls, camera, (MushObject) => {
-        MushObject.scale.set(0.5, 0.5, 0.5);  
-        MushObject.position.set(...position); // Spread the position array
-        MushObject.name = 'Mushrooms';        
-        scene.add(MushObject);               
-        objectsToRaycast.push(MushObject);   
 
-        setupRaycasting(camera, objectsToRaycast);  
-
-        // Create a spotlight for this mushroom
-        const spotLight = new THREE.SpotLight(0xb900ff, 80); // Red light with intensity 80
-        spotLight.position.set(...position[0], 10, ...position.slice(2)); // Position it above the mushroom
-        spotLight.angle = Math.PI / 2; // Angle of the spotlight's cone
-        spotLight.penumbra = 0.1; // Soft edges of the spotlight
-        spotLight.decay = 2; // How quickly the light diminishes
-        spotLight.distance = 50; // The distance the light reaches
-        spotLight.castShadow = true; // Enable shadows
-
-        // Point the light directly downwards
-        spotLight.target.position.set(...position); // Target the mushroom's position
-        spotLight.target.updateMatrixWorld(); // Update the target matrix
-
-        // Add the spotlight and its target to the scene
-        scene.add(spotLight);
-        scene.add(spotLight.target); // Add the target to the scene
-    }, function (error) {
-        console.error('Error loading mushroom model:', error);
-    });
-});
 
 loadModel('public/models/paper/Debris_Papers.glb', scene, controls, camera, (DebrisObject) => {
     DebrisObject.scale.set(15, 15, 15);  
