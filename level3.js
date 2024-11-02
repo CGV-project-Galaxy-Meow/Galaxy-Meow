@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';
 import {positions, positions2, positionsQ, positionsGold, positionsBaseStone, positionsAstroidCluster,positionsRocks2, positionsQ2,positionsStones2} from './modelLocations.js';
-import { setupRaycasting } from './raycasting.js';
+import { setupRaycasting, setupPickupRaycasting} from './raycasting.js';
 import { clearInventory, items } from './inventory.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { AudioManager } from './AudioManager.js';
@@ -287,7 +287,8 @@ loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundO
     scene.add(PaperObject);               
     objectsToRaycast.push(PaperObject);   
 
-   setupRaycasting(camera, objectsToRaycast);  
+   setupRaycasting(camera, objectsToRaycast); 
+   setupPickupRaycasting(camera,objectsToRaycast)
    //onAssetLoaded();
 }, function (error) {
     console.error('Error loading skull model:', error);
@@ -397,7 +398,7 @@ loadModel('public/models/Magic_Carpet.glb', scene, controls, camera, (CarpetObje
 
  const container = document.getElementById("codeInputContainer");
 
- function handleMagicCarpetClick() {
+function handleMagicCarpetClick() {
     // Show the input container when the carpet is clicked
     container.style.display = 'flex'; 
 
