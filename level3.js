@@ -34,6 +34,8 @@ let deathMessage = document.getElementById('deathMessage');
 // Initialize AudioManager
 const audioManager = new AudioManager();
 
+
+
 // Initialize sounds with file paths
 audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
 audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
@@ -92,6 +94,27 @@ const spotlightConfig = [{
 
 new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
 createSun2(scene)
+
+
+// const spotLight1 = new THREE.SpotLight(0xFFB900, 80); // Red light with intensity 80
+// spotLight1.position.set(0, 10,150); // Positioning the light above the ground
+
+// // Set the spotlight to shine directly downwards
+// spotLight1.angle = Math.PI / 2; // Angle of the spotlight's cone (adjust if needed)
+// spotLight1.penumbra = 0.1; // Soft edges of the spotlight
+// spotLight1.decay = 2; // How quickly the light diminishes
+// spotLight1.distance = 50; // The distance the light reaches
+
+// // Enable shadows if needed
+// spotLight1.castShadow = true;
+
+// // Point the light directly downwards
+// spotLight1.target.position.set(50, 0, 8); // Set the target to the ground (where the torch is pointing)
+// spotLight1.target.updateMatrixWorld(); // Update the target matrix
+
+// // Add the spotlight to the scene
+// scene.add(spotLight1);
+// scene.add(spotLight1.target);
 
 const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
 const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
@@ -295,6 +318,8 @@ loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundO
 });
 
 
+
+
 loadModel('public/models/paper/Debris_Papers.glb', scene, controls, camera, (DebrisObject) => {
     DebrisObject.scale.set(15, 15, 15);  
     DebrisObject.position.set(-210, 0.1,-40);  
@@ -310,7 +335,7 @@ loadModel('public/models/paper/Debris_Papers.glb', scene, controls, camera, (Deb
 
 loadModel('public/models/paper/Manila_Envelope.glb', scene, controls, camera, (ManilaObject) => {
     ManilaObject.scale.set(1.5, 1.5, 1.5);  
-    ManilaObject.position.set(215, 0.1,317);  //200, -4, 300
+    ManilaObject.position.set(235, 0.1,317);  //200, -4, 300
     ManilaObject.name = 'Manila envelope';        
     scene.add(ManilaObject);               
     objectsToRaycast.push(ManilaObject);   
@@ -341,7 +366,7 @@ loadModel('public/models/paper/Toilet_paper.glb', scene, controls, camera, (Toil
 
 loadModel('public/models/paper/Small_Stack_of_Paper.glb', scene, controls, camera, (StackPaperObject) => {
     StackPaperObject.scale.set(20, 20, 20);  
-    StackPaperObject.position.set(230, 0.1,0);  
+    StackPaperObject.position.set(230, 0.01,-25);  
     StackPaperObject.name = 'Stack of paper';        
     scene.add(StackPaperObject);               
     objectsToRaycast.push(StackPaperObject);   
@@ -640,7 +665,7 @@ loadModel('public/models/Walking_astronaut.glb', scene, controls, camera, (objec
         catObject = object;
         scene.add(object);
         objectsToRaycast.push(catObject)
-        //characterControls.objectsToCollide.push(object);
+       // characterControls.objectsToCollide.push(catObject);
         setupRaycasting(camera, objectsToRaycast);
     });
     

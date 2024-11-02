@@ -64,7 +64,6 @@ pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
 let pipActive = false;
 
 
-
 let assetsToLoad = 202;
 let assetsLoaded = 0;  // Counter for loaded assets
 
@@ -490,7 +489,7 @@ new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
         loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
 
             BatteryObject.scale.set(0.5, 0.5, 0.5);
-            BatteryObject.position.set(-181, 0, 70);
+            BatteryObject.position.set(-179, 0, 58);
 
             BatteryObject.name = 'Battery'
 
@@ -502,17 +501,6 @@ new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
             onAssetLoaded();
         });
 
-        loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
-            CirctuitIObject.scale.set(0.2, 0.2, 0.2);
-            CirctuitIObject.position.set(-210, 0.4, -310);
-            CirctuitIObject.name = 'Circuit Board'
-
-            scene.add(CirctuitIObject);
-            objectsToRaycast.push(CirctuitIObject);
-
-            setupRaycasting(camera, objectsToRaycast);
-            onAssetLoaded();
-        });
 
         loadModel('public/models/Button.glb', scene, controls, camera, (ButtonObject) => {
             ButtonObject.scale.set(0.8, 0.8, 0.8);
@@ -528,7 +516,7 @@ new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
 
         loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
-            CirctuitIObject.position.set(-210, 0.4, -310);
+            CirctuitIObject.position.set(-214, 0.4, -310);
             CirctuitIObject.name = 'Circuit Board'
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
@@ -563,12 +551,12 @@ new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
 
         loadModel('public/models/console.glb', scene, controls, camera, (consoleObject) => {
             consoleObject.scale.set(0.7, 0.7, 0.7);
-           consoleObject.position.set(295, 0.1, -80);
+           consoleObject.position.set(305, 0.1, -80);
            //280, 0, -78 by the ruins
            consoleObject.traverse((child) => {
                if (child.isMesh) {
-                   // Assign custom name or userData here to ensure we're modifying the correct mesh
-                   child.name = 'console';  // Set a specific name for this child object
+                  
+                   child.name = 'console';  
                    child.customId = 'console'
                    
                     // Alternatively, store in child.userData if needed:
@@ -593,7 +581,7 @@ new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
                 RocksObject.position.copy(position); // Set the position from the array
                 //console.log(position)
                 RocksObject.name = 'Rocks'; // Set a name for reference
-        
+               
                 // Add the object to the scene and collision arrays
                 scene.add(RocksObject);
                 objectsToRaycast.push(RocksObject);
