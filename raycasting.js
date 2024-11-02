@@ -261,7 +261,7 @@ export function setupPickupRaycasting(camera, objectsToRaycast) {
         raycaster.set(camera.position, camera.getWorldDirection(new THREE.Vector3()));
         const intersects = raycaster.intersectObjects(objectsToRaycast, true);
 
-        if (intersects.length > 0 && intersects[0].distance <= 10) {
+        if (intersects.length > 0 && intersects[0].distance <= 20) {
             interactionPrompt.style.display = "block";
             currentItemName = itemDataMapping[intersects[0].object.name]?.itemName || null;
         } else {
@@ -277,7 +277,7 @@ export function setupPickupRaycasting(camera, objectsToRaycast) {
     window.addEventListener('keydown', (event) => {
         if (event.key === 'e' || event.key === 'E') {
             const intersects = raycaster.intersectObjects(objectsToRaycast, true);
-            if (intersects.length > 0 && intersects[0].distance <= 10) {
+            if (intersects.length > 0 && intersects[0].distance <= 20) {
                 const targetObject = intersects[0].object;
                 handlePickup(targetObject);
             } else {
