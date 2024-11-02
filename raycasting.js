@@ -229,55 +229,50 @@ export function setupPickupRaycasting(camera, objectsToRaycast) {
 
     const interactionPrompt = document.createElement("div");
     interactionPrompt.style.position = "fixed";
-    interactionPrompt.style.bottom = "50px"; 
+    interactionPrompt.style.bottom = "50px";
     interactionPrompt.style.left = "50%";
-    interactionPrompt.style.transform = "translateX(-50%) translateY(-10%)"; 
+    interactionPrompt.style.transform = "translateX(-50%) translateY(-10%)";
     interactionPrompt.style.padding = "10px 20px";
     interactionPrompt.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
     interactionPrompt.style.color = "#fff";
     interactionPrompt.style.fontSize = "36px";
     interactionPrompt.style.borderRadius = "5px";
     interactionPrompt.style.zIndex = "1000";
-    interactionPrompt.style.display = "none"; 
+    interactionPrompt.style.display = "none";
     interactionPrompt.innerText = "Press E to interact. X to close modal. 1 to add items.";
     document.body.appendChild(interactionPrompt);
 
     const notification = document.createElement("div");
     notification.style.position = "fixed";
-    notification.style.bottom = "50px"; 
+    notification.style.bottom = "50px";
     notification.style.left = "50%";
     notification.style.transform = "translateX(-50%) translateY(-50%)";
     notification.style.padding = "10px 20px";
-    notification.style.backgroundColor = "rgba(0, 128, 0, 0.7)"; 
+    notification.style.backgroundColor = "rgba(0, 128, 0, 0.7)";
     notification.style.color = "#fff";
     notification.style.fontSize = "24px";
     notification.style.borderRadius = "5px";
     notification.style.zIndex = "1000";
-    notification.style.display = "none"; 
+    notification.style.display = "none";
     notification.innerText = "Added to inventory";
     document.body.appendChild(notification);
-    
-    // Function to check proximity continuously
+
     function checkProximity() {
         raycaster.set(camera.position, camera.getWorldDirection(new THREE.Vector3()));
-        
         const intersects = raycaster.intersectObjects(objectsToRaycast, true);
-        console.log('Intersects:', intersects); // Debugging intersections
 
-        // Show or hide the interaction prompt based on proximity
         if (intersects.length > 0 && intersects[0].distance <= 10) {
-            interactionPrompt.style.display = "block"; // Show prompt
-            currentItemName = itemDataMapping[intersects[0].object.name]?.itemName || null; // Update currentItemName
+            interactionPrompt.style.display = "block";
+            currentItemName = itemDataMapping[intersects[0].object.name]?.itemName || null;
         } else {
-            interactionPrompt.style.display = "none"; // Hide prompt
-            currentItemName = null; // Reset currentItemName if no object is nearby
+            interactionPrompt.style.display = "none";
+            currentItemName = null;
         }
 
-        // Continuously check for proximity
         requestAnimationFrame(checkProximity);
     }
     
-    checkProximity(); // Start checking proximity
+    checkProximity();
 
     window.addEventListener('keydown', (event) => {
         if (event.key === 'e' || event.key === 'E') {
@@ -292,106 +287,80 @@ export function setupPickupRaycasting(camera, objectsToRaycast) {
 
         if (event.key === '1' && currentItemName) {
             addItem(currentItemName);
-            showNotification()
+            showNotification();
         }
     });
 
     function showNotification() {
         notification.style.display = "block";
         setTimeout(() => {
-            notification.style.display = "none"; 
+            notification.style.display = "none";
         }, 3000);
     }
 
     function handlePickup(object) {
-        console.log("Attempting to pick up object:", object);
-
         if (object.name in itemDataMapping || object.userData.customId === 'power-crystal') {
             const itemData = itemDataMapping[object.name] || itemDataMapping[object.userData.customId];
-            currentItemName = itemData.itemName; // Set currentItemName for adding to inventory
-            showItemModal(itemData); // Function to display the item modal
+            currentItemName = itemData.itemName;
+            showItemModal(itemData);
         } else if (object.name === 'node_id31') {
             const blueprintOverlay = document.getElementById('blueprint-overlay');
             blueprintOverlay.style.display = 'block';
-
             const closeButton = document.getElementById('close-blueprint');
             closeButton.addEventListener('click', () => {
                 blueprintOverlay.style.display = 'none';
             });
 
-            // Add event listener to close the overlay when "X" key is pressed
             window.addEventListener('keydown', function(event) {
-                if (event.key === 'x' || event.key === 'X' && blueprintOverlay.style.display === 'block') { 
+                if (event.key === 'x' || event.key === 'X' && blueprintOverlay.style.display === 'block') {
                     blueprintOverlay.style.display = 'none';
                 }
             });
-        }else if (object.name === 'magic-carpet') {
-            handleMagicCarpetClick(); // Handle magic carpet interaction
+        } else if (object.name === 'magic-carpet') {
+            if (document.getElementById("codeInputContainer")) {
+                handleMagicCarpetClick();
+            }
         }
     }
 
     function handleMagicCarpetClick() {
         const container = document.getElementById("codeInputContainer");
-        container.style.display = 'flex'; 
-    
         const inputField = document.getElementById("codeInput");
+        const button = document.getElementById("winCheck");
+        const correctCode = "19402";
+
+        if (!container || !inputField || !button) return;
+
+        container.style.display = 'flex';
         inputField.focus();
         inputField.value = '';
-    
-        const correctCode = "19402";
-        const button = document.getElementById("winCheck");
-    
-        // Button click event handler
-        button.onclick = function() {
-            checkCode();
-        };
-    
-        // Enter key event listener for the input field
+
+        button.onclick = checkCode;
         inputField.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                checkCode();
-            }
-            if (event.key === 'x' || event.key === 'X') {
-                event.preventDefault();
-            }
+            if (event.key === 'Enter') checkCode();
+            if (event.key === 'x' || event.key === 'X') event.preventDefault();
         });
-    
+
         window.addEventListener('keydown', (event) => {
             if (event.key === 'x' || event.key === 'X') {
-                container.style.display = 'none'; // Close the container
+                container.style.display = 'none';
             }
         });
-    
+
         function checkCode() {
-            const userCode = inputField.value; // Get the user's input when the button is clicked
-            console.log(userCode); // Log user input for debugging
-    
+            const userCode = inputField.value;
             if (userCode === correctCode) {
                 window.location.href = 'epilogue.html';
-                container.style.display = 'none'; // Optionally hide the input container after winning
+                container.style.display = 'none';
             } else {
-                const modal = document.getElementById("modal"); // Assuming you have a modal element
-                modal.style.display = 'flex';
-                const meow = new Audio('path/to/meow.mp3'); // Adjust the path to your sound file
-                meow.play();
-                const conversationText = `That's not right. Try again, little astronaut.`;             
-                document.getElementById('catConversation').innerHTML = conversationText;
+                const modal = document.getElementById("modal");
+                if (modal) {
+                    modal.style.display = 'flex';
+                    const meow = new Audio('path/to/meow.mp3');
+                    meow.play();
+                    document.getElementById('catConversation').innerHTML = `That's not right. Try again, little astronaut.`;
+                }
             }
         }
     }
-    
-    // Close button functionality
-    const close = document.getElementById('close');
-    close.addEventListener('click', () => {
-        const container = document.getElementById("codeInputContainer");
-        container.style.display = 'none';
-    });
-    
-    // Ensure focus when clicking on the input
-    const inputField = document.getElementById("codeInput");
-    inputField.addEventListener('click', () => {
-        inputField.focus();
-    });
-    
-
 }
