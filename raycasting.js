@@ -215,3 +215,149 @@ export function setupRaycasting(camera, objectsToRaycast) {
     });
     //console.log(objectsToRaycast)
 }
+
+
+
+let currentItemName = null; // Store the current item name
+
+export function setupPickupRaycasting(camera, objectsToRaycast) {
+    const raycaster = new THREE.Raycaster();
+
+    const interactionPrompt = document.createElement("div");
+    interactionPrompt.style.position = "fixed";
+    interactionPrompt.style.bottom = "50px";
+    interactionPrompt.style.left = "50%";
+    interactionPrompt.style.transform = "translateX(-50%) translateY(-10%)";
+    interactionPrompt.style.padding = "10px 20px";
+    interactionPrompt.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    interactionPrompt.style.color = "#fff";
+    interactionPrompt.style.fontSize = "36px";
+    interactionPrompt.style.borderRadius = "5px";
+    interactionPrompt.style.zIndex = "1000";
+    interactionPrompt.style.display = "none";
+    interactionPrompt.innerText = "Press E to interact. X to close modal. 1 to add items.";
+    document.body.appendChild(interactionPrompt);
+
+    const notification = document.createElement("div");
+    notification.style.position = "fixed";
+    notification.style.bottom = "50px";
+    notification.style.left = "50%";
+    notification.style.transform = "translateX(-50%) translateY(-50%)";
+    notification.style.padding = "10px 20px";
+    notification.style.backgroundColor = "rgba(0, 128, 0, 0.7)";
+    notification.style.color = "#fff";
+    notification.style.fontSize = "24px";
+    notification.style.borderRadius = "5px";
+    notification.style.zIndex = "1000";
+    notification.style.display = "none";
+    notification.innerText = "Added to inventory";
+    document.body.appendChild(notification);
+
+    function checkProximity() {
+        raycaster.set(camera.position, camera.getWorldDirection(new THREE.Vector3()));
+        const intersects = raycaster.intersectObjects(objectsToRaycast, true);
+
+        if (intersects.length > 0 && intersects[0].distance <= 20) {
+            interactionPrompt.style.display = "block";
+            currentItemName = itemDataMapping[intersects[0].object.name]?.itemName || null;
+        } else {
+            interactionPrompt.style.display = "none";
+            currentItemName = null;
+        }
+
+        requestAnimationFrame(checkProximity);
+    }
+    
+    checkProximity();
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'e' || event.key === 'E') {
+            const intersects = raycaster.intersectObjects(objectsToRaycast, true);
+            if (intersects.length > 0 && intersects[0].distance <= 20) {
+                const targetObject = intersects[0].object;
+                handlePickup(targetObject);
+            } else {
+                console.log("No object within pickup range.");
+            }
+        }
+
+        if (event.key === '1' && currentItemName) {
+            addItem(currentItemName);
+            showNotification();
+        }
+    });
+
+    function showNotification() {
+        notification.style.display = "block";
+        setTimeout(() => {
+            notification.style.display = "none";
+        }, 3000);
+    }
+
+    function handlePickup(object) {
+        if (object.name in itemDataMapping || object.userData.customId === 'power-crystal') {
+            const itemData = itemDataMapping[object.name] || itemDataMapping[object.userData.customId];
+            currentItemName = itemData.itemName;
+            showItemModal(itemData);
+        } else if (object.name === 'node_id31') {
+            const blueprintOverlay = document.getElementById('blueprint-overlay');
+            blueprintOverlay.style.display = 'block';
+            const closeButton = document.getElementById('close-blueprint');
+            closeButton.addEventListener('click', () => {
+                blueprintOverlay.style.display = 'none';
+            });
+
+            window.addEventListener('keydown', function(event) {
+                if (event.key === 'x' || event.key === 'X' && blueprintOverlay.style.display === 'block') {
+                    blueprintOverlay.style.display = 'none';
+                }
+            });
+        } else if (object.name === 'magic-carpet') {
+            if (document.getElementById("codeInputContainer")) {
+                handleMagicCarpetClick();
+            }
+        }
+    }
+
+    function handleMagicCarpetClick() {
+        const container = document.getElementById("codeInputContainer");
+        const inputField = document.getElementById("codeInput");
+        const button = document.getElementById("winCheck");
+        const correctCode = "19402";
+
+        if (!container || !inputField || !button) return;
+
+        container.style.display = 'flex';
+        inputField.focus();
+        inputField.value = '';
+
+        button.onclick = checkCode;
+        inputField.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') checkCode();
+            if (event.key === 'x' || event.key === 'X') event.preventDefault();
+        });
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'x' || event.key === 'X') {
+                container.style.display = 'none';
+            }
+        });
+
+        function checkCode() {
+            const userCode = inputField.value;
+            if (userCode === correctCode) {
+                window.location.href = 'epilogue.html';
+                container.style.display = 'none';
+            } else {
+                const modal = document.getElementById("modal");
+                if (modal) {
+                    modal.style.display = 'flex';
+                    const meow = new Audio('path/to/meow.mp3');
+                    meow.play();
+                    document.getElementById('catConversation').innerHTML = `That's not right. Try again, little astronaut.`;
+                }
+            }
+        }
+    }
+}
+
