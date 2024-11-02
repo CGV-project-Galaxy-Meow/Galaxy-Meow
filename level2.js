@@ -247,7 +247,7 @@ loadModel('public/models/moonground.glb', scene, controls, camera, (marsObject) 
     
     loadModel('public/models/Crystal1.glb', scene, controls, camera, (crystalObject) => {
         crystalObject.scale.set(0.3, 0.3, 0.3); // Set size of crystal
-        crystalObject.position.set(288.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
+        crystalObject.position.set(258.8549386672509, 0.3, -81.84023356777789); // Position it relative to ground
         
         // Traverse the object to set custom properties
         crystalObject.traverse((child) => {
