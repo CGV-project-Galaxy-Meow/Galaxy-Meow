@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="leaderboard.css">
+    <style>
+        /* General Body Styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at 50% 50%, #1a0033, #0b0022, #000014);
+            color: #f0e6ff;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Leaderboard Container Styling */
+        .leaderboard-container {
+            background-color: rgba(20, 20, 50, 0.8);
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px solid rgba(180, 105, 255, 0.8);
+            box-shadow: 0 0 30px rgba(255, 150, 255, 0.5), 0 0 60px rgba(150, 100, 255, 0.7);
+            text-align: center;
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Back Button Styling */
+        .back-button {
+            background-color: #4a167b;
+            color: #fff;
+            border: 2px solid rgba(255, 105, 180, 0.8);
+            border-radius: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), 0px 0px 10px rgba(255, 105, 180, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #73268c;
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3), 0px 0px 20px rgba(255, 150, 200, 0.8);
+        }
+
+        /* Title Styling */
+        .leaderboard-title {
+            font-size: 2.5em;
+            color: #ff99ff;
+            text-shadow: 0px 0px 12px #ff99ff, 0px 0px 20px rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            animation: neonPulse 2s infinite alternate;
+        }
+
+        /* Container for leaderboard sections to align horizontally */
+        .leaderboard-sections {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Leaderboard Section Styling */
+        .leaderboard-section {
+            background: rgba(20, 20, 50, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 300px;
+            border: 2px solid rgba(180, 105, 255, 0.8);
+            box-shadow: 0 0 15px rgba(180, 105, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Section Header Styling */
+        .leaderboard-section h2 {
+            font-size: 1.5em;
+            color: #b469ff;
+            text-shadow: 0px 0px 8px #b469ff;
+            margin: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        /* Leaderboard List */
+        .leaderboard-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Individual Player Entry */
+        .leaderboard-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(50, 20, 80, 0.8);
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: #d3b7ff;
+            font-weight: bold;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3), 0px 0px 10px rgba(255, 105, 180, 0.5);
+        }
+
+        /* Rank Styling */
+        .rank {
+            background-color: #73268c;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-size: 1em;
+        }
+
+        /* Name and Score Styling */
+        .name {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .score {
+            font-size: 1.1em;
+            color: #ff99ff;
+        }
+
+        /* Neon Pulse Animation */
+        @keyframes neonPulse {
+            0% { text-shadow: 0px 0px 12px #ff99ff, 0px 0px 20px rgba(255, 255, 255, 0.8); }
+            100% { text-shadow: 0px 0px 24px #ff99ff, 0px 0px 30px rgba(255, 255, 255, 1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="leaderboard-container">
+        <!-- Back Button -->
+        <button class="back-button" onclick="goBack()">Back</button>
+
+        <h1 class="leaderboard-title">Leaderboard</h1>
+
+        <div class="leaderboard-sections">
+            <!-- Level 1 Leaderboard -->
+            <div class="leaderboard-section">
+                <h2>Level 1</h2>
+                <ul class="leaderboard-list">
+                    <li><span class="rank">1</span><span class="name">Player 1</span><span class="score">1500 pts</span></li>
+                    <li><span class="rank">2</span><span class="name">Player 2</span><span class="score">1350 pts</span></li>
+                    <li><span class="rank">3</span><span class="name">Player 3</span><span class="score">1200 pts</span></li>
+                </ul>
+            </div>
+
+            <!-- Level 2 Leaderboard -->
+            <div class="leaderboard-section">
+                <h2>Level 2</h2>
+                <ul class="leaderboard-list">
+                    <li><span class="rank">1</span><span class="name">Player 4</span><span class="score">1600 pts</span></li>
+                    <li><span class="rank">2</span><span class="name">Player 5</span><span class="score">1450 pts</span></li>
+                    <li><span class="rank">3</span><span class="name">Player 6</span><span class="score">1300 pts</span></li>
+                </ul>
+            </div>
+
+            <!-- Level 3 Leaderboard -->
+            <div class="leaderboard-section">
+                <h2>Level 3</h2>
+                <ul class="leaderboard-list">
+                    <li><span class="rank">1</span><span class="name">Player 7</span><span class="score">1700 pts</span></li>
+                    <li><span class="rank">2</span><span class="name">Player 8</span><span class="score">1550 pts</span></li>
+                    <li><span class="rank">3</span><span class="name">Player 9</span><span class="score">1400 pts</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript function to handle back button click
+        function goBack() {
+            window.location.href = 'index.html'; 
+        }
+    </script>
+
+</body>
+</html>

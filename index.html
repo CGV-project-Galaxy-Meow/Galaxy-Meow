@@ -28,6 +28,7 @@
         <button class="menu-button" id="openControls">Controls</button>
         <button class="menu-button" id="openCredits">Credits</button>
         <button class="menu-button" id="openHowToPlay">How to Play</button>
+        <button class="menu-button" id="leaderBoard">Leaderboard</button>
       </div>
     </div>
   </div>
@@ -132,7 +133,8 @@ volumeControl.addEventListener('input', function () {
     document.getElementById('startGame').addEventListener('click', () => window.location.href = 'game.html');
     document.getElementById('level2').addEventListener('click', () => window.location.href = 'level2.html');
     document.getElementById('level3').addEventListener('click', () => window.location.href = 'level3.html');
-
+    document.getElementById('leaderBoard').addEventListener('click', () => window.location.href = 'leaderBoard.html');
+    
     // Modal handling
     const settingsModal = document.getElementById('settingsModal');
     const creditsModal = document.getElementById('creditsModal');
