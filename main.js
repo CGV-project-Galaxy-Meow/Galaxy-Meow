@@ -1,7 +1,11 @@
-import * as THREE from 'three';
-import WebGL from 'three/addons/capabilities/WebGL.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import * as THREE from './node_modules/three/build/three.module.min.js';
+//import WebGL from 'three/addons/capabilities/WebGL.js';
+import { PointerLockControls } from './node_modules/three/examples/jsm/controls/PointerLockControls.js';
+//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// node_modules/three/build/three.module.min.js
+import { OrbitControls } from './node_modules/three/examples/jsm/controls/OrbitControls.js';
+
+
 import { loadModel } from './model_loader.js';  // Import model loader
 import { CharacterControls } from './characterControls.js';  // Import character controls
 import './intro.js';
@@ -30,7 +34,7 @@ const helpButton = document.getElementById('helpButton');
 const dontHelpButton = document.getElementById('dontHelpButton');
 const catConversation = document.getElementById('catConversation')
 const cat_model = 'public/models/TheCatGalaxyMeow4.glb';
-const meow = new Audio('sound/meow.wav');
+const meow = new Audio('public/sound/meow.wav');
 
 
 // Initialize AudioManager
@@ -40,6 +44,7 @@ const audioManager = new AudioManager();
 audioManager.loadSound('ambiance', 'public/sound/ambiance-sound.mp3', true, 0.5);
 audioManager.loadSound('gameOver', 'public/sound/game-over.mp3', false, 0.5);
 audioManager.loadSound('timerWarning', 'public/sound/beep-warning-6387.mp3', false, 0.5);
+
 
 const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000);
@@ -59,7 +64,8 @@ pipRenderer.setSize(pipCanvas.width, pipCanvas.height);
 let pipActive = false;
 
 
-let assetsToLoad = 203;
+
+let assetsToLoad = 202;
 let assetsLoaded = 0;  // Counter for loaded assets
 
 const loadingScreen = document.getElementById('loadingScreen');
@@ -148,9 +154,24 @@ controls.mouseButtons = {
 
 
 
+
 //----functions----
 // Initialize HealthManager with initial health and audio manager
 const healthManager = new HealthManager(100, audioManager);
+
+// function decreaseHealth() {
+
+//     if (healthInterval) {
+//         clearInterval(healthInterval); // Clear any previous interval
+//     }
+//     healthInterval = setInterval(() => {
+//         if (health > 0) {
+//             health -= 1;
+//             healthElement.innerHTML = `Oxygen: ${health}/100`;
+//             checkOxygen();
+//         } else {
+//             clearInterval(healthInterval); // Stop the timer when health reaches 0
+//             showDeathMessage();
 
 
 
@@ -227,8 +248,11 @@ document.addEventListener('keydown', function (event) {
 
 
 export function startGame() {
+
     //decreaseHealth();
+
     document.getElementById('startPiP').style.display = 'block';
+
     document.getElementById('bagIcon').style.display = 'grid';
 
      document.addEventListener('keydown', (event) => {
@@ -242,10 +266,12 @@ export function startGame() {
     });
 
 
+
 // Prevent context menu from appearing on right-click
 renderer.domElement.addEventListener('contextmenu', function(event) {
     event.preventDefault();
 }, false);
+
 
 
 audioManager.playSound('ambiance');
@@ -267,34 +293,39 @@ const spotlightConfig = [{
 
 new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
 
+
     createSun(scene);
 
-    const spaceTexture = new THREE.TextureLoader().load('textures/stars.jpg');
+
+    const spaceTexture = new THREE.TextureLoader().load('public/textures/stars.jpg');
     const spaceGeometry = new THREE.SphereGeometry(2000, 64, 64);
+
     const spaceMaterial = new THREE.MeshBasicMaterial({ map: spaceTexture, side: THREE.BackSide });
     const space = new THREE.Mesh(spaceGeometry, spaceMaterial);
     scene.add(space);
 
-    const earthTexture = new THREE.TextureLoader().load('textures/earth.jpg');
+    //there is a floating earth
+    const earthTexture = new THREE.TextureLoader().load('public/textures/earth.jpg');
     const earthGeometry = new THREE.SphereGeometry(100, 32, 32);
+
     const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     earth.position.set(0, 0, -1000);
     earth.castShadow = true;  // Enable shadow casting
     scene.add(earth);
 
+
     const shootingStars = [];
 
-function createShootingStar() {
-    const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-    const starMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0xffffff, 
-        transparent: true, 
-        opacity: Math.random() 
+    function createShootingStar() {
+        const starGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+        const starMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0xffffff, 
+            transparent: true, 
+            opacity: Math.random() 
     });
     const shootingStar = new THREE.Mesh(starGeometry, starMaterial);
-
-   
+    //control the shooting star
     const startX = 50;  
     const startY = 0;  
     const startZ = -50
@@ -307,10 +338,11 @@ function createShootingStar() {
     const velocityY = Math.random() * 0.1 - 0.05;  // Y velocity range
     const velocityZ = Math.random() * 0.2 - 0.1;   // Z velocity towards the camera
 
-    // Create an array for the tail positions
+    // Create an array for the tail positions for the shooting stars
     const tailPositions = [];
     const tailLength = 5;
     const tailColor = 0x00ff00;
+
 
     for (let i = 0; i < tailLength; i++) {
         const tailStar = new THREE.Mesh(
@@ -331,12 +363,12 @@ function createShootingStar() {
 }
 
 
-function updateShootingStars() {
-    shootingStars.forEach((star, index) => {
-        star.mesh.position.add(star.velocity);
+    function updateShootingStars() {
+        shootingStars.forEach((star, index) => {
+            star.mesh.position.add(star.velocity);
         
-        // Update opacity for strobing effect
-        star.mesh.material.opacity += 0.05 * star.fadeDirection;
+            // Update opacity for strobing effect
+            star.mesh.material.opacity += 0.05 * star.fadeDirection;
 
         // Reverse fade direction when reaching limits
         if (star.mesh.material.opacity >= 1 || star.mesh.material.opacity <= 0) {
@@ -364,9 +396,8 @@ function updateShootingStars() {
 }
 
 
-setInterval(createShootingStar, 300);
+    setInterval(createShootingStar, 300);
     
-
 
     // Load the astronaut model and apply controls
     //let characterControls;
@@ -395,7 +426,7 @@ setInterval(createShootingStar, 300);
     
 
     // Load the Moon Plane Model
-    loadModel('models/moonground.glb', scene, controls, camera, (moonObject) => {
+    loadModel('public/models/moonground.glb', scene, controls, camera, (moonObject) => {
         moonObject.scale.set(1000, 1, 500);  // Scale it large enough to simulate an infinite ground
         moonObject.position.set(100, 0, 0);  // Place the plane below the astronaut
        // moonObject.rotation.x = -Math.PI / 2;  // Rotate the plane to make it horizontal
@@ -418,6 +449,7 @@ setInterval(createShootingStar, 300);
         loadModel('public/models/oil_barrel.glb', scene, controls, camera, (barrelObject) => {
             barrelObject.scale.set(3.3, 3.3, 3.3);
             barrelObject.position.set(-28, 0, 53);
+
             barrelObject.name = 'barrel'
             scene.add(barrelObject);
             objectsToRaycast.push(barrelObject);
@@ -426,8 +458,10 @@ setInterval(createShootingStar, 300);
             onAssetLoaded();
         });
 
+
         loadModel('public/models/skull.glb', scene, controls, camera, (skullObject) => {
             skullObject.scale.set(0.6, 0.6, 0.6);
+
             skullObject.position.set(45, 0.3, 4);
             skullObject.name = 'skeleton';
             scene.add(skullObject);
@@ -440,6 +474,7 @@ setInterval(createShootingStar, 300);
             onAssetLoaded();
         });
 
+
         loadModel('public/models/blueprint.glb', scene, controls, camera, (blueprintObject) => {
             blueprintObject.scale.set(5, 5, 5);
             blueprintObject.position.set(50, 1, 6);
@@ -451,13 +486,14 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
             onAssetLoaded();
         });
-
         
         loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
+
             BatteryObject.scale.set(0.5, 0.5, 0.5);
             BatteryObject.position.set(-181, 0, 70);
 
             BatteryObject.name = 'Battery'
+
 
             scene.add(BatteryObject);
             objectsToRaycast.push(BatteryObject);
@@ -465,10 +501,12 @@ setInterval(createShootingStar, 300);
             setupRaycasting(camera, objectsToRaycast);
             onAssetLoaded();
         });
+
         loadModel('public/models/CircuitBoard.glb', scene, controls, camera, (CirctuitIObject) => {
             CirctuitIObject.scale.set(0.2, 0.2, 0.2);
             CirctuitIObject.position.set(-210, 0.4, -310);
             CirctuitIObject.name = 'Circuit Board'
+
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
 
@@ -494,10 +532,9 @@ setInterval(createShootingStar, 300);
             CirctuitIObject.name = 'Circuit Board'
             scene.add(CirctuitIObject);
             objectsToRaycast.push(CirctuitIObject);
-
-            setupRaycasting(camera, objectsToRaycast);
             onAssetLoaded();
-        });
+
+
 
 
         loadModel('public/models/antenna1.glb', scene, controls, camera, (antennaObject) => {
@@ -730,11 +767,13 @@ setInterval(createShootingStar, 300);
 
 
     });
+    });
    
     
     // Load the static model
     loadModel(cat_model, scene, controls, camera, (object, mixer, animationsMap) => {
         console.log('Static model loaded:', object);
+
         object.scale.set(1, 1, 1);
         object.position.set(-10, 0, -10);
         object.rotation.y =  Math.PI / 2;
@@ -757,7 +796,7 @@ setInterval(createShootingStar, 300);
                 const intersects = raycaster.intersectObject(catObject, true); 
     
                 if (intersects.length > 0) {
-                    console.log('Model clicked:', catObject);
+                    //console.log('Model clicked:', catObject);
 
                     modal.style.display = 'flex';
                     responses.style.display = 'none'; 
@@ -773,6 +812,8 @@ setInterval(createShootingStar, 300);
                 }
             }
         });
+
+
 
 // Event listener for 'Don't Help' button
 dontHelpButton.addEventListener('click', () => {
@@ -873,7 +914,9 @@ function isItemInInventory(itemName) {
             if (event.target === modal) {
                 modal.style.display = 'none'; // Hide the modal when clicking outside
             }
+
         });  
+
 
     const keysPressed = {};
     document.addEventListener('keydown', (event) => {
@@ -893,7 +936,9 @@ function isItemInInventory(itemName) {
         if (characterControls) {
           characterControls.update(delta, keysPressed, isFirstPerson);
         }
+
       
+
         if (astronaut) {
           if (isFirstPerson) {
             // In first-person view, camera follows astronaut's position
@@ -904,11 +949,11 @@ function isItemInInventory(itemName) {
             const cameraOffset = camera.position.clone().sub(controls.target);
       
             // Update controls target to astronaut's position
-            controls.target.copy(astronaut.position);
-      
+            controls.target.copy(astronaut.position);   
             // Update camera's position to maintain the offset
             camera.position.copy(astronaut.position).add(cameraOffset);
           }
+
         }
       
         if (isFirstPerson) {
@@ -930,6 +975,7 @@ function isItemInInventory(itemName) {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
 }
 
 
@@ -944,8 +990,6 @@ function restartLevel() {
     
     healthManager.startHealthDecrease(); // Restart health decrease
 }
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const volumeControl = document.getElementById('volumeControl');
@@ -966,4 +1010,7 @@ document.getElementById('mainMenuButton').addEventListener('click', () => {
 });
 document.getElementById('mainMenuButtonDeath').addEventListener('click', () => {
     window.location.href = 'index.html'; 
+
 });
+
+
