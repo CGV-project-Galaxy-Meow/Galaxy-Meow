@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Explanation of the game mechanics
             dialogueText.innerHTML = `
                 <p>You have landed on mars and need to recharge the teleporter!</p>
-                <p>The path ahead is perilous.</p>
                 <p>Find the energy crystals around the map</p>
                 <div style="display: flex; justify-content: flex-start; align-items: center; height: 100%; padding-left: 160px; margin-top: 2%; ">
                     <ul style="text-align: left; list-style-position: inside; margin: 0; padding-left: 20px;">

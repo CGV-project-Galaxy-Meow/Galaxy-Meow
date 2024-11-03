@@ -489,7 +489,7 @@ new LightSetup(scene, ambientConfig, directionalConfig, spotlightConfig);
         loadModel('public/models/batteries.glb', scene, controls, camera, (BatteryObject) => {
 
             BatteryObject.scale.set(0.5, 0.5, 0.5);
-            BatteryObject.position.set(-179, 0, 58);
+            BatteryObject.position.set(-210, 0, 70); //-175, 0, 58  -180, 12, 60
 
             BatteryObject.name = 'Battery'
 

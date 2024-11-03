@@ -28,9 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Explanation of the game mechanics
             dialogueText.innerHTML = `
                 <p>You have landed on an astroid and need to collect the code to escape!</p>
-                <p>The path ahead is perilous.</p>
-                <p>Find the numbers to the code around the map</p>
-                <p>When you are ready select the magic carpet!</p>
+                <p>Find the numbers to the code around the map and enter the code in the magic carpet!</p>
                 <div style="display: flex; justify-content: flex-start; align-items: center; height: 100%; padding-left: 160px; margin-top: 2%; ">
                     <ul style="text-align: left; list-style-position: inside; margin: 0; padding-left: 20px;">
                         <li>W - Move forward</li>

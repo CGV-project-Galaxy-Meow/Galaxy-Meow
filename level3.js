@@ -305,7 +305,7 @@ loadModel('public/models/ground.glb', scene, controls, camera, (asteroid_groundO
     //paper objects for this level
     loadModel('public/models/paper/Paper.glb', scene, controls, camera, (PaperObject) => {
     PaperObject.scale.set(0.05, 0.05, 0.05);  
-    PaperObject.position.set(-1, -0.5,187);  
+    PaperObject.position.set(-1, -0.5,190);  
     PaperObject.name = 'Paper';        
     scene.add(PaperObject);               
     objectsToRaycast.push(PaperObject);   
